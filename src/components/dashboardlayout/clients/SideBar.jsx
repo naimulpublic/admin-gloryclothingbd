@@ -40,7 +40,7 @@ export default function SideBar() {
             >
               <div className="flex items-center gap-2">
                 <span className="text-orange-500 ">{item.icon}</span>
-                {isOpen && <span className="text-sm ">{item.name}</span>}
+                {isOpen && <span className="text-sm font-semibold">{item.name}</span>}
               </div>
 
               {item.subname &&
@@ -61,7 +61,7 @@ export default function SideBar() {
                     href={sub.url}
                     className="block px-3 py-1.5 text-sm text-gray-700 rounded transition"
                   >
-                    <div className="flex items-center gap-2  hover:underline hover:text-orange-600">
+                    <div className="flex items-center gap-2 font-medium  hover:underline hover:text-orange-600">
                       {sub.icon}
                       {sub.name}
                     </div>

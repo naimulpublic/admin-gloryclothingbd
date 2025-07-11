@@ -170,8 +170,8 @@ export default function DashboardHome() {
   };
 
   return (
-    <div className="p-2 lg:p-4 bg-gray-100 min-h-screen">
-      <h2 className="ml-4 text-xl xl:text-2xl font-medium xl:font-semibold mb-4 xl:mb-8 text-gray-800">
+    <div className="p-2 lg:p-4 bg-white min-h-screen">
+      <h2 className="text-center font-bold text-xl p-2 mb-4 border-b border-gray-300 select-none">
         Dashboard Overview
       </h2>
 
@@ -187,7 +187,9 @@ export default function DashboardHome() {
               <Link href={item.url}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-gray-500 hover:underline hover:text-blue-500">{item.label}</p>
+                    <p className="text-sm text-gray-500 hover:underline hover:text-blue-500">
+                      {item.label}
+                    </p>
                     <h3 className="text-3xl font-bold text-gray-800">
                       {item.value}
                     </h3>
@@ -209,8 +211,6 @@ export default function DashboardHome() {
           );
         })}
       </div>
-
-      
     </div>
   );
 }

@@ -19,6 +19,7 @@ import {
   SelectContent,
   SelectItem,
 } from "../ui/select";
+import RoutePath from "../dashboardlayout/clients/RoutePath";
 
 export default function ProductForm({
   id,
@@ -242,7 +243,8 @@ export default function ProductForm({
       onSubmit={handleSubmit}
       className="space-y-3 w-full px-6 bg-white rounded shadow"
     >
-      <h2 className="text-2xl font-bold mb-4">Add New Product</h2>
+      <RoutePath />
+      <h2 className="text-2xl font-bold my-4 text-center">Add New Product</h2>
       <div className="flex gap-2">
         <div className="w-1/2">
           <Label className="p-2">
