@@ -244,7 +244,7 @@ export default function ProductForm({
       className="space-y-3 w-full px-6 bg-white rounded shadow"
     >
       <RoutePath />
-      <h2 className="text-2xl font-bold my-4 text-center">Add New Product</h2>
+      <h2 className="text-xl font-semibold my-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">Add New Product</h2>
       <div className="flex gap-2">
         <div className="w-1/2">
           <Label className="p-2">
@@ -569,8 +569,8 @@ export default function ProductForm({
       </div>
 
       <div className="mt-6 relative">
-        <h4 className="border-red-600 border font-semibold text-lg border-b p-2 mb-2 text-center bg-black text-white">
-          Color Variants
+        <h4 className="text-xl font-semibold my-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+          Multiple Color Variants
         </h4>
         {colorVariants.map((variant, i) => (
           <div
