@@ -34,13 +34,14 @@ import { MoreVertical } from "lucide-react";
 import { Edit } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Trash } from "lucide-react";
 
 export default function LiveProducts({ data }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
-  const [featuredFilter, setFeaturedFilter] = useState("all"); // Added for featured filter
+  const [featuredFilter, setFeaturedFilter] = useState("all");
 
   const filteredData = data
     .filter((product) =>
@@ -72,25 +73,54 @@ export default function LiveProducts({ data }) {
     }
   };
 
-  const handleBulkDelete = () => {
-    alert(`Deleting products: ${selectedProducts.join(", ")}`);
-    setSelectedProducts([]);
+  const handleBulkDelete = async () => {
+    if (selectedProducts.length === 0) return;
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/products`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ids: selectedProducts }),
+        }
+      );
+
+      const result = await res.json();
+
+      if (result.success) {
+        console.log(result.message);
+        router.refresh();
+        setSelectedProducts([]); // Clear selected products
+      } else {
+        console.error("Bulk delete failed");
+      }
+    } catch (error) {
+      console.error("Error deleting products:", error);
+    }
   };
 
   const handleEdit = (id) => {
     router.push(`/dashboard/create/product/${id}`);
   };
 
-  const handleSingleDelete = (id) => {
-    const res = fetch(
+  const handleSingleDelete = async (id) => {
+    const res = await fetch(
       `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/product/${id}`,
       {
         method: "DELETE",
       }
     );
 
-    res.then((res) => res.json());
-    router.refresh();
+    const result = await res.json();
+    if (res.ok) {
+      console.log(result.message);
+      router.refresh();
+    } else {
+      console.error("Failed to delete product:", result.message);
+    }
   };
 
   return (
@@ -180,7 +210,6 @@ export default function LiveProducts({ data }) {
                   </div>
                 ))}
               </TableCell>
-
               <TableCell>{product.defaultColor}</TableCell>
               <TableCell>{product.isFeatured ? "Yes" : "No"}</TableCell>
               <TableCell>
@@ -188,10 +217,9 @@ export default function LiveProducts({ data }) {
                   .toLocaleDateString("en-GB")
                   .replace(/\//g, "-")
                   .split("-")
-                  .map((part, index) => (index === 2 ? part.slice(2) : part)) // Year এর প্রথম দুই অক্ষর বাদ দিয়ে দিবে
+                  .map((part, index) => (index === 2 ? part.slice(2) : part))
                   .join("-")}
               </TableCell>
-
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger className="cursor-pointer outline-none">
@@ -202,8 +230,9 @@ export default function LiveProducts({ data }) {
                       <Edit className="h-4 w-4 mr-2" />
                       Edit
                     </DropdownMenuItem>
+                    {/* Single delete removed */}
                     <DropdownMenuItem onClick={() => handleSingleDelete(product._id)}>
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash className="h-4 w-4 mr-2" />
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
