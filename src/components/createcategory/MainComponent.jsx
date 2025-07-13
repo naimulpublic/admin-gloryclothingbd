@@ -8,6 +8,9 @@ import { Button } from "../ui/button";
 import { CreativeCommons } from "lucide-react";
 import { NetworkIcon } from "lucide-react";
 import { SquarePlus } from "lucide-react";
+import RoutePath from "../dashboardlayout/clients/RoutePath";
+import { Checkbox } from "../ui/checkbox";
+import { Loader } from "lucide-react";
 
 // react-select ডাইনামিকভাবে লোড করা
 const Select = dynamic(() => import("react-select"), { ssr: false });
@@ -18,12 +21,14 @@ export default function CategoryForm({ subcategories, id }) {
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
   const [priority, setPriority] = useState(0);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState(true);
   const [selectedSubcategories, setSelectedSubcategories] = useState([]);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [categoryBanner, setCategoryBanner] = useState(null);
   const [categoryBannerPreview, setCategoryBannerPreview] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
+  
 
   // Load existing category data if editing an existing category
   useEffect(() => {
@@ -67,10 +72,9 @@ export default function CategoryForm({ subcategories, id }) {
       .toLowerCase()
       .trim()
       .replace(/\s+/g, "-")
-      .replace(/[^a-z0-9\-&]/g, ""); 
+      .replace(/[^a-z0-9\-&]/g, "");
     setSlug(generatedSlug);
   };
-  
 
   // Handle changes in selected subcategories
   const handleSubcategoryChange = (selectedOptions) => {
@@ -95,6 +99,8 @@ export default function CategoryForm({ subcategories, id }) {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setIsLoading(true);
 
     try {
       const formData = new FormData();
@@ -144,149 +150,212 @@ export default function CategoryForm({ subcategories, id }) {
     } catch (error) {
       console.error("Form submit error:", error);
       alert(error.message || "Something went wrong");
+    }finally{
+      setIsLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 p-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Name */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            className="w-full border rounded-md px-3 py-2"
-          />
-        </div>
+    <>
+      <div className=" px-6">
+        <RoutePath />
+      </div>
 
-        {/* Slug */}
-        <div className="relative">
-          <label className="block text-sm font-medium mb-1">Slug</label>
-          <div className="flex">
-            <input
-              type="text"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              required
-              className="w-full border rounded-l-md px-3 py-2"
-            />
+      <form onSubmit={handleSubmit} className="space-y-6 px-6 pb-6">
+        <h2 className=" text-xl font-semibold mt-6 mb-8 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+          {id ? "Update" : "Create New"} Categories
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Name */}
+          <div>
+            <div className="relative">
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                id="floating_outlined"
+                className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+              />
+              <label
+                htmlFor="floating_outlined"
+                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+              >
+                Enter Category Name <span className="text-red-500">*</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Slug */}
+          <div className="relative">
+            <div className="relative">
+              <input
+                id="floating_outlined45"
+                type="text"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+                required
+                className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+              />
+              <label
+                htmlFor="floating_outlined45"
+                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+              >
+                Genarate Slug <span className="text-red-500">*</span>{" "}
+              </label>
+            </div>
+
             <button
               type="button"
               onClick={generateSlug}
-              className="bg-gray-100 border rounded-r-md px-3 py-2 hover:bg-gray-200"
+              className="p-2.5 bg-orange-500 rounded-r-[9px] absolute top-[1px] right-[1px] hover:bg-orange-600 cursor-pointer"
             >
-              <RefreshCcw size={18} />
+              <RefreshCcw className="text-white" size={20} />
             </button>
           </div>
-        </div>
 
-        {/* Meta Title */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Meta Title</label>
-          <input
-            type="text"
-            value={metaTitle}
-            onChange={(e) => setMetaTitle(e.target.value)}
-            className="w-full border rounded-md px-3 py-2"
-          />
-        </div>
-
-        {/* Meta Description */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Meta Description
-          </label>
-          <textarea
-            value={metaDescription}
-            onChange={(e) => setMetaDescription(e.target.value)}
-            rows={2}
-            className="w-full border rounded-md px-3 py-2"
-          />
-        </div>
-
-        {/* Priority */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Priority</label>
-          <input
-            type="number"
-            value={priority}
-            onChange={(e) => setPriority(Number(e.target.value))}
-            className="w-full border rounded-md px-3 py-2"
-          />
-        </div>
-
-        {/* Status */}
-        <div>
-          <label className="block text-sm font-medium mb-1">Status</label>
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-            className="w-full border rounded-md px-3 py-2"
-          >
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-          </select>
-        </div>
-
-        {/* Subcategories */}
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium mb-1">
-            Subcategories
-          </label>
-          <Select
-            isMulti
-            options={subcategories}
-            value={selectedSubcategories}
-            onChange={handleSubcategoryChange}
-            placeholder="Select Subcategories"
-            className="w-full"
-            getOptionLabel={(e) => e.label}
-          />
-        </div>
-
-        {/* Image Upload */}
-        <div>
-          <label className="text-sm font-medium mb-1">Image</label>
-          <Input type="file" accept="image/*" onChange={handleImageDrop} />
-          {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="Category"
-              className="w-32 h-32 rounded-md"
-            />
-          )}
-        </div>
-
-        {/* Banner Upload */}
-        <div>
-          <label className="block text-sm font-medium mb-1">
-            Category Banner
-          </label>
-          <Input type="file" onChange={handleBannerDrop} />
-          {categoryBannerPreview && (
-            <img
-              src={categoryBannerPreview}
-              alt="Banner"
-              className="mt-2 w-32 h-32 object-cover rounded-md"
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Submit Button */}
-      <Button type="submit">
-        {id ? (
-          "Update Category"
-        ) : (
-          <div className="flex gap-2 items-center cursor-pointer">
-            <SquarePlus />
-            <p> Create Category</p>
+          {/* Meta Title */}
+          <div>
+            <div className="relative">
+              <input
+                type="text"
+                value={metaTitle}
+                onChange={(e) => setMetaTitle(e.target.value)}
+                id="floating_outlinedmeta"
+                className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+              />
+              <label
+                htmlFor="floating_outlinedmeta"
+                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+              >
+                Enter Meta Title
+              </label>
+            </div>
           </div>
-        )}
-      </Button>
-    </form>
+
+          {/* Meta Description */}
+          <div>
+            <div className="relative">
+              <textarea
+                type="text"
+                value={metaDescription}
+                onChange={(e) => setMetaDescription(e.target.value)}
+                rows={1}
+                id="floating_outlinedmetadec"
+                className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+              />
+              <label
+                htmlFor="floating_outlinedmetadec"
+                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+              >
+                Enter Meta Decprition
+              </label>
+            </div>
+          </div>
+
+          {/* Priority */}
+          <div>
+            <div className="relative">
+              <input
+                type="number"
+                value={priority}
+                onChange={(e) => setPriority(Number(e.target.value))}
+                id="floating_priority"
+                className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+              />
+              <label
+                htmlFor="floating_priority"
+                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+              >
+                Enter Category Priority <span className="text-red-500">*</span>
+              </label>
+            </div>
+          </div>
+
+          {/* Status */}
+          <div className="flex gap-2 mt-1">
+            <Checkbox
+              className="cursor-pointer h-5 w-5"
+              checked={status}
+              onCheckedChange={(checked) => setStatus(checked === true)}
+            />
+            <p>{status ? "Active Category" : "Deactive Category"}</p>
+          </div>
+
+          {/* Subcategories */}
+          <div className="md:col-span-2">
+            <label className="block text-sm font-semibold mb-2 p-2 shadow-sm">
+              Select Subcategories <span className="text-red-500">*</span>
+            </label>
+            <Select
+              isMulti
+              options={subcategories}
+              value={selectedSubcategories}
+              onChange={handleSubcategoryChange}
+              placeholder="Select Subcategories"
+              className="w-full"
+              getOptionLabel={(e) => e.label}
+            />
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-medium mb-1 p-2 border-b">
+              Select Category Image <span className="text-red-500">*</span>
+            </label>
+            <Input
+              
+              type="file"
+              accept="image/*"
+              onChange={handleImageDrop}
+            />
+            {imagePreview && (
+              <img
+                src={imagePreview}
+                alt="Category"
+                className="w-14 h-16 rounded-md border m-2"
+              />
+            )}
+          </div>
+
+          {/* Banner Upload */}
+          <div>
+            <label className="block text-sm font-medium mb-1 p-2 border-b">
+              Select Category Banner <span className="text-red-500">*</span>
+            </label>
+            <Input type="file" onChange={handleBannerDrop} />
+            {categoryBannerPreview && (
+              <img
+                src={categoryBannerPreview}
+                alt="Banner"
+                className="w-36 h-16 rounded-md border m-2"
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Submit Button */}
+        <button type="submit" className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-lg font-semibold cursor-pointer flex items-center gap-2">
+          {isLoading ? (
+            <>
+              <Loader strokeWidth={3} className="h-6 w-6  animate-spin" />
+              PROCESSING...
+            </>
+          ) : id ? (
+            "UPDATE PRODUCT"
+          ) : (
+            <>
+              <SquarePlus className="h-5 w-5" />
+              PUBLISH CATEGORY
+            </>
+          )}
+        </button>
+      </form>
+    </>
   );
 }

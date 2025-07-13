@@ -24,6 +24,7 @@ import { X } from "lucide-react";
 import { Loader } from "lucide-react";
 import { productSizes } from "@/static/ProductSize";
 import { UploadCloud } from "lucide-react";
+import { MultiSelect } from "../custom/MultiSelector";
 
 export default function ProductForm({
   id,
@@ -266,6 +267,12 @@ export default function ProductForm({
     setSlug(generatedSlug);
   };
 
+  const options = subcategori.map((item) => ({
+    id: item._id,
+    value: item.value,
+    label: item.value,
+  }));
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -481,23 +488,22 @@ export default function ProductForm({
           </div>
         </div>
 
-        <div className="w-1/2">
-          <Label className="p-2">
+        <div className=" w-1/2">
+          <Label className="py-3 px-2 rounded-sm  shadow mb-1">
             Enter Product Subcategory <span className="text-red-500">*</span>
           </Label>
-          <ReactSelect
-            isMulti
-            options={(subcategori || []).map((sub) => ({
+          <MultiSelect
+            options={subcategori.map((sub) => ({
               value: sub._id,
               label: sub.value,
+              category: sub.label,
+              subcategory: sub.value,
+              bannerurl: sub.bannerUrl,
+              createdAt: sub.createdAt,
             }))}
-            value={subcategory}
-            onChange={(selectedOptions) =>
-              setSubcategory(selectedOptions || [])
-            }
-            className="react-select-container"
-            classNamePrefix="react-select"
-            placeholder="Select subcategories..."
+            selected={subcategory}
+            onChange={setSubcategory}
+            className="w-full"
           />
         </div>
       </div>
@@ -971,7 +977,7 @@ export default function ProductForm({
         <button className="absolute bg-black text-white border border-red-600 px-4 rounded-sm  py-2 right-2 top-2 text-lg font-semibold cursor-pointer flex items-center gap-2">
           {isLoading ? (
             <>
-              <Loader strokeWidth={3}  className="h-6 w-6  animate-spin" />
+              <Loader strokeWidth={3} className="h-6 w-6  animate-spin" />
               PROCESSING...
             </>
           ) : id ? (

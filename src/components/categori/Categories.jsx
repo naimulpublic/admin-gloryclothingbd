@@ -54,9 +54,28 @@ export default function CategoriesPage({ categories }) {
     );
   };
 
-  const handleBulkAction = (action) => {
-    // Handle bulk actions (edit, delete) here based on selected categories
-    console.log(`Performing ${action} on categories: ${selectedCategories}`);
+  const handleBulkAction = async (id) => {
+    const confirmDelete = window.confirm("Do you delete this category??");
+    if (!confirmDelete) return;
+    const request = await fetch(
+      `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/categorys`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ids: selectedCategories }),
+      }
+    );
+    const result = await request.json();
+
+    if (result.success) {
+      console.log(result.message);
+      router.refresh();
+      setSelectedCategories([]); // Clear selected products
+    } else {
+      console.error("Bulk delete failed");
+    }
   };
 
   // Select All Checkbox Handler
@@ -93,9 +112,9 @@ export default function CategoriesPage({ categories }) {
     }
   };
 
-  const handleEdit = (id)=>{
-    router.push(`/dashboard/create/categories${id}`);
-  }
+  const handleEdit = (id) => {
+    router.push(`/dashboard/create/categories/${id}`);
+  };
 
   return (
     <div className="p-4">
@@ -172,9 +191,13 @@ export default function CategoriesPage({ categories }) {
               <TableCell>{category.slug}</TableCell>
 
               {category.status ? (
-                <span className="text-green-600 font-semibold">Active</span>
+                <TableCell className="text-green-600 font-semibold">
+                  Active
+                </TableCell>
               ) : (
-                <span className="text-red-500 font-semibold">Inactive</span>
+                <TableCell className="text-red-500 font-semibold">
+                  Inactive
+                </TableCell>
               )}
 
               <TableCell>{category.priority}</TableCell>
@@ -199,16 +222,15 @@ export default function CategoriesPage({ categories }) {
                       <MoreHorizontal className="cursor-pointer" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
-                      <DropdownMenuItem onClick={() => handleEdit(category._id)}>
+                      <DropdownMenuItem
+                        onClick={() => handleEdit(category._id)}
+                      >
                         <Edit className="mr-2" /> Edit
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => handleDelete(category._id)}
                       >
                         <Trash className="mr-2" /> Delete
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Download className="mr-2" /> Import
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
