@@ -5,14 +5,22 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Eye, EyeOff } from "lucide-react";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  SelectValue,
+} from "@/components/ui/select";
+import RoutePath from "../dashboardlayout/clients/RoutePath";
 
 const AdminUserForm = ({ id }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("general");
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
-  const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -28,7 +36,8 @@ const AdminUserForm = ({ id }) => {
           if (res.ok) {
             setName(data.name);
             setEmail(data.email);
-            setIsActive(data.isActive);
+            setRole(data.role || "general"); // Set role if exists
+
             setPreviewImage(data.imageUrl); // For preview
           } else {
             console.error("Failed to load user data");
@@ -52,7 +61,12 @@ const AdminUserForm = ({ id }) => {
     e.preventDefault();
 
     if (!name || !email || (!id && !password)) {
-      alert("Name, Email এবং Password (create করার সময়) বাধ্যতামূলক।");
+      alert("Name, Email এবং Password (create এর সময়) বাধ্যতামূলক।");
+      return;
+    }
+
+    if (!id && !image) {
+      alert("Create এর সময় Image বাধ্যতামূলক।");
       return;
     }
 
@@ -61,9 +75,9 @@ const AdminUserForm = ({ id }) => {
     const formData = new FormData();
     formData.append("name", name);
     formData.append("email", email);
+    formData.append("adminRole", role);
     if (password) formData.append("password", password);
     if (image) formData.append("image", image);
-    formData.append("isActive", isActive.toString());
 
     try {
       const url = id
@@ -90,6 +104,7 @@ const AdminUserForm = ({ id }) => {
           setName("");
           setEmail("");
           setPassword("");
+          setRole("general");
           setImage(null);
           setPreviewImage(null);
         }
@@ -104,91 +119,125 @@ const AdminUserForm = ({ id }) => {
   };
 
   return (
-    <div className="w-full mt-4 p-4 bg-white shadow-lg rounded-lg">
-      <h1 className="text-xl font-medium text-center mb-6 text-gray-800 border-b pb-2">
-        {id ? "Update Admin User" : "Create Admin User"}
-      </h1>
+    <>
+      <div className="px-4">
+        <RoutePath />
+      </div>
+      <div className="w-full mt-4 p-4 bg-white shadow-lg rounded-lg">
+        <h2 className=" text-xl font-semibold mb-6 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+          {id ? "Update Admin User" : "Create Admin User"}
+        </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex gap-2">
-          <div className="w-[50%]">
-            <label className="block text-sm font-medium text-gray-700">
-              Name:
-            </label>
-            <Input
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="flex gap-2">
+            <div className="w-[50%]">
+              <div className="relative">
+                <input
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  required
+                  type="text"
+                  id="floating_name"
+                  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                />
+                <label
+                  htmlFor="floating_name"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                >
+                  Enter Admin Name <span className="text-red-500">*</span>
+                </label>
+              </div>
+            </div>
+
+            <div className="w-[50%]">
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                  id="floating_email"
+                  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                />
+                <label
+                  htmlFor="floating_email"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                >
+                  Enter Admin Email <span className="text-red-500">*</span>
+                </label>
+              </div>
+            </div>
           </div>
 
-          <div className="w-[50%]">
-            <label className="block text-sm font-medium text-gray-700">
-              Email:
-            </label>
-            <Input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-        </div>
+          <div className="flex gap-2">
+            <div className="w-[70%] relative">
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  {...(!id && { required: true })}
+                  id="floating_email"
+                  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                />
+                <label
+                  htmlFor="floating_email"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                >
+                  Enter Admin Password <span className="text-red-500">*</span>
+                </label>
+              </div>
 
-        <div className="flex gap-2">
-          <div className="w-[80%] relative">
-            <label className="block text-sm font-medium text-gray-700">
-              Password:
-            </label>
-            <Input
-              type={showPassword ? "text" : "password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder={id ? "Leave blank to keep old password" : ""}
-              required
-            />
-            <button
-              type="button"
-              className="absolute right-4 top-[38px] cursor-pointer -translate-y-1/2 text-gray-500"
-              onClick={() => setShowPassword((prev) => !prev)}
-            >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </button>
-          </div>
-
-          <div className="flex w-[30%] items-center space-x-2 mt-2">
-            <Checkbox
-              className="cursor-pointer h-5 w-5"
-              checked={isActive}
-              onCheckedChange={(checked) => setIsActive(checked)}
-            />
-
-            <label htmlFor="isActive" className="text-sm text-gray-700">
-              {isActive ? "Active Admin" : "Inactive Admin"}
-            </label>
-          </div>
-        </div>
-
-        <section className="flex items-center">
-          <div className="w-[60%]">
-            <Input type="file" onChange={handleImageChange} />
-          </div>
-          <div className="w-[40%] flex items-center justify-center">
-            {previewImage && (
-              <img
-                src={previewImage}
-                alt="Preview"
-                className="mt-3 h-24 rounded object-cover border"
+              <button
+                type="button"
+                className="absolute right-6 top-[25px] cursor-pointer -translate-y-1/2 text-gray-500"
+                onClick={() => setShowPassword((prev) => !prev)}
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
+            <div className="w-[30%] flex items-center mt-0">
+              <Checkbox
+              className="h-5 w-5 cursor-pointer"
+                checked={role === "root"}
+                onCheckedChange={(checked) => {
+                  setRole(checked ? "root" : "general");
+                }}
               />
-            )}
+              <span className="ml-2">
+                {role === "root" ? "Root Admin" : "General Admin"}
+              </span>
+            </div>
           </div>
-        </section>
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "Loading..." : id ? "Update Admin" : "Create Admin"}
-        </Button>
-      </form>
-    </div>
+          <section className="flex items-center">
+            <div className="w-[60%]">
+              <Input
+                type="file"
+                onChange={handleImageChange}
+                {...(!id && { required: true })} // Required only in Create mode
+              />
+            </div>
+            <div className="w-[40%] flex items-center justify-center">
+              {previewImage && (
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  className=" h-20 w-16 rounded-sm border border-red-500"
+                />
+              )}
+            </div>
+          </section>
+
+          <Button type="submit" disabled={loading}>
+            {loading ? "Loading..." : id ? "Update Admin" : "Create Admin"}
+          </Button>
+        </form>
+      </div>
+    </>
   );
 };
 

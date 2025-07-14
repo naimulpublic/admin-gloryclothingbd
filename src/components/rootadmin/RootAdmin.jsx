@@ -177,7 +177,8 @@ export default function RootAdmin({ rootAdmin }) {
             <TableHead>Image</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Admin</TableHead>
+          
             <TableHead>Created At</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -200,13 +201,8 @@ export default function RootAdmin({ rootAdmin }) {
               </TableCell>
               <TableCell>{admin.name}</TableCell>
               <TableCell>{admin.email}</TableCell>
-              <TableCell>
-                {admin.isActive ? (
-                  <span className="text-green-600 font-semibold">Active</span>
-                ) : (
-                  <span className="text-red-600 font-semibold">Inactive</span>
-                )}
-              </TableCell>
+              <TableCell>{admin.adminRole}</TableCell>
+              
               <TableCell>
                 {new Date(admin.createdAt).toLocaleDateString()}
               </TableCell>

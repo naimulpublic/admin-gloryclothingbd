@@ -12,11 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import RoutePath from "../dashboardlayout/clients/RoutePath";
+import { SquarePlus } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function Brand({ id }) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
-  const [isFeatured, setIsFeatured] = useState(false);
+  const [isFeatured, setIsFeatured] = useState(true);
   const [status, setStatus] = useState("active");
   const [brandIcon, setBrandIcon] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -57,6 +60,8 @@ export default function Brand({ id }) {
     formData.append("status", status);
     if (brandIcon) {
       formData.append("brandIcon", brandIcon);
+    } else if (id) {
+      formData.append("brandIcon", previewUrl);
     }
 
     try {
@@ -110,30 +115,58 @@ export default function Brand({ id }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 space-y-2">
-      <h2 className="rounded-md font-medium text-center text-xl p-2 border-b">
-        Create New Brand
-      </h2>
+    <form onSubmit={handleSubmit} className="px-6 space-y-2">
+      <RoutePath />
+      <h1 className="text-xl font-medium mb-4 mt-6 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+        {id ? "Edit" : "Create New"} Brand
+      </h1>
 
       <div className="flex gap-2">
         <div className="w-1/2">
-          <Label className="p-2">
-            Enter Brand Name <span className="text-red-500">*</span>
-          </Label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
+          <div className="relative">
+            <input
+              required
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              id="floating_name"
+              className="block px-2.5 pb-1.5 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+            />
+            <label
+              htmlFor="floating_name"
+              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+            >
+              Enter Brand Name <span className="text-red-500">*</span>
+            </label>
+          </div>
         </div>
 
         <div className="relative w-1/2">
-          <Label className="p-2">
-            Generate Slug <span className="text-red-500">*</span>
-          </Label>
-          <Input value={slug} onChange={(e) => setSlug(e.target.value)} />
+          <div className="relative">
+            <input
+              required
+              type="text"
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
+              id="floating_slug"
+              className="block px-2.5 pb-1.5 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+            />
+            <label
+              htmlFor="floating_slug"
+              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+            >
+              Generate Slug <span className="text-red-500">*</span>
+            </label>
+          </div>
+
           <button
             type="button"
             onClick={generateSlug}
-            className="absolute top-[30px] p-2 cursor-pointer hover:text-blue-500 right-2"
+            className="p-2.5 bg-orange-500 rounded-r-[9px] absolute top-0 right-0  hover:bg-orange-600 cursor-pointer"
           >
-            <RefreshCcw size={20} />
+            <RefreshCcw className="text-white" size={20} />
           </button>
         </div>
       </div>
@@ -172,22 +205,38 @@ export default function Brand({ id }) {
           <Label className="p-2">
             Brand Icon <span className="text-red-500">*</span>
           </Label>
-          <Input type="file" accept="image/*" onChange={handleImageChange} />
+          <Input {...(!id && { required: true })} type="file" accept="image/*" onChange={handleImageChange} />
         </div>
         {previewUrl && (
           <div className="flex items-center mt-6">
             <img
               src={previewUrl}
               alt="Preview"
-              className="h-16 w-16 rounded-md object-cover border"
+              className="h-14 w-14 rounded-md object-cover border"
             />
           </div>
         )}
       </div>
 
-      <Button type="submit" className="bg-black text-white cursor-pointer" disabled={loading}>
-        {loading ? "Processing..." : id ? "UpdateBrand" : "CreateBrand"}
-      </Button>
+      <button
+        type="submit"
+        className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-lg font-medium cursor-pointer flex items-center gap-2"
+        disabled={loading}
+      >
+        {loading ? (
+          <>
+            <Loader strokeWidth={3} className="h-6 w-6  animate-spin" />
+            PROCESSING...
+          </>
+        ) : id ? (
+          "UPDATE PRODUCT"
+        ) : (
+          <>
+            <SquarePlus className="h-5 w-5" />
+            PUBLISH CATEGORY
+          </>
+        )}{" "}
+      </button>
     </form>
   );
 }
