@@ -22,8 +22,10 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
 export default function SliderView({ Slider }) {
+  const router = useRouter();
   const [sliderList, setSliderList] = useState(Slider);
   const [selectedSliders, setSelectedSliders] = useState([]);
   const [search, setSearch] = useState("");
@@ -35,8 +37,7 @@ export default function SliderView({ Slider }) {
         .toLowerCase()
         .includes(search.toLowerCase());
       const matchesStatus =
-        statusFilter === "all" ||
-        sliderItem.status === statusFilter;
+        statusFilter === "all" || sliderItem.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
   }, [sliderList, search, statusFilter]);
@@ -60,14 +61,22 @@ export default function SliderView({ Slider }) {
   const handleBulkDelete = async () => {
     if (selectedSliders.length === 0) return;
 
+    const confirmDelete = confirm(
+      `Are you sure you want to delete ${selectedSliders.length} sliders?`
+    );
+    if (!confirmDelete) return;
+
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/sliders`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ids: selectedSliders }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/sliders`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ids: selectedSliders }),
+        }
+      );
 
       const result = await res.json();
       if (res.ok) {
@@ -85,22 +94,34 @@ export default function SliderView({ Slider }) {
   };
 
   const handleSingleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this slider?")) return;
+      
+
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/slider/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/slider/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       const result = await res.json();
       if (res.ok) {
         console.log(result.message);
         setSliderList((prev) => prev.filter((slider) => slider._id !== id));
-        setSelectedSliders((prev) => prev.filter((sliderId) => sliderId !== id));
+        setSelectedSliders((prev) =>
+          prev.filter((sliderId) => sliderId !== id)
+        );
       } else {
         console.error("Failed to delete slider:", result.message);
       }
     } catch (error) {
       console.error("Single delete error:", error);
     }
+  };
+
+  const handleEditSlider = (id) => {
+    router.push(`/dashboard/create/sliders/${id}`);
   };
 
   return (
@@ -118,10 +139,7 @@ export default function SliderView({ Slider }) {
           onChange={(e) => setSearch(e.target.value)}
         />
 
-        <Select
-          value={statusFilter}
-          onValueChange={setStatusFilter}
-        >
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="All Status" />
           </SelectTrigger>
@@ -142,7 +160,9 @@ export default function SliderView({ Slider }) {
       </div>
 
       <Table>
-        <TableCaption className="text-green-500">A list of all sliders</TableCaption>
+        <TableCaption className="text-green-500">
+          A list of all sliders
+        </TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>
@@ -179,13 +199,13 @@ export default function SliderView({ Slider }) {
                     className="w-16 h-16 object-cover rounded-md"
                   />
                 </TableCell>
-                <TableCell>{slider.isActive? "Active" : "Inactive"}</TableCell>
+                <TableCell>{slider.isActive ? "Active" : "Inactive"}</TableCell>
                 <TableCell>
                   <div className="flex justify-end gap-2">
                     <Button
-                      onClick={() => console.log("Edit slider", slider._id)}
+                      onClick={() => handleEditSlider(slider._id)}
                       variant="outline"
-                      className='cursor-pointer'
+                      className="cursor-pointer"
                     >
                       <Edit className="" />
                       Edit
@@ -193,7 +213,7 @@ export default function SliderView({ Slider }) {
                     <Button
                       onClick={() => handleSingleDelete(slider._id)}
                       variant="outline"
-                      className={'cursor-pointer'}
+                      className={"cursor-pointer"}
                     >
                       <Trash className="" />
                       Delete
@@ -214,7 +234,10 @@ export default function SliderView({ Slider }) {
         <TableFooter>
           <TableRow>
             <TableCell colSpan={4}>
-              Total Sliders: <span className="font-bold text-red-500">{filteredSliders.length}</span>
+              Total Sliders:{" "}
+              <span className="font-bold text-red-500">
+                {filteredSliders.length}
+              </span>
             </TableCell>
           </TableRow>
         </TableFooter>

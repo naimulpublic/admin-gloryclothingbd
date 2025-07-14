@@ -4,6 +4,10 @@ import { RefreshCw, SettingsIcon } from "lucide-react";
 import { Input } from "../ui/input";
 import { Send } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
+import RoutePath from "../dashboardlayout/clients/RoutePath";
+import { RefreshCcw } from "lucide-react";
+import { SquarePlus } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function Subcategory({ id }) {
   const [value, setValue] = useState("");
@@ -78,7 +82,7 @@ export default function Subcategory({ id }) {
 
       const data = await res.json();
       if (res.ok) {
-        alert("✅ Subcategory saved successfully!");
+        alert(`✅ Subcategory ${id ? "Updated" : "Created"} Successfully!`);
         setValue("");
         setLabel("");
         setSlug("");
@@ -86,136 +90,164 @@ export default function Subcategory({ id }) {
         setBannerPreview(null);
         setIsActive(true);
       } else {
-        setMessage(`❌ Error: ${data.error}`);
+        setMessage(`Error: ${data.error}`);
       }
     } catch (err) {
       console.error(err);
-      setMessage("❌ Server error occurred.");
+      setMessage("Server error occurred.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-6 md:p-8 w-full bg-white shadow-lg rounded-xl mt-4 md:mt-6">
-      <h1 className="text-xl font-semibold mb-6 text-center text-gray-800">
-        {id ? "Edit" : "Add"} Subcategory
-      </h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          <div className="">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Value
-            </label>
-            <Input
-              type="text"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              required
-              placeholder="Enter Value"
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Label
-            </label>
-            <Input
-              type="text"
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              required
-               placeholder="Enter Label"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Slug
-            </label>
-            <div className="relative">
-              <Input
-                type="text"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                placeholder="Generated slug from value"
-              />
-              <button
-                type="button"
-                onClick={handleSlugGenerate}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-600 transition-colors cursor-pointer"
-              >
-                <RefreshCw size={18} />
-              </button>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Status
-            </label>
-            <div className="flex items-center h-[42px]">
-  <label className="inline-flex items-center cursor-pointer space-x-2">
-    <Checkbox
-      checked={isActive}
-      onCheckedChange={handleStatusChange}
-      className="h-4 w-4" 
-    />
-    <span className="text-sm text-gray-700">
-      {isActive ? "Active" : "Inactive"}
-    </span>
-  </label>
-</div>
-
-          </div>
-        </div>
-
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Banner Image
-            </label>
-            <Input
-              type="file"
-              accept="image/*"
-              onChange={handleBannerChange}
-             
-            />
-          </div>
-          {bannerPreview && (
-            <div className="mt-2">
-              <p className="text-sm text-gray-600 mb-2">Image Preview:</p>
-              <img
-                src={bannerPreview}
-                alt="Banner Preview"
-                className="h-32 w-32 rounded-lg border shadow-sm"
-              />
-            </div>
-          )}
-        </div>
-
-        <div className="pt-2">
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full md:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center disabled:opacity-70 disabled:cursor-not-allowed"
-          >
-            {loading ? (
-              <div className="flex items-center">
-                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                <span className="ml-2">Publishing...</span>
+    <>
+      <div className="px-8">
+        <RoutePath />
+      </div>
+      <div className="px-8 py-4 w-full bg-white shadow-lg rounded-xl">
+        <h1 className="text-xl font-semibold mb-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+          {id ? "Edit" : "Create New"} Subcategory
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="space-x-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  required
+                  id="floating_name"
+                  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                />
+                <label
+                  htmlFor="floating_name"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                >
+                  Enter Subcategory Name <span className="text-red-500">*</span>
+                </label>
               </div>
-            ) : (
-              <>
-                <Send size={18} className="mr-2" />
-                Publish Subcategory
-              </>
+            </div>
+            <div className="space-y-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={label}
+                  onChange={(e) => setLabel(e.target.value)}
+                  required
+                  id="floating_category"
+                  className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                />
+                <label
+                  htmlFor="floating_category"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                >
+                  Enter Category Name <span className="text-red-500">*</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+            <div className="space-y-2">
+              <div className="relative">
+                <div className="relative">
+                  <input
+                    id="floating_slug"
+                    type="text"
+                    value={slug}
+                    onChange={(e) => setSlug(e.target.value)}
+                    required
+                    className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                    placeholder=" "
+                  />
+                  <label
+                    htmlFor="floating_slug"
+                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+                  >
+                    Genarate Slug <span className="text-red-500">*</span>{" "}
+                  </label>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleSlugGenerate}
+                  className="p-2.5 bg-orange-500 rounded-r-[9px] absolute top-[1px] right-[1px] hover:bg-orange-600 cursor-pointer"
+                >
+                  <RefreshCcw className="text-white" size={20} />
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center mt-1">
+                <label className="inline-flex items-center cursor-pointer space-x-2">
+                  <Checkbox
+                    checked={isActive}
+                    onCheckedChange={handleStatusChange}
+                    className="h-5 w-5 cursor-pointer"
+                  />
+                  <span className="text-sm font-semibold text-gray-700">
+                    {isActive ? "Active Subcategory" : "Inactive Subcategory"}
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <div className=" w-1/2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Banner Image
+              </label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={handleBannerChange}
+              />
+            </div>
+            {bannerPreview && (
+              <div className=" w-1/2">
+                <p className="text-sm text-gray-600 border-b pb-1 font-medium">
+                  Image Preview..
+                </p>
+                <img
+                  src={bannerPreview}
+                  alt="Banner Preview"
+                  className="h-16 w-32 rounded-xs border-sm shadow-sm m-1"
+                />
+              </div>
             )}
-          </button>
-          {message && <p className="mt-3 text-sm text-red-600">{message}</p>}
-        </div>
-      </form>
-    </div>
+          </div>
+
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-lg font-semibold cursor-pointer flex items-center gap-2"
+            >
+              {loading ? (
+                <>
+                  <Loader strokeWidth={3} className="h-6 w-6  animate-spin" />
+                  PROCESSING...
+                </>
+              ) : id ? (
+                "UPDATE PRODUCT"
+              ) : (
+                <>
+                  <SquarePlus className="h-5 w-5" />
+                  PUBLISH CATEGORY
+                </>
+              )}
+            </button>
+
+            {message && <p className="mt-3 text-sm text-red-600">{message}</p>}
+          </div>
+        </form>
+      </div>
+    </>
   );
 }

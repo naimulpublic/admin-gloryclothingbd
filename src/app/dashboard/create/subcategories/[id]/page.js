@@ -1,10 +1,11 @@
 import Subcategory from "@/components/createsubcategories/Subcategori";
 import React from "react";
 
-export default function page({ params }) {
+export default async function page({ params }) {
+  const { id } = await params;
   return (
     <div>
-      <Subcategory id={params.id} />
+      <Subcategory id={id} />
     </div>
   );
 }

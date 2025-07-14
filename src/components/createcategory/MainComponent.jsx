@@ -289,7 +289,7 @@ export default function CategoryForm({ subcategories, id }) {
 
           {/* Subcategories */}
           <div className="md:col-span-2">
-            <label className="block text-sm font-semibold mb-2 p-2 shadow-sm">
+            <label className="block text-sm font-semibold mb-2 p-2 border-b">
               Select Subcategories <span className="text-red-500">*</span>
             </label>
             <Select

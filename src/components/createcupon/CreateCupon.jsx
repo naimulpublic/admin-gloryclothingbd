@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
+import RoutePath from "../dashboardlayout/clients/RoutePath";
+import { SquarePlus } from "lucide-react";
+import { Loader } from "lucide-react";
 
 const CreateCoupon = ({ id }) => {
   // <-- এখানে id props নিচ্ছি
@@ -98,42 +101,75 @@ const CreateCoupon = ({ id }) => {
   };
 
   return (
-    <div className="w-full p-4 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-semibold text-center mb-6">
-        {id ? "Update Coupon" : "Create Coupon"}
-      </h2>
+    <div className="w-full px-4 pb-48 bg-white shadow-sm rounded-sm">
+      <RoutePath />
+      <h1 className="text-xl font-semibold mb-4 mt-6 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+        {id ? "Edit" : "Create New"} Cupon
+      </h1>
 
       <form onSubmit={handleSubmit}>
         {/* Row: Coupon Name, Code, Discount */}
-        <div className="mb-2 flex flex-col md:flex-row gap-2">
-          <Input
-            name="name"
-            placeholder="Coupon Name"
-            value={form.name}
-            onChange={handleChange}
-            required
-          />
-          <Input
+        <div className="mb-2 flex w-full gap-2">
+          <div className="relative w-[33.33%]">
+            <input
+              type="text"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              id="floating_name"
+              className="block px-2.5 pb-1.5 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+            />
+            <label
+              htmlFor="floating_name"
+              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+            >
+              Enter Cupon Name <span className="text-red-600">*</span>
+            </label>
+          </div>
+          <div className="relative w-[33.33%]">
+            <input
             name="cuponCode"
-            placeholder="Code"
-            value={form.cuponCode}
-            onChange={handleChange}
-            required
-          />
-          <Input
-            type="number"
-            name="discountPercentage"
-            placeholder="Discount %"
-            value={form.discountPercentage}
-            onChange={handleChange}
-            required
-          />
+            type="text"
+              value={form.cuponCode}
+              onChange={handleChange}
+              required
+              id="floating_code"
+              className="block px-2.5 pb-1.5 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+            />
+            <label
+              htmlFor="floating_code"
+              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+            >
+              Enter Code <span className="text-red-600">*</span>
+            </label>
+          </div>
+          <div className="relative w-[33.33%]">
+            <input
+              name="discountPercentage"
+              type="number"
+              value={form.discountPercentage}
+              onChange={handleChange}
+              required
+              id="floating_per"
+              className="block px-2.5 pb-1.5 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+            />
+            <label
+              htmlFor="floating_per"
+              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+            >
+              Enter Persentage<span className="text-red-600">*</span>
+            </label>
+          </div>
         </div>
 
         {/* Row: Expiry Date + Active checkbox */}
         <div className="mb-4 flex flex-col md:flex-row items-center gap-4">
           <div className="flex-4 w-full ">
-            <label className="block mb-1 text-sm text-gray-600">
+            <label className="block mb-1 text-sm text-gray-600 p-1.5 border-b">
               Expiry Date
             </label>
             <Input
@@ -160,13 +196,21 @@ const CreateCoupon = ({ id }) => {
         </div>
 
         {/* Submit Button */}
-        <Button
-          type="submit"
-          
-          disabled={loading}
-        >
-          {loading ? "Processing..." : id ? "Update Coupon" : "Create Coupon"}
-        </Button>
+        <button className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-md font-medium cursor-pointer flex items-center gap-2" type="submit" disabled={loading}>
+          {loading ? (
+            <>
+              <Loader strokeWidth={2} className="h-6 w-6  animate-spin" />
+              PROCESSING...
+            </>
+          ) : id ? (
+            "Edit Cupon"
+          ) : (
+            <>
+              <SquarePlus className="h-5 w-5" />
+              PUBLISH Cupon
+            </>
+          )}
+        </button>
       </form>
     </div>
   );
