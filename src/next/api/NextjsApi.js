@@ -53,3 +53,11 @@ export async function GetProductsApi() {
   const response = await request.json();
   return response;
 }
+
+export async function GetSubChildApi() {
+  const request = await fetch(
+    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/subchild`
+  );
+  const response = await request.json();
+  return response;
+}

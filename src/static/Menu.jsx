@@ -5,6 +5,8 @@ import { ShieldEllipsis } from "lucide-react";
 import { SlidersVertical } from "lucide-react";
 import { CreativeCommonsIcon } from "lucide-react";
 import { Radio } from "lucide-react";
+import { SquareStack } from "lucide-react";
+import { SquarePlus } from "lucide-react";
 import { Projector } from "lucide-react";
 import { Tags } from "lucide-react";
 import { Layers2 } from "lucide-react";
@@ -43,38 +45,43 @@ export const Menu = [
       { name: "Home Page", icon: <Home size={20} />, url: "/dashboard" },
       {
         name: "Product",
-        icon: <Plus size={20} />,
+        icon: <SquarePlus size={20} />,
         url: "/dashboard/create/product",
       },
       {
         name: "Category",
-        icon: <Plus size={20} />,
+        icon: <SquarePlus size={20} />,
         url: "/dashboard/create/categories",
       },
       {
         name: "Subcategory",
-        icon: <Plus size={20} />,
+        icon: <SquarePlus size={20} />,
         url: "/dashboard/create/subcategories",
+      },
+      {
+        name: "SubChild",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/create/subcategorieschild",
       },
 
       {
         name: "Slider",
-        icon: <Plus size={20} />,
+        icon: <SquarePlus size={20} />,
         url: "/dashboard/create/sliders",
       },
       {
         name: "Cupon",
-        icon: <Plus size={20} />,
+        icon: <SquarePlus size={20} />,
         url: "/dashboard/admin/create/cupon",
       },
       {
         name: "Admin",
-        icon: <Plus size={20} />,
+        icon: <SquarePlus size={20} />,
         url: "/dashboard/admin/create/admin",
       },
       {
         name: "Brand",
-        icon: <Plus size={20} />,
+        icon: <SquarePlus size={20} />,
         url: "/dashboard/create/brand",
       },
     ],
@@ -107,6 +114,12 @@ export const Menu = [
         name: "SubCategories",
         icon: <Layers2 size={20} />,
         url: "/dashboard/subcategories",
+      },
+     
+      {
+        name: "SubChild",
+        icon: <SquareStack size={20} />,
+        url: "/dashboard/subchild",
       },
       {
         name: "Sliders",

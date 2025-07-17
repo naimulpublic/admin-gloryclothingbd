@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
-
 import { Checkbox } from "../ui/checkbox";
 import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { RefreshCcw } from "lucide-react";
@@ -18,13 +17,13 @@ export default function Subcategory({ id }) {
 
   useEffect(() => {
     if (id) {
-      fetch(`${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/subcategory/${id}`)
+      fetch(`${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/subchild/${id}`)
         .then((res) => res.json())
         .then((data) => {
           if (data) {
-            setValue(data.value);
-            setSlug(data.slug);
+            setValue(data.name);
 
+            setSlug(data.slug);
             if (data.bannerUrl) setBannerPreview(data.bannerUrl);
           }
         })
@@ -51,21 +50,21 @@ export default function Subcategory({ id }) {
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("value", value);
+    formData.append("name", value);
     formData.append("slug", slug);
     if (banner) formData.append("bannerUrl", banner);
 
     try {
       const res = id
         ? await fetch(
-            `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/update/subcategory/${id}`,
+            `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/update/subchild/${id}`,
             {
               method: "PUT",
               body: formData,
             }
           )
         : await fetch(
-            `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/create/subcategories`,
+            `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/create/subchild`,
             {
               method: "POST",
               body: formData,
@@ -92,12 +91,12 @@ export default function Subcategory({ id }) {
 
   return (
     <>
-      <div className="px-8 ">
+      <div className="px-8">
         <RoutePath />
       </div>
-      <div className="px-8 pb-40 py-4 w-full bg-white shadow-lg rounded-xl">
+      <div className="px-8 py-4 w-full bg-white shadow-lg rounded-xl">
         <h1 className="text-xl font-semibold mb-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
-          {id ? "Edit" : "Create New"} Subcategory
+          {id ? "Edit" : "Create New"} Subcategory Child
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -116,45 +115,43 @@ export default function Subcategory({ id }) {
                   htmlFor="floating_name"
                   className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                 >
-                  Enter Subcategory Name <span className="text-red-500">*</span>
+                  Enter Sub Child Name <span className="text-red-500">*</span>
                 </label>
               </div>
             </div>
             <div className="relative">
-                <div className="relative">
-                  <input
-                    id="floating_slug"
-                    type="text"
-                    value={slug}
-                    onChange={(e) => setSlug(e.target.value)}
-                    required
-                    className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" "
-                  />
-                  <label
-                    htmlFor="floating_slug"
-                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                  >
-                    Genarate Slug <span className="text-red-500">*</span>{" "}
-                  </label>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleSlugGenerate}
-                  className="p-2.5 bg-orange-500 rounded-r-[9px] absolute top-[1px] right-[1px] hover:bg-orange-600 cursor-pointer"
+              <div className="relative">
+                <input
+                  id="floating_slug"
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  required
+                  className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                />
+                <label
+                  htmlFor="floating_slug"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                 >
-                  <RefreshCcw className="text-white" size={20} />
-                </button>
+                  Genarate Slug <span className="text-red-500">*</span>{" "}
+                </label>
               </div>
-          </div>
 
-          
+              <button
+                type="button"
+                onClick={handleSlugGenerate}
+                className="p-2.5 bg-orange-500 rounded-r-[9px] absolute top-[1px] right-[1px] hover:bg-orange-600 cursor-pointer"
+              >
+                <RefreshCcw className="text-white" size={20} />
+              </button>
+            </div>
+          </div>
 
           <div className="flex gap-2">
             <div className=" w-1/2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Banner Image
+              <label className="px-2 block text-sm font-medium text-gray-700 mb-1">
+                Sub Child Banner
               </label>
               <Input
                 type="file"
@@ -177,10 +174,13 @@ export default function Subcategory({ id }) {
           </div>
 
           <div className="pt-2">
+            {message && (
+              <p className="mt-3 p-2 text-sm text-red-600">{message}</p>
+            )}
             <button
               type="submit"
               disabled={loading}
-              className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-md font-semibold cursor-pointer flex items-center gap-2"
+              className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-md font-semibold cursor-pointer flex items-center gap-2 mb-10"
             >
               {loading ? (
                 <>
@@ -196,8 +196,6 @@ export default function Subcategory({ id }) {
                 </>
               )}
             </button>
-
-            {message && <p className="mt-3 text-sm text-red-600">{message}</p>}
           </div>
         </form>
       </div>

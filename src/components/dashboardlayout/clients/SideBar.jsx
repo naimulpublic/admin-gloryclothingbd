@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { Menu } from "../../menu/Menu";
+import { Menu } from "../../../static/Menu";
 import Link from "next/link";
 import { ArrowLeftToLine, ChevronDown, ChevronUp } from "lucide-react";
 
@@ -61,7 +61,7 @@ export default function SideBar() {
                     href={sub.url}
                     className="block px-3 py-1.5 text-sm text-gray-700 rounded transition"
                   >
-                    <div className="flex items-center gap-2 font-medium  hover:underline hover:text-orange-600">
+                    <div className="flex items-center gap-2 font-medium   hover:text-orange-500">
                       {sub.icon}
                       {sub.name}
                     </div>
