@@ -2,19 +2,21 @@
 import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
 
-import { Checkbox } from "../ui/checkbox";
 import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { RefreshCcw } from "lucide-react";
 import { SquarePlus } from "lucide-react";
 import { Loader } from "lucide-react";
+import { SubcategoryMultiSelect } from "../custom/SubcategoryMultiselect";
 
-export default function Subcategory({ id }) {
+export default function Subcategory({ id, subChild }) {
   const [value, setValue] = useState("");
   const [slug, setSlug] = useState("");
   const [banner, setBanner] = useState(null);
   const [bannerPreview, setBannerPreview] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectsubchild, setSelectsubchild] = useState([]);
+  const options = subChild || [];
 
   useEffect(() => {
     if (id) {
@@ -24,6 +26,7 @@ export default function Subcategory({ id }) {
           if (data) {
             setValue(data.value);
             setSlug(data.slug);
+            setSelectsubchild(data.subChild || []);
 
             if (data.bannerUrl) setBannerPreview(data.bannerUrl);
           }
@@ -51,8 +54,16 @@ export default function Subcategory({ id }) {
     setLoading(true);
 
     const formData = new FormData();
+
+    const filteredSubChild = selectsubchild.map((item) => ({
+      name: item.name,
+      slug: item.slug,
+    }));
+
+    formData.append("subChild", JSON.stringify(filteredSubChild));
     formData.append("value", value);
     formData.append("slug", slug);
+
     if (banner) formData.append("bannerUrl", banner);
 
     try {
@@ -77,6 +88,7 @@ export default function Subcategory({ id }) {
         alert(`✅ Subcategory ${id ? "Updated" : "Created"} Successfully!`);
         setValue("");
         setSlug("");
+        setSelectsubchild([]);
         setBanner(null);
         setBannerPreview(null);
       } else {
@@ -121,35 +133,42 @@ export default function Subcategory({ id }) {
               </div>
             </div>
             <div className="relative">
-                <div className="relative">
-                  <input
-                    id="floating_slug"
-                    type="text"
-                    value={slug}
-                    onChange={(e) => setSlug(e.target.value)}
-                    required
-                    className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    placeholder=" "
-                  />
-                  <label
-                    htmlFor="floating_slug"
-                    className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                  >
-                    Genarate Slug <span className="text-red-500">*</span>{" "}
-                  </label>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleSlugGenerate}
-                  className="p-2.5 bg-orange-500 rounded-r-[9px] absolute top-[1px] right-[1px] hover:bg-orange-600 cursor-pointer"
+              <div className="relative">
+                <input
+                  id="floating_slug"
+                  type="text"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  required
+                  className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                />
+                <label
+                  htmlFor="floating_slug"
+                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                 >
-                  <RefreshCcw className="text-white" size={20} />
-                </button>
+                  Genarate Slug <span className="text-red-500">*</span>{" "}
+                </label>
               </div>
+
+              <button
+                type="button"
+                onClick={handleSlugGenerate}
+                className="p-2.5 bg-orange-500 rounded-r-[9px] absolute top-[1px] right-[1px] hover:bg-orange-600 cursor-pointer"
+              >
+                <RefreshCcw className="text-white" size={20} />
+              </button>
+            </div>
           </div>
 
-          
+          <div>
+            <SubcategoryMultiSelect
+              options={options}
+              selected={selectsubchild}
+              onChange={setSelectsubchild}
+              placeholder="Select subchild"
+            />
+          </div>
 
           <div className="flex gap-2">
             <div className=" w-1/2">

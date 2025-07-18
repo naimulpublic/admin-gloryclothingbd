@@ -20,7 +20,7 @@ const SubcategoryTable = ({ subcategori }) => {
   const [loading, setLoading] = useState(false);
   const [openMenu, setOpenMenu] = useState(null);
   const router = useRouter();
-  
+
   // Reference to the dropdown menu
   const menuRef = useRef(null);
 
@@ -97,8 +97,8 @@ const SubcategoryTable = ({ subcategori }) => {
           value={selectedLabel}
           onChange={(e) => setSelectedLabel(e.target.value)}
         >
-          {labels.map((label) => (
-            <option key={label} value={label}>
+          {labels.map((label, index) => (
+            <option key={index} value={label}>
               {label}
             </option>
           ))}
@@ -106,33 +106,30 @@ const SubcategoryTable = ({ subcategori }) => {
       </div>
 
       {/* Shadcn Table */}
-      <div className="rounded-md border">
+      <div className="rounded-md border p-4">
         <Table>
-          <TableCaption className={"text-green-600"}>A list of your subcategories.</TableCaption>
+          <TableCaption className={"text-green-600"}>
+            A list of your subcategories.
+          </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Label</TableHead>
-              <TableHead>Subcategory</TableHead>
+              <TableHead>Subcategory Name</TableHead>
+
               <TableHead>Slug</TableHead>
-              <TableHead>Status</TableHead>
+
               <TableHead>Banner</TableHead>
-              <TableHead>Created At</TableHead>
+              <TableHead>subchild</TableHead>
+              <TableHead>Date</TableHead>
+              <TableHead>updated</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredSubcategories.map((item) => (
               <TableRow key={item._id} className="relative">
-                <TableCell>{item.label}</TableCell>
                 <TableCell>{item.value}</TableCell>
                 <TableCell>{item.slug}</TableCell>
-                <TableCell>
-                  {item.isActive ? (
-                    <span className="text-green-600 font-semibold">Active</span>
-                  ) : (
-                    <span className="text-red-500 font-semibold">Inactive</span>
-                  )}
-                </TableCell>
+
                 <TableCell>
                   <img
                     src={item.bannerUrl}
@@ -141,7 +138,35 @@ const SubcategoryTable = ({ subcategori }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  {new Date(item.createdAt).toLocaleDateString()}
+                  {Array.isArray(item.subChild) && item.subChild.length > 0 ? (
+                    <ul>
+                      {item.subChild.map((child, index) => (
+                        <li key={index}>{child.name}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    "No Subchild"
+                  )}
+                </TableCell>
+                <TableCell>
+                  {new Date(item.createdAt)
+                    .toLocaleDateString("en-US", {
+                      year: "2-digit",
+                      month: "numeric",
+                      day: "numeric",
+                    })
+                    .replace(/\//g, "-")}
+                </TableCell>
+                <TableCell>
+                  {item.updatedAt
+                    ? new Date(item.updatedAt)
+                        .toLocaleDateString("en-US", {
+                          year: "2-digit",
+                          month: "numeric",
+                          day: "numeric",
+                        })
+                        .replace(/\//g, "-")
+                    : "Not updated"}
                 </TableCell>
                 <TableCell className="flex gap-2 items-center">
                   {/* 3-dot (More Options) Button */}

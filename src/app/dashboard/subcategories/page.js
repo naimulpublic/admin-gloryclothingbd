@@ -4,9 +4,10 @@ import React from "react";
 
 export default async function page() {
   const subcategori = await GetSubCategoriesApi();
+  
   return (
     <div>
-      <SubCategories  subcategori={subcategori}/>
+      <SubCategories subcategori={subcategori} />
     </div>
   );
 }
