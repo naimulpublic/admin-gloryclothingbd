@@ -2,7 +2,7 @@
 import { SubcategoryMultiSelect } from "@/components/custom/SubcategoryMultiselect";
 import React, { useState } from "react";
 
-export default function page() {
+export default function Page() {
   const [selectsubchild, setSelectsubchild] = useState([]);
 
   const options = [
