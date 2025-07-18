@@ -11,6 +11,7 @@ import { SquarePlus } from "lucide-react";
 import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { Checkbox } from "../ui/checkbox";
 import { Loader } from "lucide-react";
+import { SubcategoryMultiSelect } from "../custom/SubcategoryMultiselect";
 
 // react-select ডাইনামিকভাবে লোড করা
 const Select = dynamic(() => import("react-select"), { ssr: false });
@@ -27,8 +28,7 @@ export default function CategoryForm({ subcategories, id }) {
   const [imagePreview, setImagePreview] = useState(null);
   const [categoryBanner, setCategoryBanner] = useState(null);
   const [categoryBannerPreview, setCategoryBannerPreview] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
-  
+  const [isLoading, setIsLoading] = useState(false);
 
   // Load existing category data if editing an existing category
   useEffect(() => {
@@ -48,7 +48,8 @@ export default function CategoryForm({ subcategories, id }) {
           setMetaTitle(data.metaTitle || "Meta Title");
           setMetaDescription(data.metaDescription || "Meta Description");
           setPriority(data.priority || 0);
-          setStatus(data.status === "active" ? "active" : "inactive");
+          setStatus(data.status === "true");
+          setSelectedSubcategories(data.subcategories || []);
 
           if (data.image) {
             setImagePreview(data.image); // URL preview
@@ -118,14 +119,9 @@ export default function CategoryForm({ subcategories, id }) {
         "subcategories",
         JSON.stringify(
           selectedSubcategories.map((sub) => ({
-            _id: sub._id,
-            value: sub.value,
-            label: sub.label,
+            name: sub.value,
             slug: sub.slug,
-            isActive: sub.isActive,
-            bannerUrl: sub.bannerUrl,
-            createdAt: sub.createdAt,
-            imagePublicId: sub.imagePublicId,
+            subChild: sub.subChild || [],
           }))
         )
       );
@@ -150,10 +146,17 @@ export default function CategoryForm({ subcategories, id }) {
     } catch (error) {
       console.error("Form submit error:", error);
       alert(error.message || "Something went wrong");
-    }finally{
+    } finally {
       setIsLoading(false);
     }
   };
+
+  const Option = subcategories.map((item) => ({
+    _id: item._id,
+    value: item.value,
+    slug: item.slug,
+    subChild: item.subChild || [],
+  }));
 
   return (
     <>
@@ -261,6 +264,7 @@ export default function CategoryForm({ subcategories, id }) {
           <div>
             <div className="relative">
               <input
+                required
                 type="number"
                 value={priority}
                 onChange={(e) => setPriority(Number(e.target.value))}
@@ -292,14 +296,14 @@ export default function CategoryForm({ subcategories, id }) {
             <label className="block text-sm font-semibold mb-2 p-2 border-b">
               Select Subcategories <span className="text-red-500">*</span>
             </label>
-            <Select
+            <SubcategoryMultiSelect
+              required
               isMulti
-              options={subcategories}
-              value={selectedSubcategories}
-              onChange={handleSubcategoryChange}
+              options={Option}
+              selected={selectedSubcategories}
+              onChange={(selected) => setSelectedSubcategories(selected || [])}
               placeholder="Select Subcategories"
               className="w-full"
-              getOptionLabel={(e) => e.label}
             />
           </div>
 
@@ -309,7 +313,7 @@ export default function CategoryForm({ subcategories, id }) {
               Select Category Image <span className="text-red-500">*</span>
             </label>
             <Input
-              
+              {...(!id && { required: true })}
               type="file"
               accept="image/*"
               onChange={handleImageDrop}
@@ -326,7 +330,7 @@ export default function CategoryForm({ subcategories, id }) {
           {/* Banner Upload */}
           <div>
             <label className="block text-sm font-medium mb-1 p-2 border-b">
-              Select Category Banner <span className="text-red-500">*</span>
+              Select Category Banner
             </label>
             <Input type="file" onChange={handleBannerDrop} />
             {categoryBannerPreview && (
@@ -340,7 +344,10 @@ export default function CategoryForm({ subcategories, id }) {
         </div>
 
         {/* Submit Button */}
-        <button type="submit" className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-lg font-semibold cursor-pointer flex items-center gap-2">
+        <button
+          type="submit"
+          className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-lg font-semibold cursor-pointer flex items-center gap-2"
+        >
           {isLoading ? (
             <>
               <Loader strokeWidth={3} className="h-6 w-6  animate-spin" />
