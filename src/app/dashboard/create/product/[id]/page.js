@@ -4,6 +4,7 @@ import {
   GetBrandsApi,
   GetCategoriesApi,
   GetSubCategoriesApi,
+  GetSubChildApi,
 } from "@/next/api/NextjsApi";
 
 export default async function page({ params }) {
@@ -12,6 +13,7 @@ export default async function page({ params }) {
   const brandData = await GetBrandsApi();
   const categoriesData = await GetCategoriesApi();
   const subcategori = await GetSubCategoriesApi();
+  const subChild = await GetSubChildApi();
 
   return (
     <>
@@ -20,6 +22,7 @@ export default async function page({ params }) {
         brandData={brandData}
         categoriesData={categoriesData}
         subcategori={subcategori}
+        subChild={subChild}
       />
     </>
   );

@@ -25,12 +25,14 @@ import { Loader } from "lucide-react";
 import { productSizes } from "@/static/ProductSize";
 import { UploadCloud } from "lucide-react";
 import { MultiSelect } from "../custom/MultiSelector";
+import { SubcategoryMultiSelect } from "../custom/SubcategoryMultiselect";
 
 export default function ProductForm({
   id,
   brandData = [],
   categoriesData = [],
   subcategori = [],
+  subChild,
 }) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
@@ -49,6 +51,7 @@ export default function ProductForm({
   const [highLight, setHighLight] = useState([{ key: "", value: "" }]);
   const [boxContent, setBoxContent] = useState([{ key: "", value: "" }]);
   const [tags, setTags] = useState([]);
+  const [selectsubchild, setSelectsubchild] = useState([]);
 
   const [colorVariants, setColorVariants] = useState([
     {
@@ -58,6 +61,7 @@ export default function ProductForm({
       images: [],
     },
   ]);
+  const optionssubchild = subChild || [];
 
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -87,7 +91,16 @@ export default function ProductForm({
             setSubcategory(
               Array.isArray(data.subcategory)
                 ? data.subcategory.map((item) => ({
-                    label: item.label || "",
+                    value: item.value || "",
+                    slug: item.slug || "",
+                  }))
+                : []
+            );
+            setSelectsubchild(
+              Array.isArray(data.subChild)
+                ? data.subChild.map((item) => ({
+                    name: item.name || "",
+                    slug: item.slug || "",
                   }))
                 : []
             );
@@ -145,10 +158,23 @@ export default function ProductForm({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (subcategory.length === 0) {
+      alert("Please select subcategory.");
+      return;
+    }
+    if (colorVariants.length === 0) {
+      alert("Please add at least one color variant.");
+      return;
+    }
+
     setIsLoading(true);
 
     const formData = new FormData();
-
+    const filteredSubChild = selectsubchild.map((item) => ({
+      name: item.name,
+      slug: item.slug,
+    }));
+    formData.append("subChild", JSON.stringify(filteredSubChild));
     formData.append("name", name);
     formData.append("slug", slug);
     formData.append("metaTitle", metaTitle);
@@ -292,6 +318,7 @@ export default function ProductForm({
               type="text"
               className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
+              {...(!id ? { required: true } : {})}
             />
             <label
               htmlFor="floating_outlined1"
@@ -310,6 +337,7 @@ export default function ProductForm({
               type="text"
               className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
+              {...(!id ? { required: true } : {})}
             />
             <label
               htmlFor="floating_outlined"
@@ -343,7 +371,7 @@ export default function ProductForm({
               htmlFor="floating_outlined3"
               className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
             >
-              Enter Product Meta Title <span className="text-red-500">*</span>
+              Enter Meta Title
             </label>
           </div>
         </div>
@@ -362,8 +390,7 @@ export default function ProductForm({
               htmlFor="floating_outlined4"
               className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
             >
-              Enter Product Meta Discription
-              <span className="text-red-500">*</span>
+              Enter Meta Discription
             </label>
           </div>
           <Label className="p-2"></Label>
@@ -379,6 +406,7 @@ export default function ProductForm({
               type="number"
               className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
+              {...(!id ? { required: true } : {})}
             />
             <label
               htmlFor="floating_outlined5"
@@ -397,6 +425,7 @@ export default function ProductForm({
               onChange={(e) => setMrp(e.target.value)}
               className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
+              {...(!id ? { required: true } : {})}
             />
             <label
               htmlFor="floating_outlined6"
@@ -417,6 +446,7 @@ export default function ProductForm({
               type="text"
               className="outline-none block px-2.5 pb-3 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
+              {...(!id ? { required: true } : {})}
             >
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select a brand" />
@@ -433,7 +463,7 @@ export default function ProductForm({
               htmlFor="floating_outlined6"
               className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
             >
-              Select Product Brand <span className="text-red-500">*</span>
+              Select Brand <span className="text-red-500">*</span>
             </label>
           </div>
         </div>
@@ -448,6 +478,7 @@ export default function ProductForm({
               type="text"
               className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
               placeholder=" "
+              {...(!id ? { required: true } : {})}
             />
             <label
               htmlFor="floating_outlined7"
@@ -467,6 +498,7 @@ export default function ProductForm({
               id="floating_outlined10"
               value={category}
               onValueChange={(value) => setCategory(value)}
+              {...(!id ? { required: true } : {})}
             >
               <SelectTrigger className="w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                 <SelectValue placeholder="Select a category" />
@@ -489,17 +521,13 @@ export default function ProductForm({
         </div>
 
         <div className=" w-1/2">
-          <Label className="py-3 px-2 rounded-sm  shadow mb-1">
+          <Label className="py-3 px-2 rounded-sm  border-b mb-1">
             Enter Product Subcategory <span className="text-red-500">*</span>
           </Label>
           <MultiSelect
             options={subcategori.map((sub) => ({
-              value: sub._id,
-              label: sub.value,
-              category: sub.label,
-              subcategory: sub.value,
-              bannerurl: sub.bannerUrl,
-              createdAt: sub.createdAt,
+              value: sub.value,
+              slug: sub.slug,
             }))}
             selected={subcategory}
             onChange={setSubcategory}
@@ -509,34 +537,48 @@ export default function ProductForm({
       </div>
       <div className="flex gap-2">
         <div className="w-1/2">
-          <div className="relative">
-            <input
-              id="floating_outlined20"
-              value={defaultColor}
-              onChange={(e) => setDefaultColor(e.target.value)}
-              type="text"
-              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="floating_outlined20"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Enter Product Default Color{" "}
-              <span className="text-red-500">*</span>
-            </label>
-          </div>
+          <SubcategoryMultiSelect
+            options={optionssubchild}
+            selected={selectsubchild}
+            onChange={setSelectsubchild}
+            placeholder="Select subchild"
+          />
         </div>
 
-        <div className="w-1/2">
-          <Label className="flex gap-2 items-center mt-1">
-            <Checkbox
-              className="h-5 w-5 cursor-pointer"
-              checked={isFeatured}
-              onCheckedChange={(checked) => setIsFeatured(checked === true)}
-            />
-            Featured Product
-          </Label>
+        <div className="w-1/2 flex items-center gap-2">
+          <div className="w-[70%]">
+            <div className="relative">
+              <input
+                id="floating_outlined20"
+                value={defaultColor}
+                onChange={(e) => setDefaultColor(e.target.value)}
+                type="text"
+                className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+                {...(!id ? { required: true } : {})}
+              />
+              <label
+                htmlFor="floating_outlined20"
+                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+              >
+                Enter Default Color <span className="text-red-500">*</span>
+              </label>
+            </div>
+          </div>
+          <div className="w-[30%]">
+            <Label className="flex gap-2 items-center mt-1">
+              <Checkbox
+                className="h-5 w-5 cursor-pointer"
+                checked={isFeatured}
+                onCheckedChange={(checked) => setIsFeatured(checked === true)}
+              />
+              {isFeatured ? (
+                <span className="text-green-500">Featured</span>
+              ) : (
+                <span className="text-red-500">Not Featured</span>
+              )}
+            </Label>
+          </div>
         </div>
       </div>
 
@@ -775,7 +817,7 @@ export default function ProductForm({
 
         <div className="relative">
           <input
-            id="floating_outlined5"
+            id="floating_tag"
             value={tags.join(",")}
             onChange={(e) =>
               setTags(e.target.value.split(",").map((t) => t.trim()))
@@ -785,11 +827,10 @@ export default function ProductForm({
             placeholder=" "
           />
           <label
-            htmlFor="floating_outlined5"
+            htmlFor="floating_tag"
             className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
           >
             Enter tags separated by commas{" "}
-            <span className="text-red-500">*</span>{" "}
           </label>
         </div>
       </div>
@@ -881,7 +922,7 @@ export default function ProductForm({
                       id={`category_selector_${i}`}
                       className="w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                     >
-                      {variant.category || "Choose Category"}
+                      {variant.category || "Choose Style"}
                     </SelectTrigger>
                     <SelectContent>
                       {productSizes.map((category) => (
@@ -896,7 +937,7 @@ export default function ProductForm({
                     htmlFor={`category_selector_${i}`}
                     className="absolute text-xs text-gray-500 duration-300 transform -translate-y-3 scale-90 top-1 z-10 bg-white px-2 mx-2 peer-focus:text-blue-600"
                   >
-                    Product Category <span className="text-red-500">*</span>
+                    Select Style<span className="text-red-500">*</span>
                   </label>
                 </div>
 

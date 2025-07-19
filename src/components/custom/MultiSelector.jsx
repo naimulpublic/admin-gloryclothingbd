@@ -47,10 +47,10 @@ export function MultiSelect({
       {/* Selected Badges */}
       <div className="flex flex-wrap gap-2">
         {safeSelected.map((item, index) => {
-          const label = item.label || item.value;
+         
           return (
             <Badge key={index} variant="secondary" className="pl-2">
-              {label}
+             {item.value}
               <Button
                 type="button"
                 variant="ghost"
@@ -72,7 +72,7 @@ export function MultiSelect({
             ref={triggerRef}
             variant="outline"
             role="combobox"
-            className="w-full justify-between h-10 "
+            className="w-full justify-between h-10"
           >
             {safeSelected.length > 0
               ? `${safeSelected.length} selected`
@@ -86,7 +86,7 @@ export function MultiSelect({
           style={{ width: popoverWidth }}
           align="start"
         >
-          <ScrollArea className="h-48">
+          <ScrollArea className="m-h-48">
             {options.length > 0 ? (
               options.map((opt, index) => (
                 <button
@@ -106,7 +106,8 @@ export function MultiSelect({
                   >
                     {isSelected(opt) && <Check className="h-3 w-3" />}
                   </span>
-                  {opt.label}
+                  {opt.value}
+
                 </button>
               ))
             ) : (
