@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Menu } from "../../../static/Menu";
 import Link from "next/link";
 import { ArrowLeftToLine, ChevronDown, ChevronUp } from "lucide-react";
@@ -7,6 +7,24 @@ import { ArrowLeftToLine, ChevronDown, ChevronUp } from "lucide-react";
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(true);
   const [openMenu, setOpenMenu] = useState(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleResize = () => {
+        if (window.innerWidth < 800) {
+          setIsOpen(false); 
+        } else {
+          setIsOpen(true); 
+        }
+      };
+
+      handleResize();
+
+      window.addEventListener("resize", handleResize);
+
+      return () => window.removeEventListener("resize", handleResize);
+    }
+  }, []);
 
   const toggleSubmenu = (index) => {
     setOpenMenu(openMenu === index ? null : index);
@@ -40,7 +58,9 @@ export default function SideBar() {
             >
               <div className="flex items-center gap-2">
                 <span className="text-orange-500 ">{item.icon}</span>
-                {isOpen && <span className="text-sm font-semibold">{item.name}</span>}
+                {isOpen && (
+                  <span className="text-sm font-semibold">{item.name}</span>
+                )}
               </div>
 
               {item.subname &&
@@ -80,7 +100,7 @@ export default function SideBar() {
                     className="block px-4 py-2 text-sm text-gray-700 transition"
                   >
                     <div className="flex items-center gap-2 hover:text-orange-600">
-                      {sub.icon} 
+                      {sub.icon}
                       {sub.name}
                     </div>
                   </Link>

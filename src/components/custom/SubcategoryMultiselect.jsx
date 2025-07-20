@@ -122,7 +122,7 @@ export function SubcategoryMultiSelect({
         </PopoverTrigger>
 
         <PopoverContent
-          className="p-0"
+          className="p-0 overflow-y-auto max-h-48"
           style={{ width: popoverWidth }}
           align="start"
         >

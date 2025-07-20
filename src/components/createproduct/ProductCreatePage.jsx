@@ -302,13 +302,13 @@ export default function ProductForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-8 w-full px-6 bg-white rounded shadow"
+      className="space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow"
     >
       <RoutePath />
-      <h2 className=" text-xl font-semibold my-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
-        Add New Product
+      <h2 className=" text-sm lg:text-xl font-medium lg:font-semibold my-2 lg:my-4 text-center border py-1 lg:py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+        {id ? "Edit" : "Create New"} Product
       </h2>
-      <div className="flex gap-2 pt-4">
+      <div className="flex gap-1 lg:gap-2 pt-4">
         <div className="w-1/2">
           <div className="relative">
             <input
@@ -356,7 +356,7 @@ export default function ProductForm({
           </button>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-1 lg:gap-2">
         <div className="w-1/2">
           <div className="relative">
             <input
@@ -396,7 +396,7 @@ export default function ProductForm({
           <Label className="p-2"></Label>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-1 lg:gap-2">
         <div className="w-1/2">
           <div className="relative">
             <input
@@ -436,7 +436,7 @@ export default function ProductForm({
           </div>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-1 lg:gap-2">
         <div className="w-1/2">
           <div className="relative">
             <Select
@@ -489,7 +489,7 @@ export default function ProductForm({
           </div>
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-1 lg:gap-2">
         <div className="w-1/2">
           <div className="relative">
             <Select
@@ -535,7 +535,7 @@ export default function ProductForm({
           />
         </div>
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-1 lg:gap-2">
         <div className="w-1/2">
           <SubcategoryMultiSelect
             options={optionssubchild}
@@ -545,8 +545,8 @@ export default function ProductForm({
           />
         </div>
 
-        <div className="w-1/2 flex items-center gap-2">
-          <div className="w-[70%]">
+        <div className="w-1/2 flex items-center lg:gap-2">
+          <div className="w-full">
             <div className="relative">
               <input
                 id="floating_outlined20"
@@ -564,20 +564,6 @@ export default function ProductForm({
                 Enter Default Color <span className="text-red-500">*</span>
               </label>
             </div>
-          </div>
-          <div className="w-[30%]">
-            <Label className="flex gap-2 items-center mt-1">
-              <Checkbox
-                className="h-5 w-5 cursor-pointer"
-                checked={isFeatured}
-                onCheckedChange={(checked) => setIsFeatured(checked === true)}
-              />
-              {isFeatured ? (
-                <span className="text-green-500">Featured</span>
-              ) : (
-                <span className="text-red-500">Not Featured</span>
-              )}
-            </Label>
           </div>
         </div>
       </div>
@@ -1007,7 +993,20 @@ export default function ProductForm({
           </button>
         </div>
       </div>
-
+      <div className=" lg:w-[30%]">
+        <Label className="flex gap-2 items-center mt-1">
+          <Checkbox
+            className="h-5 w-5 cursor-pointer"
+            checked={isFeatured}
+            onCheckedChange={(checked) => setIsFeatured(checked === true)}
+          />
+          {isFeatured ? (
+            <span className="text-green-500">Featured</span>
+          ) : (
+            <span className="text-red-500">Not Featured</span>
+          )}
+        </Label>
+      </div>
       <div
         type="submit"
         disabled={isLoading}
