@@ -1,20 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
 import { RefreshCcw } from "lucide-react";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import { CreativeCommons } from "lucide-react";
-import { NetworkIcon } from "lucide-react";
+
 import { SquarePlus } from "lucide-react";
 import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { Checkbox } from "../ui/checkbox";
 import { Loader } from "lucide-react";
 import { SubcategoryMultiSelect } from "../custom/SubcategoryMultiselect";
 
-// react-select ডাইনামিকভাবে লোড করা
-const Select = dynamic(() => import("react-select"), { ssr: false });
 
 export default function CategoryForm({ subcategories, id }) {
   const [name, setName] = useState("");

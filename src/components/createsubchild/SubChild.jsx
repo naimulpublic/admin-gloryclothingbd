@@ -33,7 +33,14 @@ export default function Subcategory({ id }) {
 
   const handleSlugGenerate = () => {
     if (value) {
-      setSlug(value.trim().toLowerCase().replace(/\s+/g, "-"));
+      const slug = value
+        .trim()
+        .toLowerCase()
+        .replace(/[^\w\s-]/g, "")
+        .replace(/\s+/g, "-")
+        .replace(/--+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      setSlug(slug);
     }
   };
 
