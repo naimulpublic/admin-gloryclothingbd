@@ -43,6 +43,7 @@ export default function ProductForm({
   const [brand, setBrand] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
+  const [categorySlug, setCategorySlug] = useState("");
   const [defaultColor, setDefaultColor] = useState("");
   const [isFeatured, setIsFeatured] = useState(false);
 
@@ -64,6 +65,17 @@ export default function ProductForm({
   const optionssubchild = subChild || [];
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (value) => {
+    try {
+      const obj = JSON.parse(value);
+      setCategorySlug(obj.slug);
+      setCategory(obj.name);
+    } catch {
+      setCategorySlug("");
+      setCategory("");
+    }
+  };
   useEffect(() => {
     if (id) {
       const fetchProducts = async () => {
@@ -184,6 +196,7 @@ export default function ProductForm({
     formData.append("brand", brand);
     formData.append("description", description);
     formData.append("category", category);
+    formData.append("categorySlug", categorySlug);
     formData.append("defaultColor", defaultColor);
     formData.append("isFeatured", isFeatured);
 
@@ -496,8 +509,8 @@ export default function ProductForm({
               className="block px-2.5 pb-2 pt-3 "
               type="text"
               id="floating_outlined10"
-              value={category}
-              onValueChange={(value) => setCategory(value)}
+              value={JSON.stringify({ slug: categorySlug, name: category })}
+              onValueChange={handleChange}
               {...(!id ? { required: true } : {})}
             >
               <SelectTrigger className="w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
