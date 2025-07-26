@@ -2,16 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
-import { Textarea } from "../ui/textarea";
 import { Label } from "../ui/label";
 import { RefreshCcw } from "lucide-react";
-import dynamic from "next/dynamic";
-
-const ReactSelect = dynamic(() => import("react-select"), {
-  ssr: false,
-});
 import {
   Select,
   SelectTrigger,
@@ -24,8 +17,7 @@ import { X } from "lucide-react";
 import { Loader } from "lucide-react";
 import { productSizes } from "@/static/ProductSize";
 import { UploadCloud } from "lucide-react";
-import { MultiSelect } from "../custom/MultiSelector";
-import { SubcategoryMultiSelect } from "../custom/SubcategoryMultiselect";
+import { MultiSelect } from "../custom/MultiSelect";
 
 export default function ProductForm({
   id,
@@ -66,7 +58,6 @@ export default function ProductForm({
 
   const [isLoading, setIsLoading] = useState(false);
 
-
   useEffect(() => {
     if (id) {
       const fetchProducts = async () => {
@@ -88,6 +79,7 @@ export default function ProductForm({
             setBrand(data.brand || "");
             setDescription(data.description || "");
             setCategory(data.category || "");
+            setCategorySlug(data.categorySlug || "");
             setDefaultColor(data.defaultColor || "");
             setIsFeatured(data.isFeatured || false);
 
@@ -549,7 +541,7 @@ export default function ProductForm({
       </div>
       <div className="flex gap-1 lg:gap-2">
         <div className="w-1/2">
-          <SubcategoryMultiSelect
+          <MultiSelect
             options={optionssubchild}
             selected={selectsubchild}
             onChange={setSelectsubchild}
@@ -849,7 +841,7 @@ export default function ProductForm({
                 Color Variant Serial{" "}
                 <span className="text-blue-500">({i + 1})</span>
               </h2>
-              {1 < colorVariants.length && (
+              {1 < colorVariants.length && !id && (
                 <button
                   type="button"
                   onClick={() => removeColorVariant(i)}

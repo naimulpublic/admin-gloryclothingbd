@@ -16,14 +16,21 @@ export function MultiSelect({
   options = [],
   selected = [],
   onChange,
-  placeholder = "--Select Subcategories--",
+  placeholder = "--Select subchild--",
 }) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef(null);
   const [popoverWidth, setPopoverWidth] = useState("auto");
 
-  // Ensure selected is always an array
-  const safeSelected = Array.isArray(selected) ? selected : [];
+  // Ensure selected is always an array and has valid items
+  const safeSelected = Array.isArray(selected)
+    ? selected.filter((item) => item && (item._id || item.name || item.slug))
+    : [];
+
+  // Ensure options is always an array and has valid items
+  const safeOptions = Array.isArray(options)
+    ? options.filter((opt) => opt && (opt._id || opt.name || opt.slug))
+    : [];
 
   useEffect(() => {
     if (triggerRef.current) {
@@ -31,15 +38,42 @@ export function MultiSelect({
     }
   }, [open]);
 
-  const isSelected = (option) =>
-    safeSelected.some((item) => item.value === option.value);
+  const isSelected = (option) => {
+    if (!option || (!option._id && !option.name && !option.slug)) return false;
+    return safeSelected.some((item) => {
+      if (item._id && option._id) return item._id === option._id;
+      if (item.name && option.name) return item.name === option.name;
+      if (item.slug && option.slug) return item.slug === option.slug;
+      return false;
+    });
+  };
 
   const toggleOption = (option) => {
+    if (!option) return;
+
     if (isSelected(option)) {
-      onChange(safeSelected.filter((item) => item.value !== option.value));
+      onChange(
+        safeSelected.filter((item) => {
+          if (item._id && option._id) return item._id !== option._id;
+          if (item.name && option.name) return item.name !== option.name;
+          if (item.slug && option.slug) return item.slug !== option.slug;
+          return true;
+        })
+      );
     } else {
       onChange([...safeSelected, option]);
     }
+  };
+
+  const getItemKey = (item, index) => {
+    if (item?._id) return item._id;
+    if (item?.name) return `name-${item.name}`;
+    if (item?.slug) return `slug-${item.slug}`;
+    return `item-${index}`;
+  };
+
+  const getItemLabel = (item) => {
+    return item?.name || item?.slug || "Unnamed";
   };
 
   return (
@@ -47,16 +81,23 @@ export function MultiSelect({
       {/* Selected Badges */}
       <div className="flex flex-wrap gap-2">
         {safeSelected.map((item, index) => {
-         
+          const label = getItemLabel(item);
           return (
-            <Badge key={index} variant="secondary" className="pl-2">
-             {item.value}
+            <Badge
+              key={getItemKey(item, index)}
+              variant="secondary"
+              className="pl-2"
+            >
+              {label}
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
                 className="h-5 w-4 ml-1"
-                onClick={() => toggleOption(item)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleOption(item);
+                }}
               >
                 <X className="h-3 w-3" />
               </Button>
@@ -78,20 +119,19 @@ export function MultiSelect({
               ? `${safeSelected.length} selected`
               : placeholder}
           </Button>
-          
         </PopoverTrigger>
 
         <PopoverContent
-          className="p-0"
+          className="p-0 overflow-y-auto max-h-48"
           style={{ width: popoverWidth }}
           align="start"
         >
-          <ScrollArea className="m-h-48">
-            {options.length > 0 ? (
-              options.map((opt, index) => (
+          <ScrollArea className="max-h-48">
+            {safeOptions.length > 0 ? (
+              safeOptions.map((opt, index) => (
                 <button
                   type="button"
-                  key={index}
+                  key={getItemKey(opt, index)}
                   onClick={() => toggleOption(opt)}
                   className={cn(
                     "w-full flex items-center px-4 py-2 text-sm cursor-pointer hover:bg-muted",
@@ -106,8 +146,7 @@ export function MultiSelect({
                   >
                     {isSelected(opt) && <Check className="h-3 w-3" />}
                   </span>
-                  {opt.value}
-
+                  {getItemLabel(opt)}
                 </button>
               ))
             ) : (
