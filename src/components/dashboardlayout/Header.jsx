@@ -1,6 +1,7 @@
 import { cookies } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
+import logo from "../../../public/logo.png";
 
 import {
   DropdownMenu,
@@ -34,64 +35,68 @@ export default async function Header() {
   const isLogin = !!adminInfo?._id;
 
   return (
-    <header className="flex h-16 items-center bg-white shadow-md border-2">
-      <div className="flex w-[25%] justify-center items-center">
-        <span className="text-xl font-bold">GloryClothing</span>
+    <header className="flex flex-wrap md:flex-nowrap h-16 items-center bg-white shadow-md border-2 px-4">
+      {/* Logo */}
+      <div className="flex items-center justify-center w-1/2 sm:w-1/5 select-none">
+        <Link href="/" className="cursor-pointer">
+          <Image
+            className="h-12 w-12 sm:h-16 sm:w-16 rounded-full"
+            src={logo}
+            alt="logo"
+            width={500}
+            height={500}
+          />
+        </Link>
       </div>
 
-      <div className="flex-1 w-[30%]">
+      {/* SearchInput */}
+      <div className="hidden md:flex md:flex-1 md:w-1/3 px-4">
         <SearchInput />
       </div>
 
-      <div className="flex justify-around w-[20%] items-center">
+      {/* Notification and Profile */}
+      <div className="flex items-center justify-end w-1/2 sm:w-1/4 gap-6">
+        {/* Notification Bell */}
         <div className="relative cursor-pointer">
-          <Bell size={30} />
-
-          {/* Notification Badge */}
+          <Bell size={28} />
           {notificationsCount > 0 && (
-            <span className="absolute -top-1 -right-1 inline-flex items-center justify-center p-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+            <span className="absolute -top-1 -right-1 inline-flex items-center justify-center p-1 text-xs font-bold leading-none text-white bg-red-600 rounded-full min-w-[20px] min-h-[20px] text-center">
               {notificationsCount > 99 ? "99+" : notificationsCount}
             </span>
           )}
         </div>
+
+        {/* Profile or Login */}
         <div>
           {isLogin ? (
-            <section className="">
+            <section className="relative cursor-pointer w-10 h-10 sm:w-12 sm:h-12">
               {adminInfo?.imageUrl && (
-                <div className="relative cursor-pointer w-12 h-12">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="cursor-pointer">
-                      <Image
-                        src={adminInfo.imageUrl}
-                        alt={`${adminInfo.name}'s profile`}
-                        fill
-                        className="h-14 w-14 rounded-full object-cover border border-red-600"
-                        sizes={100}
-                      />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="mt-9 ">
-                      <DropdownMenuLabel>
-                        ADMINISTRATOR ACCOUNT
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className={`cursor-pointer`}>
-                        {adminInfo.name}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className={`cursor-pointer`}>
-                        {adminInfo.email}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className={`cursor-pointer`}>
-                        <LogoutButton />
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Image
+                      src={adminInfo.imageUrl}
+                      alt={`${adminInfo.name}'s profile`}
+                      fill
+                      className="rounded-full object-cover border border-red-600"
+                      sizes="40px"
+                    />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="mt-9">
+                    <DropdownMenuLabel>ADMINISTRATOR ACCOUNT</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>{adminInfo.name}</DropdownMenuItem>
+                    <DropdownMenuItem>{adminInfo.email}</DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <LogoutButton />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               )}
             </section>
           ) : (
             <Link
               href="/auth/admin/login"
-              className="px-4 py-2 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-lg transition-colors duration-200"
+              className="px-3 py-1.5 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 rounded-lg transition-colors duration-200 text-sm"
             >
               Login
             </Link>

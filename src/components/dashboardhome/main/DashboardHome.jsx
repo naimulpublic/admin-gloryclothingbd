@@ -185,7 +185,7 @@ const stats = [
   }));
 
   return (
-    <div className="p-2 lg:p-4 bg-white min-h-screen">
+    <div className="px-2 lg:px-4 bg-white min-h-screen">
       <h2 className="text-center font-bold text-xl p-2 mb-4 border-b border-gray-300 select-none">
         Dashboard Overview
       </h2>
