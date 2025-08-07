@@ -6,6 +6,7 @@ import { SlidersVertical } from "lucide-react";
 import { CreativeCommonsIcon } from "lucide-react";
 import { Radio } from "lucide-react";
 import { SquareStack } from "lucide-react";
+import { ListOrdered } from "lucide-react";
 import { SquarePlus } from "lucide-react";
 import { Projector } from "lucide-react";
 import { Tags } from "lucide-react";
@@ -135,6 +136,11 @@ export const Menu = [
         name: "Brands",
         icon: <CreativeCommonsIcon size={20} />,
         url: "/dashboard/brands",
+      },
+      {
+        name: "Orders",
+        icon: <ListOrdered size={20} />,
+        url: "/dashboard/orders",
       },
     ],
     icon: <ShieldUser className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />,

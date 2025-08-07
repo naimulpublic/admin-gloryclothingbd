@@ -96,6 +96,7 @@ export default function CategoryForm({ subcategories, id }) {
     e.preventDefault();
 
     setIsLoading(true);
+    
 
     try {
       const formData = new FormData();
