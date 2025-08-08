@@ -69,7 +69,7 @@ const MyDocument = ({ qrCodeValue, order }) => {
                 <View style={styles.speechY}>
                   <Text style={styles.aexmart}>Glory Clothing</Text>
                   <Text style={styles.verified}>
-                    ONLY VERIFIED BRANDS CAN SELL ON - GloryClothing
+                    ONLY VERIFIED BRANDS SELL ON - GloryClothing
                   </Text>
                   <Text style={styles.verified}>100% AUTHENTIC</Text>
                 </View>
