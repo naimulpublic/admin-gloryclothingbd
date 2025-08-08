@@ -17,13 +17,15 @@ export default async function page({ params }) {
 
   return (
     <>
-      <ProductCreatePage
-        id={id}
-        brandData={brandData}
-        categoriesData={categoriesData}
-        subcategori={subcategori}
-        subChild={subChild}
-      />
+      <div div className="mb-20">
+        <ProductCreatePage
+          id={id}
+          brandData={brandData}
+          categoriesData={categoriesData}
+          subcategori={subcategori}
+          subChild={subChild}
+        />
+      </div>
     </>
   );
 }
