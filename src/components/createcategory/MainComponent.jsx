@@ -8,7 +8,7 @@ import { SquarePlus } from "lucide-react";
 import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { Checkbox } from "../ui/checkbox";
 import { Loader } from "lucide-react";
-import { SubcategoryMultiSelect } from "../custom/MultiSelect";
+import { MultiSelect } from "../custom/MultiSelect";
 
 export default function CategoryForm({ subcategories, id }) {
   const [name, setName] = useState("");
@@ -291,7 +291,7 @@ export default function CategoryForm({ subcategories, id }) {
             <label className="block text-sm font-semibold mb-2 p-2 border-b">
               Select Subcategories <span className="text-red-500">*</span>
             </label>
-            <SubcategoryMultiSelect
+            <MultiSelect
               required
               isMulti
               options={Option}

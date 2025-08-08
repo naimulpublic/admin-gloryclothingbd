@@ -6,7 +6,7 @@ import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { RefreshCcw } from "lucide-react";
 import { SquarePlus } from "lucide-react";
 import { Loader } from "lucide-react";
-import { SubcategoryMultiSelect } from "../custom/MultiSelect";
+import { MultiSelect } from "../custom/MultiSelect";
 
 export default function Subcategory({ id, subChild }) {
   const [value, setValue] = useState("");
@@ -169,7 +169,7 @@ export default function Subcategory({ id, subChild }) {
           </div>
 
           <div>
-            <SubcategoryMultiSelect
+            <MultiSelect 
               options={options}
               selected={selectsubchild}
               onChange={setSelectsubchild}
