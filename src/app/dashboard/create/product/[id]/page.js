@@ -17,7 +17,7 @@ export default async function page({ params }) {
 
   return (
     <>
-      <div div className="mb-20">
+      <div div className="mb-40">
         <ProductCreatePage
           id={id}
           brandData={brandData}
