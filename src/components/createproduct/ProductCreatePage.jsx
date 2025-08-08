@@ -316,7 +316,7 @@ export default function ProductForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow"
+      className="space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow overflow-x-hidden"
     >
       <RoutePath />
       <h2 className=" text-sm lg:text-xl font-medium lg:font-semibold my-2 lg:my-4 text-center border py-1 lg:py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
@@ -1029,7 +1029,7 @@ export default function ProductForm({
           </button>
         </div>
       </div>
-      <div className=" lg:w-[30%]">
+      <div className="">
         <Label className="flex gap-2 items-center mt-1">
           <Checkbox
             className="h-5 w-5 cursor-pointer"
