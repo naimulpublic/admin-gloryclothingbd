@@ -8,7 +8,7 @@ export default async function page() {
   const subcategori = await GetSubCategoriesApi();
   const subChild = await GetSubChildApi();
   return (
-    <div className="mb-20">
+    <div className="mb-40">
       <ProductCreatePage brandData={brandData} categoriesData={categoriesData} subcategori={subcategori} subChild={subChild}/>
     </div>
   );
