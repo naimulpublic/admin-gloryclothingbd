@@ -18,6 +18,8 @@ import { Loader } from "lucide-react";
 import { productSizes } from "@/static/ProductSize";
 import { UploadCloud } from "lucide-react";
 import { MultiSelect } from "../custom/MultiSelect";
+import { revalidateProducts } from "@/utils/Revalidate";
+import { toast } from "sonner";
 
 export default function ProductForm({
   id,
@@ -229,9 +231,10 @@ export default function ProductForm({
 
       if (response.ok) {
         const result = await response.json();
-        alert(result.message);
+        toast.success(result.message);
+        await revalidateProducts();
       } else {
-        alert("Failed to submit product.");
+        toast.error("Failed to submit product.");
       }
     } catch (error) {
       console.error("Error occurred while submitting product:", error);
@@ -1029,8 +1032,8 @@ export default function ProductForm({
           </button>
         </div>
       </div>
-      <div className="">
-        <Label className="flex gap-2 items-center mt-1">
+      <div className="flex justify-end  px-2 lg:px-4">
+        <Label className="flex gap-2 items-center">
           <Checkbox
             className="h-5 w-5 cursor-pointer"
             checked={isFeatured}

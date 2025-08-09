@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from "react";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
 import { Checkbox } from "../ui/checkbox";
 import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { Loader } from "lucide-react";
 import { SquarePlus } from "lucide-react";
+import { toast } from "sonner";
+import { revalidateSliders } from "@/utils/Revalidate";
 
 const SliderForm = ({ id }) => {
   const [name, setName] = useState("");
@@ -54,7 +55,7 @@ const SliderForm = ({ id }) => {
 
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("isActive", isActive); // Send isActive as boolean
+    formData.append("isActive", isActive);
     if (image) {
       formData.append("image", image);
     }
@@ -72,15 +73,16 @@ const SliderForm = ({ id }) => {
 
       const data = await res.json();
       if (res.ok) {
-        alert(`Slider ${id ? "updated" : "created"} successfully.`);
+        toast.success(`Slider ${id ? "updated" : "created"} successfully.`);
         setName("");
         setImage(null);
         setPreviewImage(null);
+        await revalidateSliders();
       } else {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch {
-      console.log("error");
+      alert("error");
     } finally {
       setLoading(false);
     }
