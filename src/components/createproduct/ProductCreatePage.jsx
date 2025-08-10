@@ -319,7 +319,7 @@ export default function ProductForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow overflow-x-hidden overflow-y-auto"
+      className="mb-40 space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow overflow-x-hidden overflow-y-auto"
     >
       <RoutePath />
       <h2 className=" text-sm lg:text-xl font-medium lg:font-semibold my-2 lg:my-4 text-center border py-1 lg:py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
@@ -872,7 +872,7 @@ export default function ProductForm({
         </div>
       </div>
 
-      <div className="mb-80">
+      <div className="">
         <div className="mt-4 relative">
           <h4 className="text-xl font-semibold my-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
             Multiple Color Variants
