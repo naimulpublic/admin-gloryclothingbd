@@ -872,7 +872,7 @@ export default function ProductForm({
         </div>
       </div>
 
-      <div className="">
+      <div className="mb-20">
         <div className="mt-4 relative">
           <h4 className="text-xl font-semibold my-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
             Multiple Color Variants
@@ -1060,11 +1060,11 @@ export default function ProductForm({
       <div
         type="submit"
         disabled={isLoading}
-        className={`relative mt-14 pb-14 flex  font-semibold cursor-pointer py-4 ${
+        className={`flex  font-semibold cursor-pointer py-4 ${
           isLoading ? "opacity-50 cursor-not-allowed" : ""
         }`}
       >
-        <button className="absolute bg-black text-white border border-red-600 px-4 rounded-sm  py-2 right-2 top-2 text-lg font-semibold cursor-pointer flex items-center gap-2">
+        <button className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 right-2 top-2 text-lg font-semibold cursor-pointer flex items-center gap-2">
           {isLoading ? (
             <>
               <Loader strokeWidth={3} className="h-6 w-6  animate-spin" />
