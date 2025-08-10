@@ -872,7 +872,7 @@ export default function ProductForm({
         </div>
       </div>
 
-      <div className="mb-20">
+      <div className="mb-80">
         <div className="mt-4 relative">
           <h4 className="text-xl font-semibold my-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
             Multiple Color Variants
