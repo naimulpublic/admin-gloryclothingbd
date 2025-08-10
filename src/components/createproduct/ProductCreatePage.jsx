@@ -319,7 +319,7 @@ export default function ProductForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow overflow-x-hidden"
+      className="space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow overflow-x-hidden overflow-y-auto"
     >
       <RoutePath />
       <h2 className=" text-sm lg:text-xl font-medium lg:font-semibold my-2 lg:my-4 text-center border py-1 lg:py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
@@ -823,10 +823,10 @@ export default function ProductForm({
 
       <div>
         <h4 className="font-semibold text-xl mb-8 shadow text-center p-2">
-          Tags for best seo Performence
+          Tags Keywords & Mesuarment Image
         </h4>
 
-        <div className="flex items-center ">
+        <div className="flex items-center gap-1 lg:gap-2">
           <div className="relative w-1/2">
             <input
               id="floating_tag"
@@ -842,18 +842,30 @@ export default function ProductForm({
               htmlFor="floating_tag"
               className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
             >
-              Enter tags separated by commas{" "}
+              Enter tags
             </label>
           </div>
-          <div className="w-1/2 p-2">
-            <input onChange={handleFileChange} type="file" />
+          <div className="relative w-1/2">
+            <input
+              id="floating_img"
+              onChange={handleFileChange}
+              type="file"
+              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+              placeholder=" "
+            />
+            <label
+              htmlFor="floating_img"
+              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
+            >
+              Mesuarment Image
+            </label>
             {previewUrl && (
               <img
                 src={previewUrl}
                 alt="Measurement Preview"
                 width={200}
                 height={200}
-                className="w-14 h-10"
+                className="w-16 h-10 m-1"
               />
             )}
           </div>
@@ -861,7 +873,6 @@ export default function ProductForm({
       </div>
 
       <div className="">
-        {/* Multiple Color Variants */}
         <div className="mt-4 relative">
           <h4 className="text-xl font-semibold my-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
             Multiple Color Variants

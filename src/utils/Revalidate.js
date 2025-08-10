@@ -1,16 +1,16 @@
 export async function revalidateProducts() {
-  await fetch(`${process.env.FRONTEND_ORIGIN}/api/revalidate-products`, {
+  await fetch(`https://www.gloryclothingbd.com/api/revalidate-products`, {
     method: "POST",
   });
 }
 export async function revalidateCategores() {
-  await fetch(`${process.env.FRONTEND_ORIGIN}/api/revalidate-categorys`, {
+  await fetch(`https://www.gloryclothingbd.com/api/revalidate-categorys`, {
     method: "POST",
   });
 }
 
 export async function revalidateSliders() {
-  await fetch(`${process.env.FRONTEND_ORIGIN}/api/revalidate-Sliders`, {
+  await fetch(`https://www.gloryclothingbd.com/api/revalidate-Sliders`, {
     method: "POST",
   });
 }
