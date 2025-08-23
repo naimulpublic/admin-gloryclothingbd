@@ -22,15 +22,15 @@ export function MultiSelect({
   const triggerRef = useRef(null);
   const [popoverWidth, setPopoverWidth] = useState("auto");
 
-  // Ensure selected is always an array and has valid items
   const safeSelected = Array.isArray(selected)
     ? selected.filter((item) => item && (item._id || item.name || item.slug))
     : [];
 
-  // Ensure options is always an array and has valid items
   const safeOptions = Array.isArray(options)
     ? options.filter((opt) => opt && (opt._id || opt.name || opt.slug))
     : [];
+
+    
 
   useEffect(() => {
     if (triggerRef.current) {
