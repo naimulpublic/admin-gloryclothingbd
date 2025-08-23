@@ -56,29 +56,29 @@ const stats = [
     bg: "bg-blue-50",
     ringColor: "ring-blue-200",
     iconColor: "text-blue-600",
-    url: "/admin/orders",
+    url: "/dashboard/orders",
     period: "All time",
     date: `${order.length} orders placed`,
   },
   {
     label: "Pending Orders",
     value: pendingOrders,
-    icon: Clock, // 🕒 More meaningful for pending
+    icon: Clock, 
     bg: "bg-orange-50",
     ringColor: "ring-orange-200",
     iconColor: "text-orange-600",
-    url: "/admin/orders?status=pending",
+    url: "/dashboard/orders/pending",
     period: "Awaiting confirmation",
     date: "Action needed",
   },
   {
     label: "Processing Orders",
     value: processingOrders,
-    icon: Loader, // 🔄 Indicates in-progress
+    icon: Loader, 
     bg: "bg-yellow-50",
     ringColor: "ring-yellow-200",
     iconColor: "text-yellow-600",
-    url: "/admin/orders?status=processing,confirmed", // assuming multi-status supported
+    url: "/dashboard/orders/confirmed,processing",
     period: "Being handled",
     date: "In process",
   },
@@ -89,7 +89,7 @@ const stats = [
     bg: "bg-sky-50",
     ringColor: "ring-sky-200",
     iconColor: "text-sky-600",
-    url: "/admin/orders?status=shipped",
+    url: "/dashboard/orders/shipped",
     period: "On the way",
     date: "Track shipments",
   },
@@ -100,18 +100,18 @@ const stats = [
     bg: "bg-green-50",
     ringColor: "ring-green-200",
     iconColor: "text-green-600",
-    url: "/admin/orders?status=delivered",
+    url: "/dashboard/orders/delivered",
     period: "Successfully delivered",
     date: `${Math.round((deleveredOrders / totalOrders) * 100)}% success rate`,
   },
   {
     label: "Cancelled Orders",
     value: cancelledOrders,
-    icon: XCircle, // ❌
+    icon: XCircle, 
     bg: "bg-red-50",
     ringColor: "ring-red-200",
     iconColor: "text-red-600",
-    url: "/admin/orders?status=cancelled",
+    url: "/dashboard/orders/cancelled",
     period: "Order cancelled",
     date: `${Math.round((cancelledOrders / totalOrders) * 100)}% of total`,
   },
@@ -133,7 +133,7 @@ const stats = [
     bg: "bg-indigo-50",
     ringColor: "ring-indigo-200",
     iconColor: "text-indigo-600",
-    url: "/admin/products",
+    url: "/dashboard/products",
     period: "In inventory",
     date: `${products.filter((p) => p.isFeatured).length} featured`,
   },
@@ -144,7 +144,7 @@ const stats = [
     bg: "bg-cyan-50",
     ringColor: "ring-cyan-200",
     iconColor: "text-cyan-600",
-    url: "/admin/customers",
+    url: "/#",
     period: "Unique customers",
     date: "From all orders",
   },
@@ -338,7 +338,7 @@ const stats = [
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-semibold">Top Products</h3>
           <Link
-            href="/admin/products"
+            href="/dashboard/products"
             className="text-sm text-blue-600 hover:underline flex items-center"
           >
             View all <ArrowRight className="ml-1 w-4 h-4" />

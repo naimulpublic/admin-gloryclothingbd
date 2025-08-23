@@ -37,10 +37,8 @@ export default function AdminAuth() {
     const data = await res.json();
 
     if (res.ok) {
-      localStorage.setItem("adminToken", data.token);
-
       setErrorMessage("");
-      toast("Admin login successfull");
+      toast.success(data.message);
 
       setLoading(false);
       router.refresh();

@@ -76,6 +76,11 @@ export default function LiveProducts({ data }) {
   const handleBulkDelete = async () => {
     if (selectedProducts.length === 0) return;
 
+    const confirmDelete = confirm(
+      `Are you sure you want to delete ${selectedProducts.length} products?`
+    );
+    if (!confirmDelete) return;
+
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/products`,
@@ -107,6 +112,7 @@ export default function LiveProducts({ data }) {
   };
 
   const handleSingleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this product?")) return;
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/product/${id}`,
       {
@@ -220,20 +226,24 @@ export default function LiveProducts({ data }) {
                   .map((part, index) => (index === 2 ? part.slice(2) : part))
                   .join("-")}
               </TableCell>
-              <TableCell>
-                <DropdownMenu>
+
+              <TableCell >
+                <DropdownMenu >
                   <DropdownMenuTrigger className="cursor-pointer outline-none">
-                    <MoreVertical className="h-4 w-4 cursor-pointer" />
+                    <MoreVertical className="cursor-pointer" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => handleEdit(product._id)}>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Edit
+                  <DropdownMenuContent className="cursor-pointer" >
+                    <DropdownMenuItem
+                      onClick={() => handleEdit(product._id)}
+                      className="flex items-center gap-2 text-blue-600 hover:text-blue-600"
+                    >
+                      <Edit className="text-blue-600" size={14} /> Edit
                     </DropdownMenuItem>
-                    {/* Single delete removed */}
-                    <DropdownMenuItem onClick={() => handleSingleDelete(product._id)}>
-                      <Trash className="h-4 w-4 mr-2" />
-                      Delete
+                    <DropdownMenuItem
+                      onClick={() => handleSingleDelete(product._id)}
+                      className="flex items-center gap-2 text-red-600 hover:text-red-600"
+                    >
+                      <Trash2 className="text-red-600" size={14} /> Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>

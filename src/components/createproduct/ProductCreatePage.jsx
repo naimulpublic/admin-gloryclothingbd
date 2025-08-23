@@ -25,7 +25,7 @@ export default function ProductForm({
   id,
   brandData = [],
   categoriesData = [],
-  subcategori = [],
+  
   subChild,
 }) {
   const [name, setName] = useState("");
@@ -48,6 +48,20 @@ export default function ProductForm({
   const [tags, setTags] = useState([]);
   const [selectsubchild, setSelectsubchild] = useState([]);
   const [measurementImage, setMeasurementImage] = useState(null);
+
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubcategories, setSelectedSubcategories] = useState([]);
+
+  const categoryObj = categoriesData.find(
+    (cat) => cat.slug === selectedCategory?.slug
+  );
+
+  const filteredSubcategories = selectedCategory
+    ? categoriesData.find((cat) => cat.slug === selectedCategory.slug)
+        ?.subcategories || []
+    : [];
+    
+  // new function end
 
   const [colorVariants, setColorVariants] = useState([
     {
@@ -284,6 +298,10 @@ export default function ProductForm({
   };
 
   const addColorVariant = () => {
+    if (colorVariants.length >= 5) {
+      toast.error("Maximum 5 color variants allowed!");
+      return;
+    }
     setColorVariants([
       ...colorVariants,
       {
@@ -310,16 +328,12 @@ export default function ProductForm({
     setSlug(generatedSlug);
   };
 
-  const options = subcategori.map((item) => ({
-    id: item._id,
-    value: item.value,
-    label: item.value,
-  }));
+
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-40 space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow overflow-x-hidden overflow-y-auto"
+      className="mb-40 space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow overflow-hidden"
     >
       <RoutePath />
       <h2 className=" text-sm lg:text-xl font-medium lg:font-semibold my-2 lg:my-4 text-center border py-1 lg:py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
@@ -513,25 +527,25 @@ export default function ProductForm({
               className="block px-2.5 pb-2 pt-3 "
               type="text"
               id="floating_outlined10"
+              value={selectedCategory ? JSON.stringify(selectedCategory) : ""}
               onValueChange={(value) => {
-                const selectedCategory = categoriesData.find(
-                  (cat) => cat.name === value
-                );
-                if (selectedCategory) {
-                  setCategory(selectedCategory.name);
-                  setCategorySlug(selectedCategory.slug);
-                }
+                const parsedValue = JSON.parse(value);
+                setSelectedCategory(parsedValue);
+                setCategory(parsedValue.name); // Update the main category field
+                setCategorySlug(parsedValue.slug);
               }}
-              value={category}
               {...(!id ? { required: true } : {})}
             >
               <SelectTrigger className="w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
-                {categoriesData.map((item) => (
-                  <SelectItem key={item._id} value={item.name}>
-                    {item.name}
+                {categoriesData.map((cat) => (
+                  <SelectItem
+                    key={cat._id}
+                    value={JSON.stringify({ slug: cat.slug, name: cat.name })}
+                  >
+                    {cat.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -550,8 +564,8 @@ export default function ProductForm({
             Enter Product Subcategory <span className="text-red-500">*</span>
           </Label>
           <MultiSelect
-            options={subcategori.map((sub) => ({
-              value: sub.value,
+            options={filteredSubcategories.map((sub) => ({
+              value: sub.name,
               slug: sub.slug,
             }))}
             selected={subcategory}
