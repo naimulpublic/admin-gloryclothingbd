@@ -7,7 +7,6 @@ import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { Loader } from "lucide-react";
 import { SquarePlus } from "lucide-react";
 import { toast } from "sonner";
-import { revalidateSliders } from "@/utils/Revalidate";
 
 const SliderForm = ({ id }) => {
   const [name, setName] = useState("");
@@ -77,7 +76,7 @@ const SliderForm = ({ id }) => {
         setName("");
         setImage(null);
         setPreviewImage(null);
-        await revalidateSliders();
+   
       } else {
         toast.error(data.message);
       }
