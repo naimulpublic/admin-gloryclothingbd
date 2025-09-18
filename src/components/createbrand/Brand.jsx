@@ -29,7 +29,7 @@ export default function Brand({ id }) {
       const fetchBrand = async () => {
         try {
           const response = await fetch(
-            `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/brand/${id}`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/brand/${id}`
           );
           const data = await response.json();
           setName(data.name);
@@ -66,8 +66,8 @@ export default function Brand({ id }) {
     try {
       const method = id ? "PUT" : "POST";
       const url = id
-        ? `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/update/brand/${id}`
-        : `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/create/brand`;
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update/brand/${id}`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create/brand`;
 
       const res = await fetch(url, {
         method,
@@ -204,7 +204,12 @@ export default function Brand({ id }) {
           <Label className="p-2">
             Brand Icon <span className="text-red-500">*</span>
           </Label>
-          <Input {...(!id && { required: true })} type="file" accept="image/*" onChange={handleImageChange} />
+          <Input
+            {...(!id && { required: true })}
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
         </div>
         {previewUrl && (
           <div className="flex items-center mt-6">

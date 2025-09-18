@@ -2,32 +2,29 @@
 
 import { useState, useEffect } from "react";
 import { RefreshCcw, X, ImagePlus } from "lucide-react";
-
 import { toast } from "sonner";
-import RoutePath from "@/custom/routepath/RoutePath";
-import { CInput } from "@/custom/input/Input";
-import { MultiSelect } from "@/custom/multi-select/MultiSelect";
 import SubmitButton from "@/custom/submit/Submit";
-import { ChevronDown } from "lucide-react";
+import { CInput } from "@/custom/input/Input";
+import RoutePath from "@/custom/routepath/RoutePath";
 
-export default function Subcategory({ id, subcategorydata }) {
+export default function SubcategoryChild({ id }) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [banner, setBanner] = useState(null);
-  const [subchild, setSubchild] = useState([]);
   const [bannerPreview, setBannerPreview] = useState(null);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (id) {
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/subcategory/${id}`)
+      fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/subcategorychild/${id}`
+      )
         .then((res) => res.json())
         .then((data) => {
           if (data) {
             setName(data.name || "");
             setSlug(data.slug || "");
-            setSubchild(data.subchild || []);
             if (data.banner) setBannerPreview(data.banner); // Banner preview ঠিক মতো সেট হবে
           }
         })
@@ -70,16 +67,15 @@ export default function Subcategory({ id, subcategorydata }) {
     formData.append("name", name);
     formData.append("slug", slug);
     if (banner) formData.append("banner", banner);
-    formData.append("subchild", JSON.stringify(subchild));
 
     try {
       const res = id
         ? await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update/subcategory/${id}`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update/subcategorychild/${id}`,
             { method: "PUT", body: formData }
           )
         : await fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create/subcategory`,
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create/subcategorychild`,
             { method: "POST", body: formData }
           );
 
@@ -91,7 +87,6 @@ export default function Subcategory({ id, subcategorydata }) {
           setSlug("");
           setBanner(null);
           setBannerPreview(null);
-          setSubchild([]);
         }
       } else {
         setMessage(`Error: ${data.error}`);
@@ -110,7 +105,7 @@ export default function Subcategory({ id, subcategorydata }) {
       <RoutePath />
       <div className="p-4">
         <h1 className="text-sm lg:text-lg select-none font-semibold text-center py-1 lg:py-2 shadow-xs">
-          {id ? "Update" : "Create"} Subcategory
+          {id ? "Update" : "Create"} Subcategory Child
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name & Slug */}
@@ -153,72 +148,52 @@ export default function Subcategory({ id, subcategorydata }) {
             </div>
           </div>
 
-          <div className="flex gap-2">
-            <div className="w-[30%]">
-              <label className="block text-xs lg:text-sm font-medium mb-2 shadow-xs pb-1">
-                Upload Banner Image <span className="text-red-500">*</span>
-              </label>
-              <label className="relative w-20 h-20  lg:w-24 lg:h-24 p-1 rounded-lg overflow-hidden border-dashed border border-gray-300 flex items-center justify-center cursor-pointer hover:border-orange-500">
-                {bannerPreview ? (
-                  <>
-                    <img
-                      src={bannerPreview}
-                      alt="category-preview"
-                      className="w-full h-full rounded-sm"
-                    />
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        removeBanner();
-                      }}
-                      className="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-red-600"
-                    >
-                      <X className="w-4 h-4 cursor-pointer" />
-                    </button>
-                  </>
-                ) : (
-                  <ImagePlus size={24} className="text-gray-400" />
-                )}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleUpload}
-                  className="hidden"
-                />
-              </label>
-            </div>
-            <div className="w-[70%]">
-              <div className="w-full">
-                <MultiSelect
-                  options={subcategorydata.map((item) => ({
-                    name: item.name,
-                    slug: item.slug,
-                  }))}
-                  selected={subchild}
-                  onChange={setSubchild}
-                  placeholder={
-                    <div className="flex items-center relative w-full">
-                      <div className="">
-                        Select Subcategories 
-                        <span>*</span>
-                      </div>
-                      <ChevronDown className="w-4 h-4 absolute right-0" />
-                    </div>
-                  }
-                />
-              </div>
-            </div>
+          <div>
+            <label className="block text-xs lg:text-sm font-medium mb-2 shadow-xs pb-1">
+              Upload Banner Image <span className="text-red-500">*</span>
+            </label>
+            <label className="relative w-20 h-20  lg:w-24 lg:h-24 p-1 rounded-lg overflow-hidden border-dashed border border-gray-300 flex items-center justify-center cursor-pointer hover:border-orange-500">
+              {bannerPreview ? (
+                <>
+                  <img
+                    src={bannerPreview}
+                    alt="category-preview"
+                    className="w-full h-full rounded-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeBanner();
+                    }}
+                    className="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-red-600"
+                  >
+                    <X className="w-4 h-4 cursor-pointer" />
+                  </button>
+                </>
+              ) : (
+                <ImagePlus size={24} className="text-gray-400" />
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleUpload}
+                className="hidden"
+              />
+            </label>
           </div>
 
-          <div className="px-2">
+          <div className=" px-2">
             {message && (
               <div className="flex justify-start mt-3 text-sm text-red-600 font-semibold">
                 <p>{message}</p>
               </div>
             )}
-
-            <SubmitButton isLoading={loading} id={id} name="Subcategory" />
+            <SubmitButton
+              id={id}
+              isLoading={loading}
+              name="Subcategory Child"
+            />
           </div>
         </form>
       </div>

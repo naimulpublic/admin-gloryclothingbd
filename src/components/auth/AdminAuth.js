@@ -23,7 +23,7 @@ export default function AdminAuth() {
     setLoading(true);
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/admin/login`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/login`,
       {
         method: "POST",
         headers: {

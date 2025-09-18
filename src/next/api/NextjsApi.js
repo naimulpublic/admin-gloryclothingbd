@@ -1,14 +1,14 @@
 export async function GetSubCategoriesApi() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/subcategories`
-  );
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/subcategories`
+  ); 
   const response = await request.json();
   return response;
 }
 
 export async function GetCategoriesApi() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/categories`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/categories`
   );
   const response = await request.json();
   return response;
@@ -16,7 +16,7 @@ export async function GetCategoriesApi() {
 
 export async function GetSlidersApi() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/sliders`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/sliders`
   );
   const response = await request.json();
   return response;
@@ -24,7 +24,7 @@ export async function GetSlidersApi() {
 
 export async function GetCuponsApi() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/coupons`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/coupons`
   );
   const response = await request.json();
   return response;
@@ -32,7 +32,7 @@ export async function GetCuponsApi() {
 
 export async function GetRootAdminApi() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/admins`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/admins`
   );
   const response = await request.json();
   return response;
@@ -40,7 +40,7 @@ export async function GetRootAdminApi() {
 
 export async function GetBrandsApi() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/brands`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/brands`
   );
   const response = await request.json();
   return response;
@@ -48,7 +48,7 @@ export async function GetBrandsApi() {
 
 export async function GetProductsApi() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/products`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/products`
   );
   const response = await request.json();
   return response;
@@ -56,7 +56,7 @@ export async function GetProductsApi() {
 
 export async function GetSubChildApi() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/subchild`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/subchild`
   );
   const response = await request.json();
   return response;
@@ -64,7 +64,7 @@ export async function GetSubChildApi() {
 
 export async function GetOrders() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/orders`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/orders`,
     {
       cache: "no-cache",
     }

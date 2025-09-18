@@ -1,12 +1,11 @@
-import Subcategori from "@/components/createsubcategories/Subcategori";
-import { GetSubChildApi } from "@/next/api/NextjsApi";
-import React from "react";
+import Subcategory from "@/components/createsubcategories/Subcategori";
 
 export default async function page() {
-  const subChild = await GetSubChildApi();
+  const req = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/subcategorychild`)
+const res = await req.json()
   return (
     <div>
-      <Subcategori subChild={subChild} />
+      <Subcategory  subcategorydata={res}/>
     </div>
   );
 }

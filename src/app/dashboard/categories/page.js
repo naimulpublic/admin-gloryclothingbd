@@ -1,12 +1,11 @@
 import CategoriesPage from "@/components/categori/Categories";
-import { GetCategoriesApi } from "@/next/api/NextjsApi";
-import React from "react";
 
 export default async function page() {
-  const Category =await GetCategoriesApi();
+  const req = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/categories`)
+  const res = await req.json()
   return (
     <div>
-      <CategoriesPage categories={Category} />
+      <CategoriesPage categories={res} />
     </div>
   );
 }

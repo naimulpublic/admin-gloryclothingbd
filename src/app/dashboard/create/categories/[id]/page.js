@@ -1,14 +1,14 @@
-import CategoryForm from "@/components/createcategory/MainComponent";
-import { GetSubCategoriesApi } from "@/next/api/NextjsApi";
-import React from "react";
+import CreateCategory from "@/components/createcategory/CreateCategory";
+
 
 export default async function page({ params }) {
-  const subcategori = await GetSubCategoriesApi();
+ const { id } = await params;
   
-  const id = await params.id;
+   const req = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/subcategorys`);
+  const res = await req.json();
   return (
     <div>
-      <CategoryForm id={id} subcategories={subcategori} />
+      <CreateCategory id={id} subcategories={res} />
     </div>
   );
 }

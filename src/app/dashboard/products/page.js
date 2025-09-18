@@ -2,7 +2,7 @@ import ProductView from "@/components/liveproducts/LiveProducts";
 
 export default async function LiveProductsPage() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/products`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/products`
   );
   const response = await request.json();
 

@@ -74,7 +74,7 @@ export default function BrandView({ brandData }) {
 
   const handleDelete = (id) => {
     const request = fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/brand/${id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/brand/${id}`,
       {
         method: "DELETE",
       }
@@ -88,7 +88,7 @@ export default function BrandView({ brandData }) {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/brands`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/brands`,
         {
           method: "DELETE",
           headers: {

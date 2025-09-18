@@ -30,7 +30,7 @@ const AdminUserForm = ({ id }) => {
       const fetchUser = async () => {
         try {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/admin/${id}`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/admin/${id}`
           );
           const data = await res.json();
           if (res.ok) {
@@ -81,8 +81,8 @@ const AdminUserForm = ({ id }) => {
 
     try {
       const url = id
-        ? `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/update/admin/${id}`
-        : `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/create/admin`;
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update/admin/${id}`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create/admin`;
 
       const method = id ? "PUT" : "POST";
 
@@ -201,7 +201,7 @@ const AdminUserForm = ({ id }) => {
             </div>
             <div className="w-[30%] flex items-center mt-0">
               <Checkbox
-              className="h-5 w-5 cursor-pointer"
+                className="h-5 w-5 cursor-pointer"
                 checked={role === "root"}
                 onCheckedChange={(checked) => {
                   setRole(checked ? "root" : "general");

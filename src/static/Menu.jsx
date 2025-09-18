@@ -62,7 +62,7 @@ export const Menu = [
       {
         name: "SubChild",
         icon: <SquarePlus size={20} />,
-        url: "/dashboard/create/subcategorieschild",
+        url: "/dashboard/create/subcategorychild",
       },
 
       {
@@ -116,11 +116,11 @@ export const Menu = [
         icon: <Layers2 size={20} />,
         url: "/dashboard/subcategories",
       },
-     
+
       {
         name: "SubChild",
         icon: <SquareStack size={20} />,
-        url: "/dashboard/subchild",
+        url: "/dashboard/subcategorychild",
       },
       {
         name: "Sliders",
@@ -143,7 +143,9 @@ export const Menu = [
         url: "/dashboard/orders",
       },
     ],
-    icon: <ShieldUser className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />,
+    icon: (
+      <ShieldUser className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />
+    ),
   },
   {
     name: "Product",

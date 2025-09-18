@@ -2,7 +2,7 @@ export default async function OrderDetailsPage({ params }) {
   const { id } = await params;
 
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/confirm/order?orderId=${id}`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/confirm/order?orderId=${id}`
   );
   const response = await request.json();
 

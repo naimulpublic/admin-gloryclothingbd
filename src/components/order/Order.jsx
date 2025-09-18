@@ -33,7 +33,7 @@ export default function AdminOrderView({ orderData }) {
   async function updateOrderStatus(orderId, newStatus) {
     const response = await fetch(
       `${
-        process.env.NEXT_PUBLIC_DOMAIN_URL
+        process.env.NEXT_PUBLIC_BACKEND_URL
       }/api/update/order/${encodeURIComponent(orderId)}`,
       {
         method: "PUT",

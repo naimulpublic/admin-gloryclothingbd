@@ -1,0 +1,132 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { Check, X } from "lucide-react";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "../../lib/utils";
+
+export function MultiSelect({
+  options = [],
+  selected = [],
+  onChange,
+  placeholder = "Select Subcategories",
+}) {
+  const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const triggerRef = useRef(null);
+  const [popoverWidth, setPopoverWidth] = useState("auto");
+
+  const safeSelected = Array.isArray(selected) ? selected : [];
+
+  useEffect(() => {
+    if (triggerRef.current) {
+      setPopoverWidth(`${triggerRef.current.offsetWidth}px`);
+    }
+  }, [open]);
+
+  const isSelected = (option) =>
+    safeSelected.some((item) => item.slug === option.slug);
+
+  const toggleOption = (option) => {
+    if (isSelected(option)) {
+      onChange(safeSelected.filter((item) => item.slug !== option.slug));
+    } else {
+      onChange([...safeSelected, option]);
+    }
+  };
+
+  const filteredOptions = options.filter(
+    (opt) =>
+      opt?.name?.toLowerCase()?.includes(searchQuery.toLowerCase()) ||
+      opt?.slug?.toLowerCase()?.includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="space-y-1 w-full">
+      {/* Selected Badges */}
+      <div className="flex flex-wrap gap-1">
+        {safeSelected.map((item, index) => (
+          <div
+            key={index}
+            className="flex items-center bg-green-100 rounded-xs px-1 text-xs md:text-sm font-semibold pl-2"
+          >
+            {item.name}
+            <button
+              type="button"
+              className="ml-1 h-4 w-4 flex items-center justify-center rounded-full bg-transparent hover:bg-red-600 hover:text-white cursor-pointer"
+              onClick={() => toggleOption(item)}
+            >
+              <X strokeWidth={3} className="h-3 w-3 font-semibold" />
+            </button>
+          </div>
+        ))}
+      </div>
+
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
+          <Button
+            ref={triggerRef}
+            variant="outline"
+            role="combobox"
+            className="w-full justify-between"
+          >
+            {safeSelected.length > 0
+              ? `${safeSelected.length} selected`
+              : placeholder}
+          </Button>
+        </PopoverTrigger>
+
+        <PopoverContent
+          className="p-2 overflow-auto scrollbar-thin" // overflow fix
+          style={{ width: popoverWidth, maxHeight: "250px" }} // popover max height fix
+          align="start"
+        >
+          {/* Search Input */}
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search..."
+            className="w-full mb-2 px-3 py-1 border rounded outline-none text-sm"
+          />
+
+          {/* Options List */}
+          <ScrollArea className="max-h-48">
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map((opt, index) => (
+                <button
+                  type="button"
+                  key={index}
+                  onClick={() => toggleOption(opt)}
+                  className={cn(
+                    "w-full flex items-center px-2 rounded-sm py-2 text-sm cursor-pointer hover:bg-muted",
+                    isSelected(opt) && "bg-muted"
+                  )}
+                >
+                  <span
+                    className={cn(
+                      " mr-2 h-4 w-4 flex items-center justify-center border border-gray-400 rounded-sm",
+                      isSelected(opt) ? "bg-primary text-white" : "bg-white"
+                    )}
+                  >
+                    {isSelected(opt) && <Check className="h-3 w-3" />}
+                  </span>
+                  {opt.name}
+                </button>
+              ))
+            ) : (
+              <p className="text-center text-sm text-muted">No options found</p>
+            )}
+          </ScrollArea>
+        </PopoverContent>
+      </Popover>
+    </div>
+  );
+}

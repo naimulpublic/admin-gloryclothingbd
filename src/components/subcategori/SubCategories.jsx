@@ -1,217 +1,263 @@
 "use client";
-
 import { useState, useMemo, useEffect, useRef } from "react";
-import { Pencil, Trash2, MoreHorizontal } from "lucide-react";
+import { Pencil, Trash2, MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
+  TableFooter,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Checkbox } from "../ui/checkbox";
 
-const SubcategoryTable = ({ subcategori }) => {
-  const [subcategories, setSubcategories] = useState(subcategori || []);
-  const [selectedLabel, setSelectedLabel] = useState("All");
-  const [loading, setLoading] = useState(false);
-  const [openMenu, setOpenMenu] = useState(null);
+import { toast } from "sonner";
+import { Edit } from "lucide-react";
+
+export default function SubCategoryView({ subcategorydata }) {
   const router = useRouter();
 
-  // Reference to the dropdown menu
+  const [data, setData] = useState(subcategorydata);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [openMenuId, setOpenMenuId] = useState(null);
   const menuRef = useRef(null);
 
-  // Unique label list generate
-  const labels = useMemo(() => {
-    const allLabels = subcategories.map((item) => item.label);
-    return ["All", ...Array.from(new Set(allLabels))];
-  }, [subcategories]);
+const filteredSubcategories = useMemo(() => {
+  if (!Array.isArray(data)) return [];
+  return data.filter(
+    (item) =>
+      item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.slug?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+}, [searchQuery, data]);
 
-  // Filter by selected label
-  const filteredSubcategories = useMemo(() => {
-    if (selectedLabel === "All") return subcategories;
-    return subcategories.filter((item) => item.label === selectedLabel);
-  }, [subcategories, selectedLabel]);
 
-  const handleEdit = (item) => {
-    router.push(`/dashboard/create/subcategories/${item._id}`);
+  const handleEdit = (id) => {
+    router.push(`/dashboard/create/subcategories/${id}`);
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this subcategory?")) return;
+    if (!confirm("Are you sure?? Delete this Subcategory Child??")) return;
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/subcategory/${id}`,
+      {
+        method: "DELETE",
+        credentials: "include",
+      }
+    );
+
+    const response = await res.json();
+
+    if (res.ok) {
+      toast.success(response.message);
+      setData((prev) => prev.filter((item) => item._id !== id));
+      setSelectedIds((prev) => prev.filter((itemId) => itemId !== id));
+    } else {
+      toast.error("Failed to delete subcategory");
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.length === 0) return;
+    if (!confirm("Are you sure you want to delete these subcategory?")) return;
 
     setLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/subcategory/${id}`,
-        { method: "DELETE" }
-      );
-      if (!response.ok) throw new Error("Failed to delete");
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/subcategory`,
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ids: selectedIds }),
+      }
+    );
 
-      const filtered = subcategories.filter((item) => item._id !== id);
-      setSubcategories(filtered);
-      alert("Subcategory deleted successfully!");
-    } catch (error) {
-      console.error("Failed to delete subcategory:", error);
-      alert("Failed to delete subcategory.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const toggleMenu = (id) => {
-    if (openMenu === id) {
-      setOpenMenu(null);
+    setLoading(false);
+    if (res.ok) {
+      toast.success("Selected subcategorychild deleted");
+      setData((prev) => prev.filter((item) => !selectedIds.includes(item._id)));
+      setSelectedIds([]);
     } else {
-      setOpenMenu(id);
+      toast.error("Failed to delete selected subcategorychild");
     }
   };
 
-  // Close the dropdown when clicking outside
+  const toggleSelectAll = () => {
+    if (selectedIds.length === filteredSubcategories.length) {
+      setSelectedIds([]);
+    } else {
+      setSelectedIds(filteredSubcategories.map((item) => item._id));
+    }
+  };
+
+  const toggleSelectItem = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((itemId) => itemId !== id) : [...prev, id]
+    );
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setOpenMenu(null);
+        setOpenMenuId(null);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4 text-center border-b pb-2">
-        Manage Subcategories
+    <div className="p-4">
+      <h2 className="text-xl font-medium text-center py-2 mb-4 shadow-md">
+        Manage Subcategory Child
       </h2>
 
-      {/* Dropdown for Filtering */}
-      <div className="mb-4">
-        <select
-          className="border rounded px-3 py-2"
-          value={selectedLabel}
-          onChange={(e) => setSelectedLabel(e.target.value)}
+      <div className="flex flex-col md:flex-row gap-2 mb-4">
+        <Input
+          placeholder="Search subcategories..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="max-w-md"
+        />
+        <Button
+          variant="destructive"
+          onClick={handleBulkDelete}
+          disabled={loading || selectedIds.length === 0}
+          className="ml-auto"
         >
-          {labels.map((label, index) => (
-            <option key={index} value={label}>
-              {label}
-            </option>
-          ))}
-        </select>
+          {loading ? "Deleting..." : `Delete (${selectedIds.length})`}
+        </Button>
       </div>
 
-      {/* Shadcn Table */}
       <div className="rounded-md border p-4">
         <Table>
-          <TableCaption className={"text-green-600"}>
-            A list of your subcategories.
-          </TableCaption>
           <TableHeader>
             <TableRow>
-              <TableHead>Subcategory Name</TableHead>
-
+              <TableHead className="w-[50px]">
+                <Checkbox
+                  checked={
+                    filteredSubcategories.length > 0 &&
+                    selectedIds.length === filteredSubcategories.length
+                  }
+                  onCheckedChange={toggleSelectAll}
+                />
+              </TableHead>
+              <TableHead>Name</TableHead>
               <TableHead>Slug</TableHead>
-
               <TableHead>Banner</TableHead>
-              <TableHead>subchild</TableHead>
-              <TableHead>Date</TableHead>
-              <TableHead>updated</TableHead>
-              <TableHead>Actions</TableHead>
+              <TableHead>Subcategory Child</TableHead>
+              <TableHead>Created At</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredSubcategories.map((item) => (
-              <TableRow key={item._id} className="relative">
-                <TableCell>{item.value}</TableCell>
-                <TableCell>{item.slug}</TableCell>
-
-                <TableCell>
-                  <img
-                    src={item.bannerUrl}
-                    alt="Banner"
-                    className="h-12 w-24 object-cover rounded"
-                  />
-                </TableCell>
-                <TableCell>
-                  {Array.isArray(item.subChild) && item.subChild.length > 0 ? (
-                    <ul>
-                      {item.subChild.map((child, index) => (
-                        <li key={index}>{child.name}</li>
+            {filteredSubcategories.length > 0 ? (
+              filteredSubcategories.map((item) => (
+                <TableRow key={item._id}>
+                  <TableCell>
+                    <Checkbox
+                      checked={selectedIds.includes(item._id)}
+                      onCheckedChange={() => toggleSelectItem(item._id)}
+                    />
+                  </TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.slug}</TableCell>
+                  <TableCell>
+                    {item.banner && (
+                      <img
+                        src={item.banner}
+                        alt="Banner"
+                        className="h-10 w-16 object-cover rounded"
+                      />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-col max-h-32 overflow-y-auto">
+                      {item.subchild.map((child, idx) => (
+                        <div
+                          key={idx}
+                          variant="secondary"
+                          className="px-2 mt-[2px] bg-green-100 "
+                        >
+                          {child.name}
+                        </div>
                       ))}
-                    </ul>
-                  ) : (
-                    "No Subchild"
-                  )}
-                </TableCell>
-                <TableCell>
-                  {new Date(item.createdAt)
-                    .toLocaleDateString("en-US", {
-                      year: "2-digit",
-                      month: "numeric",
-                      day: "numeric",
-                    })
-                    .replace(/\//g, "-")}
-                </TableCell>
-                <TableCell>
-                  {item.updatedAt
-                    ? new Date(item.updatedAt)
-                        .toLocaleDateString("en-US", {
-                          year: "2-digit",
-                          month: "numeric",
-                          day: "numeric",
-                        })
-                        .replace(/\//g, "-")
-                    : "Not updated"}
-                </TableCell>
-                <TableCell className="flex gap-2 items-center">
-                  {/* 3-dot (More Options) Button */}
-                  <button
-                    onClick={() => toggleMenu(item._id)}
-                    className="cursor-pointer flex items-center justify-center text-sm p-2 rounded hover:bg-gray-100"
-                  >
-                    <MoreHorizontal size={16} />
-                  </button>
-
-                  {/* Conditional Rendered Action Buttons */}
-                  {openMenu === item._id && (
-                    <div
-                      ref={menuRef}
-                      className="absolute bg-white border rounded shadow-md mt-2 w-32"
-                    >
-                      <button
-                        onClick={() => handleEdit(item)}
-                        className="cursor-pointer flex items-center gap-2 px-3 py-2 w-full text-left text-blue-600 hover:bg-gray-100"
-                      >
-                        <Pencil size={14} /> Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item._id)}
-                        className="cursor-pointer flex items-center gap-2 px-3 py-2 w-full text-left text-red-600 hover:bg-gray-100"
-                        disabled={loading}
-                      >
-                        {loading ? "Deleting..." : <Trash2 size={14} />} Delete
-                      </button>
                     </div>
-                  )}
+                  </TableCell>
+
+                  <TableCell>
+                    {new Date(item.createdAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          className="outline-none  p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                          type="button"
+                        >
+                          <MoreVertical className="h-5 w-5 text-gray-600 dark:text-gray-300 cursor-pointer" />
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-40 bg-white dark:bg-gray-900 shadow-lg rounded-lg p-1"
+                      >
+                        <DropdownMenuItem
+                          onClick={() => handleEdit(item._id)}
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer rounded-md transition-colors"
+                        >
+                          <Edit className="h-4 w-4 text-blue-500" />
+                          <span className="text-blue-500 dark:text-gray-200 font-medium">
+                            Edit
+                          </span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(item._id)}
+                          className="flex items-center gap-2 px-3 py-2 hover:bg-red-50 dark:hover:bg-red-900/30 cursor-pointer rounded-md transition-colors"
+                        >
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                          <span className="text-red-600 dark:text-red-400 font-medium">
+                            Delete
+                          </span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={7} className="text-center h-24">
+                  No subcategories found
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
           <TableFooter>
             <TableRow>
-              <TableCell colSpan={6}>Total Subcategories</TableCell>
-              <TableCell>{filteredSubcategories.length}</TableCell>
+              <TableCell className="text-green-600" colSpan={7}>
+                Total: {filteredSubcategories.length} subcategories
+              </TableCell>
             </TableRow>
           </TableFooter>
         </Table>
       </div>
     </div>
   );
-};
-
-export default SubcategoryTable;
+}

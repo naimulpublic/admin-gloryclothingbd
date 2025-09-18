@@ -53,7 +53,6 @@ export default function CuponView({ cupon }) {
     });
   }, [cupon, search, statusFilter]);
 
-
   const toggleSelect = (id) => {
     setSelectedSliders((prev) =>
       prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
@@ -62,7 +61,7 @@ export default function CuponView({ cupon }) {
 
   const handelDelete = async (id) => {
     const request = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/coupon/${id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/coupon/${id}`,
       {
         method: "DELETE",
       }
@@ -80,16 +79,19 @@ export default function CuponView({ cupon }) {
 
   const handleBulkDelete = async () => {
     if (selectedSliders.length === 0) return;
-  
+
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/coupons`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ids: selectedSliders }),
-      });
-  
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/coupons`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ ids: selectedSliders }),
+        }
+      );
+
       const result = await res.json();
       if (res.ok) {
         console.log(result.message);
@@ -102,7 +104,6 @@ export default function CuponView({ cupon }) {
       console.error("Bulk delete error:", error);
     }
   };
-  
 
   return (
     <>
@@ -198,7 +199,10 @@ export default function CuponView({ cupon }) {
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <EllipsisVertical className="cursor-pointer" strokeWidth={1}/>
+                      <EllipsisVertical
+                        className="cursor-pointer"
+                        strokeWidth={1}
+                      />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem className="cursor-pointer hover:bg-gray-100">

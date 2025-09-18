@@ -83,7 +83,7 @@ export default function LiveProducts({ data }) {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/products`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/products`,
         {
           method: "DELETE",
           headers: {
@@ -114,7 +114,7 @@ export default function LiveProducts({ data }) {
   const handleSingleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/product/${id}`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/product/${id}`,
       {
         method: "DELETE",
       }
@@ -227,12 +227,12 @@ export default function LiveProducts({ data }) {
                   .join("-")}
               </TableCell>
 
-              <TableCell >
-                <DropdownMenu >
+              <TableCell>
+                <DropdownMenu>
                   <DropdownMenuTrigger className="cursor-pointer outline-none">
                     <MoreVertical className="cursor-pointer" />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="cursor-pointer" >
+                  <DropdownMenuContent className="cursor-pointer">
                     <DropdownMenuItem
                       onClick={() => handleEdit(product._id)}
                       className="flex items-center gap-2 text-blue-600 hover:text-blue-600"

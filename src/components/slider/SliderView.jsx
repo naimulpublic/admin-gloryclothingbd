@@ -68,7 +68,7 @@ export default function SliderView({ Slider }) {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/sliders`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/sliders`,
         {
           method: "DELETE",
           headers: {
@@ -95,11 +95,10 @@ export default function SliderView({ Slider }) {
 
   const handleSingleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this slider?")) return;
-      
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/slider/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/slider/${id}`,
         {
           method: "DELETE",
         }

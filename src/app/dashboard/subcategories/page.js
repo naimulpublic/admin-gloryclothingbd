@@ -1,13 +1,14 @@
-import SubCategories from "@/components/subcategori/SubCategories";
-import { GetSubCategoriesApi } from "@/next/api/NextjsApi";
-import React from "react";
+import SubCategoryView from "@/components/subcategori/SubCategories";
+
 
 export default async function page() {
-  const subcategori = await GetSubCategoriesApi();
+  const req = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/subcategorys`)
+  const res = await req.json()
+  
   
   return (
     <div>
-      <SubCategories subcategori={subcategori} />
+      <SubCategoryView subcategorydata={res} />
     </div>
   );
 }

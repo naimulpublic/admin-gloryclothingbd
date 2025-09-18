@@ -4,7 +4,7 @@ import Order from "@/components/order/Order";
 export default async function page({ params }) {
   const { status } = await params;
   const req = await fetch(
-    `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/orders/admin?status=${status}`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/orders/admin?status=${status}`
   );
   const orders = await req.json();
   return (

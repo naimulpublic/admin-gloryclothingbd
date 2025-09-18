@@ -21,7 +21,7 @@ const SliderForm = ({ id }) => {
     const fetchSlider = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/slider/${id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/slider/${id}`
         );
         const data = await res.json();
         if (res.ok) {
@@ -63,8 +63,8 @@ const SliderForm = ({ id }) => {
     try {
       const res = await fetch(
         id
-          ? `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/update/slider/${id}`
-          : `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/create/slider`,
+          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update/slider/${id}`
+          : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create/slider`,
         {
           method: id ? "PUT" : "POST",
           body: formData,

@@ -25,7 +25,7 @@ const CreateCoupon = ({ id }) => {
       if (id) {
         try {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/coupon/${id}`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/coupon/${id}`
           );
           const data = await res.json();
           if (res.ok) {
@@ -60,8 +60,8 @@ const CreateCoupon = ({ id }) => {
 
     try {
       const url = id
-        ? `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/update/coupon/${id}`
-        : `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/create/coupon`;
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update/coupon/${id}`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create/coupon`;
 
       const method = id ? "PUT" : "POST";
 
@@ -130,8 +130,8 @@ const CreateCoupon = ({ id }) => {
           </div>
           <div className="relative w-[33.33%]">
             <input
-            name="cuponCode"
-            type="text"
+              name="cuponCode"
+              type="text"
               value={form.cuponCode}
               onChange={handleChange}
               required
@@ -196,7 +196,11 @@ const CreateCoupon = ({ id }) => {
         </div>
 
         {/* Submit Button */}
-        <button className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-md font-medium cursor-pointer flex items-center gap-2" type="submit" disabled={loading}>
+        <button
+          className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-md font-medium cursor-pointer flex items-center gap-2"
+          type="submit"
+          disabled={loading}
+        >
           {loading ? (
             <>
               <Loader strokeWidth={2} className="h-6 w-6  animate-spin" />

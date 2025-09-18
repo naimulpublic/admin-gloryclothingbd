@@ -17,27 +17,32 @@ import { X } from "lucide-react";
 import { Loader } from "lucide-react";
 import { productSizes } from "@/static/ProductSize";
 import { UploadCloud } from "lucide-react";
-import { MultiSelect } from "../custom/MultiSelect";
-import { revalidateProducts } from "@/utils/Revalidate";
+
 import { toast } from "sonner";
+import SubmitButton from "@/custom/submit/Submit";
+import KeyValue from "@/custom/keyvaluefild/KeyValue";
+import { CInput } from "@/custom/input/Input";
+import { CInputArea } from "@/custom/input/InputArea";
+import CSelect from "@/custom/select/Select";
+import { MultiSelect } from "@/custom/select/MultiSelect";
+import { ChevronDown } from "lucide-react";
+import { ImagePlus } from "lucide-react";
 
 export default function ProductForm({
   id,
   brandData = [],
   categoriesData = [],
-  
-  subChild,
 }) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [metaTitle, setMetaTitle] = useState("");
   const [metaDescription, setMetaDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [mrp, setMrp] = useState("");
-  const [brand, setBrand] = useState("");
+  const [price, setPrice] = useState(0);
+  const [mrp, setMrp] = useState(0);
+  const [brand, setBrand] = useState({ name: "", slug: "" });
+  const [category, setCategory] = useState({ name: "", slug: "" });
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [categorySlug, setCategorySlug] = useState("");
+
   const [defaultColor, setDefaultColor] = useState("");
   const [isFeatured, setIsFeatured] = useState(false);
 
@@ -45,23 +50,11 @@ export default function ProductForm({
   const [specification, setSpecification] = useState([{ key: "", value: "" }]);
   const [highLight, setHighLight] = useState([{ key: "", value: "" }]);
   const [boxContent, setBoxContent] = useState([{ key: "", value: "" }]);
-  const [tags, setTags] = useState([]);
-  const [selectsubchild, setSelectsubchild] = useState([]);
+  const [subchild, setSubchild] = useState([]);
+
   const [measurementImage, setMeasurementImage] = useState(null);
-
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedSubcategories, setSelectedSubcategories] = useState([]);
-
-  const categoryObj = categoriesData.find(
-    (cat) => cat.slug === selectedCategory?.slug
-  );
-
-  const filteredSubcategories = selectedCategory
-    ? categoriesData.find((cat) => cat.slug === selectedCategory.slug)
-        ?.subcategories || []
-    : [];
-    
-  // new function end
+  const [subcategoriesOptions, setSubcategoriesOptions] = useState([]);
+  const [subchildOptions, setSubchildOptions] = useState([]);
 
   const [colorVariants, setColorVariants] = useState([
     {
@@ -71,7 +64,6 @@ export default function ProductForm({
       images: [],
     },
   ]);
-  const optionssubchild = subChild || [];
 
   const [isLoading, setIsLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -91,7 +83,7 @@ export default function ProductForm({
       const fetchProducts = async () => {
         try {
           const res = await fetch(
-            `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/get/product/${id}`
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/product/${id}`
           );
 
           if (res.ok) {
@@ -124,14 +116,12 @@ export default function ProductForm({
                   }))
                 : []
             );
-            setSelectsubchild(
-              Array.isArray(data.subChild)
-                ? data.subChild.map((item) => ({
-                    name: item.name || "",
-                    slug: item.slug || "",
-                  }))
-                : []
-            );
+            Array.isArray(data.subChild)
+              ? data.subChild.map((item) => ({
+                  name: item.name || "",
+                  slug: item.slug || "",
+                }))
+              : [];
 
             setSpecification(
               Array.isArray(data.specification)
@@ -148,7 +138,6 @@ export default function ProductForm({
                 ? [...data.boxContent]
                 : [{ key: "", value: "" }]
             );
-            setTags(Array.isArray(data.tags) ? [...data.tags] : []);
 
             const mappedVariants = Array.isArray(data.colorVariants)
               ? data.colorVariants.map((variant) => ({
@@ -183,6 +172,43 @@ export default function ProductForm({
     }
   }, [id]);
 
+  useEffect(() => {
+    if (category?.slug) {
+      const selectedCategory = categoriesData.find(
+        (cat) => cat.slug === category.slug
+      );
+      if (selectedCategory) {
+        setSubcategoriesOptions(selectedCategory.subcategories || []);
+      } else {
+        setSubcategoriesOptions([]);
+      }
+
+      if (subcategory.length === 0) {
+        setSubchildOptions([]);
+        setSubcategory([]);
+        setSubchild([]);
+      }
+    }
+  }, [category, categoriesData]);
+
+  useEffect(() => {
+    if (subcategory.length > 0) {
+      let allSubchild = [];
+      subcategory.forEach((sub) => {
+        const selectedSub = subcategoriesOptions.find(
+          (item) => item.slug === sub.slug
+        );
+        if (selectedSub && selectedSub.subchild) {
+          allSubchild = [...allSubchild, ...selectedSub.subchild];
+        }
+      });
+      setSubchildOptions(allSubchild);
+    } else {
+      setSubchildOptions([]);
+      setSubchild([]);
+    }
+  }, [subcategory, subcategoriesOptions]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -198,21 +224,18 @@ export default function ProductForm({
     setIsLoading(true);
 
     const formData = new FormData();
-    const filteredSubChild = selectsubchild.map((item) => ({
-      name: item.name,
-      slug: item.slug,
-    }));
-    formData.append("subChild", JSON.stringify(filteredSubChild));
+    formData.append("subChild", JSON.stringify(subchild));
+
     formData.append("name", name);
     formData.append("slug", slug);
     formData.append("metaTitle", metaTitle);
     formData.append("metaDescription", metaDescription);
     formData.append("price", price);
-    formData.append("mrp", mrp);
-    formData.append("brand", brand);
     formData.append("description", description);
-    formData.append("category", category);
-    formData.append("categorySlug", categorySlug);
+    formData.append("mrp", mrp);
+    formData.append("brand", JSON.stringify(brand));
+    formData.append("category", JSON.stringify(category));
+
     formData.append("defaultColor", defaultColor);
     formData.append("isFeatured", isFeatured);
     formData.append("measurementImage", measurementImage);
@@ -221,7 +244,6 @@ export default function ProductForm({
     formData.append("specification", JSON.stringify(specification));
     formData.append("highLight", JSON.stringify(highLight));
     formData.append("boxContent", JSON.stringify(boxContent));
-    formData.append("tags", JSON.stringify(tags));
 
     colorVariants.forEach((variant, index) => {
       formData.append(`colors[${index}][colorName]`, variant.name);
@@ -234,8 +256,8 @@ export default function ProductForm({
     });
     try {
       const url = id
-        ? `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/update/product/${id}`
-        : `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/create/product`;
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update/product/${id}`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create/product`;
       const method = id ? "PUT" : "POST";
 
       const response = await fetch(url, {
@@ -246,7 +268,6 @@ export default function ProductForm({
       if (response.ok) {
         const result = await response.json();
         toast.success(result.message);
-        await revalidateProducts();
       } else {
         toast.error("Failed to submit product.");
       }
@@ -255,16 +276,6 @@ export default function ProductForm({
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleColorVariendSizes = (index, field, value) => {
-    const updated = [...colorVariants];
-    if (field === "size") {
-      updated[index][field] = value.split(",").map((s) => s.trim());
-    } else {
-      updated[index][field] = value;
-    }
-    setColorVariants(updated);
   };
 
   const handleColorVariantChange = (index, field, value) => {
@@ -328,178 +339,128 @@ export default function ProductForm({
     setSlug(generatedSlug);
   };
 
-
+  const removeMeasurement = () => {
+    setMeasurementImage(null);
+    setPreviewUrl(null);
+  };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="mb-40 space-y-4 lg:space-y-8 w-full px-2 lg:px-6 bg-white rounded shadow overflow-hidden"
+      className="space-y-4 w-full px-2 lg:px-6 bg-white rounded shadow overflow-hidden"
     >
       <RoutePath />
       <h2 className=" text-sm lg:text-xl font-medium lg:font-semibold my-2 lg:my-4 text-center border py-1 lg:py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
         {id ? "Edit" : "Create New"} Product
       </h2>
-      <div className="flex gap-1 lg:gap-2 pt-4">
-        <div className="w-1/2">
-          <div className="relative">
-            <input
-              id="floating_outlined1"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              type="text"
-              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              {...(!id ? { required: true } : {})}
-            />
-            <label
-              htmlFor="floating_outlined1"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Enter Product Name <span className="text-red-500">*</span>{" "}
-            </label>
-          </div>
+      <div className="md:flex gap-2">
+        <div className="md:w-1/2 mt-4 md:mt-0">
+          <CInput
+            label={
+              <div>
+                Enter Product Name <span className="text-red-500">*</span>
+              </div>
+            }
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            {...(!id ? { required: true } : {})}
+          />
         </div>
-        <div className="w-1/2 relative">
-          <div className="relative">
-            <input
-              id="floating_outlined"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-              type="text"
-              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              {...(!id ? { required: true } : {})}
-            />
-            <label
-              htmlFor="floating_outlined"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Genarate Slug <span className="text-red-500">*</span>{" "}
-            </label>
-          </div>
-
+        <div className=" md:w-1/2 relative mt-2 sm:mt-0">
+          <CInput
+            label={
+              <div>
+                Genarate Slug <span className="text-red-500">*</span>
+              </div>
+            }
+            id="slug"
+            value={slug}
+            onChange={(e) => setSlug(e.target.value)}
+            {...(!id ? { required: true } : {})}
+          />
           <button
             type="button"
             onClick={generateSlug}
-            className="p-2.5 bg-orange-500 rounded-r-[9px] absolute top-[1px] right-[1px] hover:bg-orange-600 cursor-pointer"
+            className="p-[10px] absolute top-[0px] text-white font-bold bg-orange-500 rounded-r-lg right-0 cursor-pointer"
           >
-            <RefreshCcw className="text-white" size={20} />
+            <RefreshCcw size={20} />
           </button>
         </div>
       </div>
-      <div className="flex gap-1 lg:gap-2">
-        <div className="w-1/2">
-          <div className="relative">
-            <input
-              id="floating_outlined3"
-              value={metaTitle}
-              onChange={(e) => setMetaTitle(e.target.value)}
-              type="text"
-              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="floating_outlined3"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Enter Meta Title
-            </label>
-          </div>
+      <div className="md:flex gap-2">
+        <div className="md:w-1/2 ">
+          <CInput
+            label={
+              <div>
+                Meta Title <span>*</span>
+              </div>
+            }
+            required={false}
+            value={metaTitle}
+            onChange={(e) => setMetaTitle(e.target.value)}
+            id="Meta Title"
+          />
         </div>
-        <div className="w-1/2">
-          <div className="relative">
-            <textarea
-              rows="1"
-              id="floating_outlined4"
-              value={metaDescription}
-              onChange={(e) => setMetaDescription(e.target.value)}
-              type="text"
-              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="floating_outlined4"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Enter Meta Discription
-            </label>
-          </div>
-          <Label className="p-2"></Label>
+        <div className="md:w-1/2 mt-2 md:mt-0">
+          <CInputArea
+            label={
+              <div>
+                Meta Discription <span>*</span>
+              </div>
+            }
+            required={false}
+            value={metaDescription}
+            onChange={(e) => setMetaDescription(e.target.value)}
+            id="Meta Discription"
+          />
         </div>
       </div>
-      <div className="flex gap-1 lg:gap-2">
+      <div className="flex gap-1 md:gap-2">
         <div className="w-1/2">
-          <div className="relative">
-            <input
-              id="floating_outlined5"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              type="number"
-              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              {...(!id ? { required: true } : {})}
-            />
-            <label
-              htmlFor="floating_outlined5"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Enter Product Price <span className="text-red-500">*</span>{" "}
-            </label>
-          </div>
+          <CInput
+            label={
+              <div>
+                Price <span className="text-red-500">*</span>
+              </div>
+            }
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            id="Price"
+            type="number"
+          />
         </div>
         <div className="w-1/2">
-          <div className="relative">
-            <input
-              type="number"
-              id="floating_outlined6"
-              value={mrp}
-              onChange={(e) => setMrp(e.target.value)}
-              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              {...(!id ? { required: true } : {})}
-            />
-            <label
-              htmlFor="floating_outlined6"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Enter Product MRP <span className="text-red-500">*</span>
-            </label>
-          </div>
+          <CInput
+            label={
+              <div>
+                MRP <span className="text-red-500">*</span>
+              </div>
+            }
+            value={mrp}
+            onChange={(e) => setMrp(e.target.value)}
+            id="MRP"
+            type="number"
+            {...(!id ? { required: true } : {})}
+          />
         </div>
       </div>
-      <div className="flex gap-1 lg:gap-2">
-        <div className="w-1/2">
-          <div className="relative">
-            <Select
-              value={brand}
-              onValueChange={(value) => setBrand(value)}
-              id="floating_outlined6"
-              type="text"
-              className="outline-none block px-2.5 pb-3 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-              {...(!id ? { required: true } : {})}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a brand" />
-              </SelectTrigger>
-              <SelectContent>
-                {brandData.map((item) => (
-                  <SelectItem key={item._id} value={item.name}>
-                    {item.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <label
-              htmlFor="floating_outlined6"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Select Brand <span className="text-red-500">*</span>
-            </label>
-          </div>
+
+      <div className="md:flex gap-1 lg:gap-2">
+        <div className="md:w-1/2">
+          <CSelect
+            placeholder="Select Brands"
+            id="brand"
+            options={brandData.map((item) => ({
+              name: item.name,
+              slug: item.slug,
+            }))}
+            selected={brand}
+            onChange={(val) => setBrand(val)}
+          />
         </div>
 
-        <div className="w-1/2">
+        <div className="mt-2 md:mt-0 md:w-1/2">
           <div className="relative">
             <textarea
               rows={1}
@@ -520,371 +481,118 @@ export default function ProductForm({
           </div>
         </div>
       </div>
-      <div className="flex gap-1 lg:gap-2">
-        <div className="w-1/2">
-          <div className="relative">
-            <Select
-              className="block px-2.5 pb-2 pt-3 "
-              type="text"
-              id="floating_outlined10"
-              value={selectedCategory ? JSON.stringify(selectedCategory) : ""}
-              onValueChange={(value) => {
-                const parsedValue = JSON.parse(value);
-                setSelectedCategory(parsedValue);
-                setCategory(parsedValue.name); // Update the main category field
-                setCategorySlug(parsedValue.slug);
-              }}
-              {...(!id ? { required: true } : {})}
-            >
-              <SelectTrigger className="w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer">
-                <SelectValue placeholder="Select a category" />
-              </SelectTrigger>
-              <SelectContent>
-                {categoriesData.map((cat) => (
-                  <SelectItem
-                    key={cat._id}
-                    value={JSON.stringify({ slug: cat.slug, name: cat.name })}
-                  >
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <label
-              htmlFor="floating_outlined10"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Select Product Category <span className="text-red-500">*</span>
-            </label>
-          </div>
+
+      <div className="md:flex gap-1 lg:gap-2">
+        <div className="md:w-1/2">
+          <CSelect
+            placeholder="Seclect Category"
+            id="category"
+            options={categoriesData.map((item) => ({
+              name: item.name,
+              slug: item.slug,
+            }))}
+            selected={category}
+            onChange={(val) => setCategory(val)}
+          />
         </div>
 
-        <div className=" w-1/2">
-          <Label className="py-3 px-2 rounded-sm  border-b mb-1">
-            Enter Product Subcategory <span className="text-red-500">*</span>
-          </Label>
+        <div className="mt-2 md:mt-0  md:w-1/2">
           <MultiSelect
-            options={filteredSubcategories.map((sub) => ({
-              value: sub.name,
+            options={subcategoriesOptions.map((sub) => ({
+              name: sub.name,
               slug: sub.slug,
             }))}
             selected={subcategory}
             onChange={setSubcategory}
-            className="w-full"
+            placeholder={
+              <div className="cursor-pointer flex items-center justify-between w-full">
+                <div>
+                  Select Subcategory <span className="text-red-500">*</span>
+                </div>
+                <ChevronDown />
+              </div>
+            }
           />
         </div>
       </div>
-      <div className="flex gap-1 lg:gap-2">
-        <div className="w-1/2">
+
+      <div className="md:flex gap-1 lg:gap-2">
+        <div className="md:w-1/2">
           <MultiSelect
-            options={optionssubchild}
-            selected={selectsubchild}
-            onChange={setSelectsubchild}
-            placeholder="Select subchild"
+            options={subchildOptions.map((child) => ({
+              name: child.name,
+              slug: child.slug,
+            }))}
+            selected={subchild}
+            onChange={setSubchild}
+            placeholder={
+              <div className="cursor-pointer flex items-center justify-between w-full">
+                <div>
+                  Select Subcategory Child{" "}
+                  <span className="text-red-500">*</span>
+                </div>
+                <ChevronDown />
+              </div>
+            }
           />
         </div>
 
-        <div className="w-1/2 flex items-center lg:gap-2">
-          <div className="w-full">
-            <div className="relative">
-              <input
-                id="floating_outlined20"
-                value={defaultColor}
-                onChange={(e) => setDefaultColor(e.target.value)}
-                type="text"
-                className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                placeholder=" "
-                {...(!id ? { required: true } : {})}
-              />
-              <label
-                htmlFor="floating_outlined20"
-                className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-              >
-                Enter Default Color <span className="text-red-500">*</span>
+        <div className="md:w-1/2 mt-2 md:mt-0">
+          <p className="test-sm md:text-md md:font-medium py-0.5 md:py-1 border border-green-200 rounded-xs bg-green-50 text-center mb-2">
+            Measurement Image
+          </p>
+
+          <div className="flex items-center">
+            <div className="relative w-1/2">
+              <label className="relative w-20 h-20 lg:w-24 lg:h-24 p-1 rounded-sm overflow-hidden border-dashed border border-gray-300 flex items-center justify-center cursor-pointer hover:border-green-500">
+                {previewUrl ? (
+                  <>
+                    <img
+                      src={previewUrl}
+                      alt="Measurement Preview"
+                      className="w-full h-full rounded-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeMeasurement();
+                      }}
+                      className="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-red-600"
+                    >
+                      <X className="w-4 h-4 cursor-pointer" />
+                    </button>
+                  </>
+                ) : (
+                  <ImagePlus size={24} className="text-gray-400" />
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
               </label>
             </div>
           </div>
         </div>
       </div>
 
-      <div>
-        <h4 className="font-semibold text-xl mb-8 shadow text-center p-2 ">
-          Porduct Specification!
-        </h4>
-        {specification.map((item, index) => (
-          <div key={index} className="flex gap-2 mb-2">
-            <div className="flex flex-col w-full">
-              <div className="relative">
-                <input
-                  id={`floating_outlined40_${index}`}
-                  value={item.key}
-                  onChange={(e) => {
-                    const updated = [...specification];
-                    updated[index].key = e.target.value;
-                    setSpecification(updated); // Update the specification state
-                  }}
-                  type="text"
-                  className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor={`floating_outlined40_${index}`}
-                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                >
-                  Enter Key <span className="text-red-500">*</span>{" "}
-                </label>
-              </div>
-            </div>
-            <div className="flex flex-col w-full">
-              <div className="relative">
-                <input
-                  id={`floating_outlined454_${index}`}
-                  value={item.value}
-                  onChange={(e) => {
-                    const updated = [...specification];
-                    updated[index].value = e.target.value;
-                    setSpecification(updated); // Update the specification state
-                  }}
-                  type="text"
-                  className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor={`floating_outlined454_${index}`}
-                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                >
-                  Enter Value <span className="text-red-500">*</span>{" "}
-                </label>
-              </div>
-            </div>
-            {specification.length > 1 && (
-              <button
-                type="button"
-                onClick={() => {
-                  const updated = [...specification];
-                  updated.splice(index, 1); // remove this item
-                  setSpecification(updated);
-                }}
-                className="text-red-500 hover:text-red-700 font-bold text-xl px-2"
-                title="Remove this field"
-              >
-                <X className="cursor-pointer" />
-              </button>
-            )}
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={
-            () => setSpecification([...specification, { key: "", value: "" }]) // Add a new specification field
-          }
-          className="text-sm hover:text-blue-500 cursor-pointer hover:underline"
-        >
-          Add Specification
-        </button>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-xl mb-8 shadow text-center p-2">
-          Product Highlight!
-        </h4>
-        {highLight.map((item, index) => (
-          <div key={index} className="flex gap-2 mb-2">
-            <div className="flex flex-col w-full">
-              <div className="relative">
-                <input
-                  id={`floating_outlined547${index}`}
-                  value={item.key}
-                  onChange={(e) => {
-                    const updated = [...highLight];
-                    updated[index].key = e.target.value;
-                    setHighLight(updated);
-                  }}
-                  type="text"
-                  className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor={`floating_outlined547${index}`}
-                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                >
-                  Enter Key <span className="text-red-500">*</span>
-                </label>
-              </div>
-            </div>
-
-            <div className="flex flex-col w-full">
-              <div className="relative">
-                <input
-                  id={`floating${index}`}
-                  value={item.value}
-                  onChange={(e) => {
-                    const updated = [...highLight];
-                    updated[index].value = e.target.value;
-                    setHighLight(updated);
-                  }}
-                  type="text"
-                  className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor={`floating${index}`}
-                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                >
-                  Enter Value <span className="text-red-500">*</span>
-                </label>
-              </div>
-            </div>
-            {highLight.length > 1 && (
-              <button
-                type="button"
-                onClick={() => {
-                  const updated = [...highLight];
-                  updated.splice(index, 1); // remove this item
-                  setHighLight(updated);
-                }}
-                className="text-red-500 hover:text-red-700 font-bold text-xl px-2"
-                title="Remove this field"
-              >
-                <X className="cursor-pointer" />
-              </button>
-            )}
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() => setHighLight([...highLight, { key: "", value: "" }])}
-          className="text-sm hover:text-blue-500 cursor-pointer hover:underline"
-        >
-          Add Highlight
-        </button>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-xl mb-8 shadow text-center p-2">
-          Box Content
-        </h4>
-        {boxContent.map((item, index) => (
-          <div key={index} className="flex gap-2 mb-2">
-            <div className="flex flex-col w-full">
-              <div className="relative">
-                <input
-                  id={`floatingbox${index}`}
-                  value={item.key}
-                  onChange={(e) => {
-                    const updated = [...boxContent];
-                    updated[index].key = e.target.value;
-                    setBoxContent(updated);
-                  }}
-                  type="text"
-                  className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor={`floatingbox${index}`}
-                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                >
-                  Enter Key <span className="text-red-500">*</span>{" "}
-                </label>
-              </div>
-            </div>
-            <div className="flex flex-col w-full">
-              <div className="relative">
-                <input
-                  id={`floating_boxvalue${index}`}
-                  value={item.value}
-                  onChange={(e) => {
-                    const updated = [...boxContent];
-                    updated[index].value = e.target.value;
-                    setBoxContent(updated);
-                  }}
-                  type="text"
-                  className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                  placeholder=" "
-                />
-                <label
-                  htmlFor={`floating_boxvalue${index}`}
-                  className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                >
-                  Enter Value <span className="text-red-500">*</span>{" "}
-                </label>
-              </div>
-            </div>
-            {boxContent.length > 1 && (
-              <button
-                type="button"
-                onClick={() => {
-                  const updated = [...boxContent];
-                  updated.splice(index, 1); // remove this item
-                  setBoxContent(updated);
-                }}
-                className="text-red-500 hover:text-red-700 font-bold text-xl px-2"
-                title="Remove this field"
-              >
-                <X className="cursor-pointer" />
-              </button>
-            )}
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={() => setBoxContent([...boxContent, { key: "", value: "" }])}
-          className="text-sm hover:text-blue-500 cursor-pointer hover:underline"
-        >
-          Add Box Content
-        </button>
-      </div>
-
-      <div>
-        <h4 className="font-semibold text-xl mb-8 shadow text-center p-2">
-          Tags Keywords & Mesuarment Image
-        </h4>
-
-        <div className="flex items-center gap-1 lg:gap-2">
-          <div className="relative w-1/2">
-            <input
-              id="floating_tag"
-              value={tags.join(",")}
-              onChange={(e) =>
-                setTags(e.target.value.split(",").map((t) => t.trim()))
-              }
-              type="text"
-              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="floating_tag"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Enter tags
-            </label>
-          </div>
-          <div className="relative w-1/2">
-            <input
-              id="floating_img"
-              onChange={handleFileChange}
-              type="file"
-              className="block px-2.5 pb-2 pt-3 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-              placeholder=" "
-            />
-            <label
-              htmlFor="floating_img"
-              className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-            >
-              Mesuarment Image
-            </label>
-            {previewUrl && (
-              <img
-                src={previewUrl}
-                alt="Measurement Preview"
-                width={200}
-                height={200}
-                className="w-16 h-10 m-1"
-              />
-            )}
-          </div>
-        </div>
-      </div>
+      <KeyValue
+        items={specification}
+        setItems={setSpecification}
+        title="Product Specification"
+      />
+      <KeyValue
+        items={highLight}
+        setItems={setHighLight}
+        title="Product Highlight"
+      />
+      <KeyValue
+        items={boxContent}
+        setItems={setBoxContent}
+        title="Box Content "
+      />
 
       <div className="">
         <div className="mt-4 relative">
@@ -1071,28 +779,9 @@ export default function ProductForm({
           )}
         </Label>
       </div>
-      <div
-        type="submit"
-        disabled={isLoading}
-        className={`flex  font-semibold cursor-pointer py-4 ${
-          isLoading ? "opacity-50 cursor-not-allowed" : ""
-        }`}
-      >
-        <button className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 right-2 top-2 text-lg font-semibold cursor-pointer flex items-center gap-2">
-          {isLoading ? (
-            <>
-              <Loader strokeWidth={3} className="h-6 w-6  animate-spin" />
-              PROCESSING...
-            </>
-          ) : id ? (
-            "UPDATE PRODUCT"
-          ) : (
-            <>
-              <UploadCloud className="h-5 w-5" />
-              PUBLISH PRODUCT
-            </>
-          )}
-        </button>
+
+      <div className="mb-10">
+        <SubmitButton id={id} isLoading={isLoading} name="Product" />
       </div>
     </form>
   );

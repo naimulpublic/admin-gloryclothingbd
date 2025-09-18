@@ -19,7 +19,7 @@ export default async function Header() {
   async function getAdminInfo() {
     const cookieStore = await cookies();
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/admin/info`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/admin/info`,
       {
         headers: {
           Cookie: cookieStore.toString(),

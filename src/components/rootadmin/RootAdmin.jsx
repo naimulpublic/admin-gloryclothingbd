@@ -53,7 +53,9 @@ export default function RootAdmin({ rootAdmin }) {
   const handleBulkDelete = async () => {
     if (selectedSliders.length === 0) return;
 
-    const confirmDelete = confirm(`Are you sure you want to delete ${selectedSliders.length} admins?`);
+    const confirmDelete = confirm(
+      `Are you sure you want to delete ${selectedSliders.length} admins?`
+    );
     if (!confirmDelete) return;
 
     try {
@@ -61,7 +63,7 @@ export default function RootAdmin({ rootAdmin }) {
 
       // Send DELETE request to backend for bulk deletion
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/admins`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/admins`,
         {
           method: "DELETE",
           headers: {
@@ -74,7 +76,9 @@ export default function RootAdmin({ rootAdmin }) {
       if (!response.ok) throw new Error("Failed to delete admins");
 
       // Remove the deleted admins from the state
-      setAdmins((prev) => prev.filter((admin) => !selectedSliders.includes(admin._id)));
+      setAdmins((prev) =>
+        prev.filter((admin) => !selectedSliders.includes(admin._id))
+      );
       setSelectedSliders([]); // Clear selected sliders
       alert("Admins deleted successfully");
     } catch (error) {
@@ -103,7 +107,7 @@ export default function RootAdmin({ rootAdmin }) {
     setLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/admin/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/admin/${id}`,
         { method: "DELETE" }
       );
       if (!response.ok) throw new Error("Failed to delete admin");
@@ -178,7 +182,7 @@ export default function RootAdmin({ rootAdmin }) {
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Admin</TableHead>
-          
+
             <TableHead>Created At</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -202,7 +206,7 @@ export default function RootAdmin({ rootAdmin }) {
               <TableCell>{admin.name}</TableCell>
               <TableCell>{admin.email}</TableCell>
               <TableCell>{admin.adminRole}</TableCell>
-              
+
               <TableCell>
                 {new Date(admin.createdAt).toLocaleDateString()}
               </TableCell>
