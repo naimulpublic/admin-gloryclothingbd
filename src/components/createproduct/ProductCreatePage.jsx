@@ -1,22 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Input } from "../ui/input";
+
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import { RefreshCcw } from "lucide-react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "../ui/select";
+
 import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { X } from "lucide-react";
-import { Loader } from "lucide-react";
-import { productSizes } from "@/static/ProductSize";
-import { UploadCloud } from "lucide-react";
 
 import { toast } from "sonner";
 import SubmitButton from "@/custom/submit/Submit";
@@ -27,6 +18,7 @@ import CSelect from "@/custom/select/Select";
 import { MultiSelect } from "@/custom/select/MultiSelect";
 import { ChevronDown } from "lucide-react";
 import { ImagePlus } from "lucide-react";
+import ColorVariants from "./ColorVarient";
 
 export default function ProductForm({
   id,
@@ -250,8 +242,8 @@ export default function ProductForm({
       formData.append(`colors[${index}][quantity]`, variant.quantity);
       formData.append(`colors[${index}][sizes]`, variant.size.join(","));
 
-      variant.images.forEach((file) => {
-        formData.append(`colors[${index}][images]`, file);
+      variant.images.forEach((img) => {
+        formData.append(`colors[${index}][images]`, img.file);
       });
     });
     try {
@@ -278,58 +270,6 @@ export default function ProductForm({
     }
   };
 
-  const handleColorVariantChange = (index, field, value) => {
-    const updated = [...colorVariants];
-    updated[index][field] = value;
-
-    if (field === "category") {
-      updated[index]["size"] = []; // category পরিবর্তন হলে size reset হবে
-    }
-
-    setColorVariants(updated);
-  };
-
-  const handleSizeToggle = (index, size) => {
-    const updated = [...colorVariants];
-    const sizes = updated[index].size;
-
-    if (sizes.includes(size)) {
-      updated[index].size = sizes.filter((s) => s !== size);
-    } else {
-      updated[index].size = [...sizes, size];
-    }
-
-    setColorVariants(updated);
-  };
-
-  const handleImageChange = (index, files) => {
-    const updated = [...colorVariants];
-    updated[index].images = Array.from(files);
-    setColorVariants(updated);
-  };
-
-  const addColorVariant = () => {
-    if (colorVariants.length >= 5) {
-      toast.error("Maximum 5 color variants allowed!");
-      return;
-    }
-    setColorVariants([
-      ...colorVariants,
-      {
-        name: "",
-        quantity: 0,
-        size: [],
-        images: [],
-      },
-    ]);
-  };
-
-  const removeColorVariant = (index) => {
-    const updated = [...colorVariants];
-    updated.splice(index, 1);
-    setColorVariants(updated);
-  };
-
   const generateSlug = () => {
     const generatedSlug = name
       .toLowerCase()
@@ -350,7 +290,7 @@ export default function ProductForm({
       className="space-y-4 w-full px-2 lg:px-6 bg-white rounded shadow overflow-hidden"
     >
       <RoutePath />
-      <h2 className=" text-sm lg:text-xl font-medium lg:font-semibold my-2 lg:my-4 text-center border py-1 lg:py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+      <h2 className=" text-sm md:text-lg font-medium text-center border py-1 lg:py-1.5 rounded-xs select-none bg-green-100 border-green-300">
         {id ? "Edit" : "Create New"} Product
       </h2>
       <div className="md:flex gap-2">
@@ -544,7 +484,7 @@ export default function ProductForm({
 
           <div className="flex items-center">
             <div className="relative w-1/2">
-              <label className="relative w-20 h-20 lg:w-24 lg:h-24 p-1 rounded-sm overflow-hidden border-dashed border border-gray-300 flex items-center justify-center cursor-pointer hover:border-green-500">
+              <label className="relative w-16 h-16 md:w-20 md:h-20 p-1 rounded-sm overflow-hidden border-dashed border-2 border-gray-400 flex items-center justify-center cursor-pointer hover:border-green-500">
                 {previewUrl ? (
                   <>
                     <img
@@ -564,7 +504,11 @@ export default function ProductForm({
                     </button>
                   </>
                 ) : (
-                  <ImagePlus size={24} className="text-gray-400" />
+                  <ImagePlus
+                    strokeWidth={2}
+                    size={40}
+                    className="text-gray-400"
+                  />
                 )}
                 <input
                   type="file"
@@ -594,177 +538,12 @@ export default function ProductForm({
         title="Box Content "
       />
 
-      <div className="">
-        <div className="mt-4 relative">
-          <h4 className="text-xl font-semibold my-4 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
-            Multiple Color Variants
-          </h4>
+      <ColorVariants
+        colorVariants={colorVariants}
+        setColorVariants={setColorVariants}
+        id={null}
+      />
 
-          {colorVariants.map((variant, i) => (
-            <div
-              key={i}
-              className="border rounded-sm border-gray-300 pt-12 px-3 mb-4 space-y-4 relative"
-            >
-              <h2 className="text-base font-semibold absolute border border-blue-600 rounded-sm py-1 px-3 top-1">
-                Color Variant Serial{" "}
-                <span className="text-blue-500">({i + 1})</span>
-              </h2>
-              {1 < colorVariants.length && !id && (
-                <button
-                  type="button"
-                  onClick={() => removeColorVariant(i)}
-                  className="right-4 top-3 cursor-pointer absolute text-sm border-red-600 rounded-sm hover:text-red-600 hover:border py-1 px-2"
-                >
-                  Remove Color Variant ({i + 1})
-                </button>
-              )}
-
-              {/* Color Name */}
-
-              <div className="flex w-full gap-2">
-                <div className="relative w-1/2">
-                  <div className="relative">
-                    <input
-                      id={`color_name_djhfsk${i}`}
-                      value={variant.name}
-                      onChange={(e) =>
-                        handleColorVariantChange(i, "name", e.target.value)
-                      }
-                      type="text"
-                      className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                    />
-                    <label
-                      htmlFor={`color_name_djhfsk${i}`}
-                      className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 mx-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                    >
-                      Enter Product Color Name{" "}
-                      <span className="text-red-500">*</span>
-                    </label>
-                  </div>
-                </div>
-
-                {/* Quantity */}
-                <div className="relative w-1/2">
-                  <div className="relative">
-                    <input
-                      id={`quantity_1234${i}`}
-                      value={variant.quantity}
-                      onChange={(e) =>
-                        handleColorVariantChange(i, "quantity", e.target.value)
-                      }
-                      type="number"
-                      className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                      placeholder=" "
-                    />
-                    <label
-                      htmlFor={`quantity_1234${i}`}
-                      className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 mx-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
-                    >
-                      Enter Product Quantity{" "}
-                      <span className="text-red-500">*</span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-2 w-full">
-                {/* Category Selector */}
-                <div className="relative w-1/2">
-                  <Select
-                    onValueChange={(value) =>
-                      handleColorVariantChange(i, "category", value)
-                    }
-                    className="block px-2.5 pb-2 pt-3 "
-                  >
-                    <SelectTrigger
-                      id={`category_selector_${i}`}
-                      className="w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                    >
-                      {variant.category || "Choose Style"}
-                    </SelectTrigger>
-                    <SelectContent>
-                      {productSizes.map((category) => (
-                        <SelectItem key={category.title} value={category.title}>
-                          {category.title.charAt(0).toUpperCase() +
-                            category.title.slice(1)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <label
-                    htmlFor={`category_selector_${i}`}
-                    className="absolute text-xs text-gray-500 duration-300 transform -translate-y-3 scale-90 top-1 z-10 bg-white px-2 mx-2 peer-focus:text-blue-600"
-                  >
-                    Select Style<span className="text-red-500">*</span>
-                  </label>
-                </div>
-
-                {/* Sizes */}
-                {variant.category && (
-                  <div className="space-y-2 w-1/2">
-                    <Label className="font-semibold shadow-xs p-2">
-                      Select Sizes
-                    </Label>
-                    <div className="flex flex-wrap gap-2">
-                      {productSizes
-                        .find((cat) => cat.title === variant.category)
-                        ?.value.map((size) => (
-                          <button
-                            key={size}
-                            onClick={() => handleSizeToggle(i, size)}
-                            type="button"
-                            className={`px-3 py-1 rounded border text-sm transition ${
-                              variant.size.includes(size)
-                                ? "bg-blue-600 text-white border-blue-600"
-                                : "bg-gray-100 text-gray-800 border-gray-300 hover:bg-blue-100"
-                            }`}
-                          >
-                            {size}
-                          </button>
-                        ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-              {/* Image Upload */}
-              <div>
-                <Label className="p-2 border-b mb-2 rounded-sm py-3">
-                  Select Images <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => handleImageChange(i, e.target.files)}
-                  className="input w-1/2"
-                />
-                <div className="flex flex-wrap gap-2 py-2">
-                  {variant.images.map((file, idx) => (
-                    <img
-                      key={idx}
-                      src={
-                        file instanceof File
-                          ? URL.createObjectURL(file)
-                          : file.url
-                      }
-                      alt={`preview-${idx}`}
-                      className=" w-14 h-14 rounded-sm border"
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-
-          <button
-            type="button"
-            className="hover:underline hover:text-blue-500 font-medium text-sm cursor-pointer absolute bottom-[-25px] outline-none left-1"
-            onClick={addColorVariant}
-          >
-            Add Color Variant
-          </button>
-        </div>
-      </div>
       <div className="flex justify-end  px-2 lg:px-4">
         <Label className="flex gap-2 items-center">
           <Checkbox
