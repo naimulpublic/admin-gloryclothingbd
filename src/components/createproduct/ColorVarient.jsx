@@ -1,12 +1,11 @@
 "use client";
 
-
 import { CInput } from "@/custom/input/Input";
 import CSelect from "@/custom/select/Select";
 import { productSizes } from "@/static/ProductSize";
+import { SquarePlus } from "lucide-react";
 import { X } from "lucide-react";
 import { ImagePlus } from "lucide-react";
-
 
 export default function ColorVariants({
   colorVariants,
@@ -71,20 +70,19 @@ export default function ColorVariants({
       {colorVariants.map((variant, i) => (
         <div
           key={i}
-          className="border rounded-sm border-gray-300 pt-12 px-3 mb-4 space-y-4 relative mt-2"
+          className="shadow-xs shadow-green-200 border border-green-100 rounded-xs pt-10 md:pt-12 md:pb-2 px-3 space-y-4 relative mt-2"
         >
-          <h2 className="text-base font-semibold absolute border border-blue-600 rounded-sm py-1 px-3 top-1">
-            Color Variant Serial{" "}
-            <span className="text-blue-500">({i + 1})</span>
+          <h2 className="text-green-500 text-xs md:text-sm absolute shadow-xs shadow-green-500 border rounded-xs py-1 px-3 top-1 md:top-2">
+            Variant Serial <span className="text-blue-500">({i + 1})</span>
           </h2>
 
-          {1 < colorVariants.length && !id && (
+          {colorVariants.length > 1 && i !== 0 && (
             <button
               type="button"
               onClick={() => removeColorVariant(i)}
-              className="right-4 top-3 cursor-pointer absolute text-sm border-red-600 rounded-sm hover:text-red-600 hover:border py-1 px-2"
+              className="shadow-xs shadow-red-500 right-4 top-1 md:top-2 cursor-pointer absolute text-xs md:text-sm border-red-600 rounded-xs hover:text-red-600 hover:border py-1 px-2"
             >
-              Remove Color Variant ({i + 1})
+              Remove Variant ({i + 1})
             </button>
           )}
 
@@ -126,8 +124,8 @@ export default function ColorVariants({
           </div>
 
           {/* Category + Sizes */}
-          <div className="flex gap-2 w-full">
-            <div className="relative w-1/2">
+          <div className="md:flex gap-2 w-full">
+            <div className="relative md:w-1/2">
               <CSelect
                 id={`category_${i}`}
                 options={productSizes.map((cat) => ({ name: cat.title }))}
@@ -140,7 +138,7 @@ export default function ColorVariants({
             </div>
 
             {variant.category && (
-              <div className="space-y-2 w-1/2">
+              <div className="space-y-2 mt-2 md:mt-0 md:w-1/2">
                 <h4 className="test-sm md:text-md md:font-medium text-center py-0.5 md:py-1 border border-green-200 rounded-xs bg-green-50">
                   Select Size
                 </h4>
@@ -152,9 +150,9 @@ export default function ColorVariants({
                         key={size}
                         onClick={() => handleSizeToggle(i, size)}
                         type="button"
-                        className={`px-3 py-1 rounded border text-sm ${
+                        className={`px-2 py-1 rounded-xs shadow-sm shadow-green-200 text-sm ${
                           variant.size.includes(size)
-                            ? "bg-blue-600 text-white"
+                            ? "bg-green-500 text-white"
                             : "bg-gray-100 text-gray-800"
                         }`}
                       >
@@ -175,7 +173,7 @@ export default function ColorVariants({
               {variant.images.map((img, idx) => (
                 <div
                   key={idx}
-                  className="relative border-2 border-dashed border-green-300 p-1 w-20 h-20 md:w-24 md:h-24 rounded-sm overflow-hidden group"
+                  className="relative border-1 md:border-2 border-dashed border-green-300 p-0.5 md:p-1 w-16 h-16 md:w-20 md:h-20 rounded-sm overflow-hidden group"
                 >
                   <img
                     src={img.url}
@@ -192,8 +190,8 @@ export default function ColorVariants({
                 </div>
               ))}
 
-              <label className="w-20 h-20 md:w-24 md:h-24 border-2 border-dashed border-green-300 flex items-center justify-center rounded-lg cursor-pointer hover:bg-gray-100">
-                <ImagePlus size={40} className=" text-gray-500" />
+              <label className="w-16 h-16 md:w-20 md:h-20 border-1 md:border-2 border-dashed border-green-300 flex items-center justify-center rounded-lg cursor-pointer hover:bg-gray-100">
+                <ImagePlus size={30} className=" text-gray-500" />
                 <input
                   type="file"
                   multiple
@@ -209,10 +207,11 @@ export default function ColorVariants({
 
       <button
         type="button"
-        className="hover:underline hover:text-blue-500 font-medium text-sm cursor-pointer absolute bottom-[-25px] left-1"
+        className="flex items-center gap-1  absolute bottom-[-32px] right-0 shadow-xs shadow-orange-400 text-sm py-1 px-2 rounded-xs cursor-pointer"
         onClick={addColorVariant}
       >
-        Add Color Variant
+        <SquarePlus size={16} />
+        Color Variant
       </button>
     </div>
   );

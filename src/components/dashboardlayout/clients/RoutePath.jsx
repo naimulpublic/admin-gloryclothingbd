@@ -20,7 +20,7 @@ function RoutePath() {
   };
 
   return (
-    <div className="text-black text-sm lg:text-md lg:font-medium flex items-center gap-1 mt-2 border-b p-1 lg:p-2">
+    <div className="text-black text-sm lg:text-md lg:font-medium flex items-center gap-1 mt-2 shadow shadow-orange-300  p-1 lg:p-2">
       <span
         onClick={() => router.push("/dashboard")}
         className="tracking-wide cursor-pointer text-blue-600 hover:underline"

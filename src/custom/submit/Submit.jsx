@@ -8,7 +8,7 @@ export default function SubmitButton({ id, isLoading, name }) {
       <div className="pb-10 mt-4">
         <div className="mb-2 border-t border-dashed border-green-500"></div>
         <button
-          className="cursor-pointer flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-xs hover:bg-green-600 active:bg-green-700 disabled:bg-gray-400"
+          className="cursor-pointer flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-green-500 rounded-xs shadow shadow-orange-300 hover:bg-green-600 active:bg-green-700 disabled:bg-gray-400"
           type="submit"
           disabled={isLoading}
         >

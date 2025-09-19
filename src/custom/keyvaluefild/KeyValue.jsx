@@ -2,6 +2,7 @@
 import { X } from "lucide-react";
 import React from "react";
 import { CInput } from "../input/Input";
+import { SquarePlus } from "lucide-react";
 
 export default function KeyValue({ items, setItems, title }) {
   // Key পরিবর্তনের ফাংশন
@@ -90,10 +91,11 @@ export default function KeyValue({ items, setItems, title }) {
       {/* Add Button */}
       <button
         type="button"
+        className="mt-1 mx-1 flex items-center gap-1 shadow-xs shadow-orange-300 text-sm py-1 px-2 rounded-xs cursor-pointer"
         onClick={handleAdd}
-        className="hover:underline hover:text-blue-500 text-sm font-medium cursor-pointer text-end mt-2"
       >
-        + Add {title}
+        <SquarePlus size={16} />
+       {title}
       </button>
     </div>
   );

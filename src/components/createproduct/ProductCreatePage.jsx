@@ -523,19 +523,21 @@ export default function ProductForm({
       </div>
 
       <KeyValue
-        items={specification}
-        setItems={setSpecification}
-        title="Product Specification"
-      />
-      <KeyValue
         items={highLight}
         setItems={setHighLight}
         title="Product Highlight"
       />
+
+      <KeyValue
+        items={specification}
+        setItems={setSpecification}
+        title="Product Specification"
+      />
+
       <KeyValue
         items={boxContent}
         setItems={setBoxContent}
-        title="Box Content "
+        title="Box Content"
       />
 
       <ColorVariants
@@ -544,17 +546,17 @@ export default function ProductForm({
         id={null}
       />
 
-      <div className="flex justify-end  px-2 lg:px-4">
-        <Label className="flex gap-2 items-center">
+      <div className="flex justify-start  px-2">
+        <Label className="flex gap-1 items-center">
           <Checkbox
             className="h-5 w-5 cursor-pointer"
             checked={isFeatured}
             onCheckedChange={(checked) => setIsFeatured(checked === true)}
           />
           {isFeatured ? (
-            <span className="text-green-500">Featured</span>
+            <span className="text-green-500 mt-1">Featured</span>
           ) : (
-            <span className="text-red-500">Not Featured</span>
+            <span className="text-red-500 mt-1">Not Featured</span>
           )}
         </Label>
       </div>
