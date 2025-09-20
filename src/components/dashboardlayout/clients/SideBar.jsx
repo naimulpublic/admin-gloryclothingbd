@@ -94,7 +94,7 @@ export default function SideBar() {
                         href={sub.url}
                         className={`block text-sm transition ${isSubActive && "bg-green-100 border-l-4 border-green-400 rounded-l-md"}`}
                       >
-                        <div className="px-2 py-1.5 flex items-center gap-2 font-medium hover:bg-green-100 border-green-200">
+                        <div className="px-2 py-1.5 flex items-center gap-2 font-medium hover:bg-green-50 border-green-100">
                           {sub.icon}
                           {sub.name}
                         </div>
