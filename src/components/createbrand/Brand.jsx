@@ -11,9 +11,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { SquarePlus } from "lucide-react";
 import { Loader } from "lucide-react";
+import RoutePath from "@/custom/routepath/RoutePath";
 
 export default function Brand({ id }) {
   const [name, setName] = useState("");

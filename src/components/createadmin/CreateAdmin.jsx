@@ -12,7 +12,8 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import RoutePath from "../dashboardlayout/clients/RoutePath";
+import RoutePath from "@/custom/routepath/RoutePath";
+
 
 const AdminUserForm = ({ id }) => {
   const [name, setName] = useState("");

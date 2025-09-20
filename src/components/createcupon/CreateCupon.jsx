@@ -1,11 +1,10 @@
 "use client";
-import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
-import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { SquarePlus } from "lucide-react";
 import { Loader } from "lucide-react";
+import RoutePath from "@/custom/routepath/RoutePath";
 
 const CreateCoupon = ({ id }) => {
   // <-- এখানে id props নিচ্ছি
