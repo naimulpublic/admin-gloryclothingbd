@@ -230,7 +230,7 @@ export default function ProductForm({
 
     formData.append("defaultColor", defaultColor);
     formData.append("isFeatured", isFeatured);
-    formData.append("measurementImage", measurementImage);
+    formData.append("measurPublicId", measurementImage);
 
     formData.append("subcategory", JSON.stringify(subcategory));
     formData.append("specification", JSON.stringify(specification));
