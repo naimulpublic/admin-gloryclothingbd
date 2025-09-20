@@ -47,45 +47,14 @@ export const Menu = [
     subname: [
       { name: "Home Page", icon: <Home size={20} />, url: "/dashboard" },
       {
-        name: "Product",
-        icon: <SquarePlus size={20} />,
-        url: "/dashboard/create/product",
-      },
-      {
-        name: "Category",
-        icon: <SquarePlus size={20} />,
-        url: "/dashboard/create/categories",
-      },
-      {
-        name: "Subcategory",
-        icon: <SquarePlus size={20} />,
-        url: "/dashboard/create/subcategories",
-      },
-      {
-        name: "SubChild",
-        icon: <SquarePlus size={20} />,
-        url: "/dashboard/create/subcategorychild",
-      },
-
-      {
-        name: "Slider",
-        icon: <SquarePlus size={20} />,
-        url: "/dashboard/create/sliders",
-      },
-      {
-        name: "Cupon",
-        icon: <SquarePlus size={20} />,
-        url: "/dashboard/admin/create/cupon",
-      },
-      {
-        name: "Admin",
-        icon: <SquarePlus size={20} />,
-        url: "/dashboard/admin/create/admin",
-      },
-      {
-        name: "Brand",
-        icon: <SquarePlus size={20} />,
-        url: "/dashboard/create/brand",
+        name: "Reports",
+        icon: (
+          <BarChart3
+            className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7"
+            size={30}
+          />
+        ),
+        url: "/dashboard/reports",
       },
     ],
     icon: (
@@ -150,6 +119,55 @@ export const Menu = [
     ),
   },
   {
+    name: "Create Manage",
+    subname: [
+      {
+        name: "Product",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/create/product",
+      },
+      {
+        name: "Category",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/create/categories",
+      },
+      {
+        name: "Subcategory",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/create/subcategories",
+      },
+      {
+        name: "SubChild",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/create/subcategorychild",
+      },
+
+      {
+        name: "Slider",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/create/sliders",
+      },
+      {
+        name: "Cupon",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/admin/create/cupon",
+      },
+      {
+        name: "Admin",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/admin/create/admin",
+      },
+      {
+        name: "Brand",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/create/brand",
+      },
+    ],
+    icon: (
+      <SquarePlus className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />
+    ),
+  },
+  {
     name: "Reports",
     icon: (
       <BarChart3 className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />
@@ -165,7 +183,7 @@ export const Menu = [
     url: "/dashboard/reports",
   },
   {
-    name:"Profile",
+    name: "Profile",
     icon: (
       <UserRoundCog className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />
     ),
