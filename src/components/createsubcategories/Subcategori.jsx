@@ -108,10 +108,10 @@ export default function Subcategory({ id, subcategorydata }) {
   return (
     <>
       <RoutePath />
-      <div className="p-4">
-        <h1 className="text-sm lg:text-lg select-none font-semibold text-center py-1 lg:py-2 shadow-xs">
-          {id ? "Update" : "Create"} Subcategory
-        </h1>
+      <div className="p-4 md:p-6">
+        <h2 className=" text-sm md:text-lg font-medium text-center border py-1 lg:py-1.5 rounded-xs select-none bg-green-100 border-green-300">
+          {id ? "Edit" : "Create New"} Subcategory
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name & Slug */}
           <div className="sm:flex gap-2 w-full mt-4">
@@ -155,7 +155,7 @@ export default function Subcategory({ id, subcategorydata }) {
 
           <div className="flex gap-2">
             <div className="w-[30%]">
-              <label className="block text-xs lg:text-sm font-medium mb-2 shadow-xs pb-1">
+              <label className=" block text-xs lg:text-sm font-medium mb-2 shadow-green-300 px-2 shadow-xs pb-1">
                 Upload Banner Image <span className="text-red-500">*</span>
               </label>
               <label className="relative w-20 h-20  lg:w-24 lg:h-24 p-1 rounded-lg overflow-hidden border-dashed border border-gray-300 flex items-center justify-center cursor-pointer hover:border-orange-500">
@@ -200,7 +200,7 @@ export default function Subcategory({ id, subcategorydata }) {
                   placeholder={
                     <div className="flex items-center relative w-full">
                       <div className="">
-                        Select Subcategories 
+                        Select Subcategories
                         <span>*</span>
                       </div>
                       <ChevronDown className="w-4 h-4 absolute right-0" />

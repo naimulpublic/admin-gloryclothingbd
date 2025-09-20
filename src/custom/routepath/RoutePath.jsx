@@ -20,7 +20,7 @@ function RoutePath() {
   };
 
   return (
-    <div className="text-black text-xs lg:text-sm lg:text-md lg:font-medium flex items-center gap-1 border-b p-2 lg:p-3 bg-white flex-wrap">
+    <div className="text-black text-xs lg:text-sm lg:text-md lg:font-medium flex items-center gap-1 shadow-xs shadow-orange-300 border-b p-2 lg:p-3 bg-white flex-wrap">
       {/* Home link */}
       <span
         onClick={() => router.push("/")}

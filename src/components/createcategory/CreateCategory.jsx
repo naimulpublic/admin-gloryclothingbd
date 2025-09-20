@@ -166,8 +166,8 @@ export default function CreateCategory({ subcategories, id }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 p-4 mb-20">
-      <h2 className="text-xl font-semibold shadow-sm py-2 text-center">
-        {!id ? "Create" : "Update"} Category
+      <h2 className=" text-sm md:text-lg font-medium text-center border py-1 lg:py-1.5 rounded-xs select-none bg-green-100 border-green-300">
+        {id ? "Edit" : "Create New"} Category
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-x-2 gap-y-4">
         <div>
@@ -263,9 +263,6 @@ export default function CreateCategory({ subcategories, id }) {
         </div>
 
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium mb-1">
-            Subcategories
-          </label>
           <SUbCategoryMultiSelect
             options={subcategoryOptions}
             value={subcategory}
@@ -276,7 +273,7 @@ export default function CreateCategory({ subcategories, id }) {
 
         {/* Image Upload */}
         <div>
-          <label className="text-center mb-2 block text-sm font-bold pb-1 shadow-xs">
+          <label className="shadow-green-300 text-center mb-2 block text-sm font-bold pb-1 shadow-xs">
             Category Image
           </label>
           <label className="relative w-16 h-16 md:w-24 md:h-24 p-1 rounded-lg overflow-hidden border-dashed border border-gray-300 flex items-center justify-center cursor-pointer hover:border-orange-500">
@@ -316,7 +313,7 @@ export default function CreateCategory({ subcategories, id }) {
 
         {/* Banner Upload */}
         <div className="border-l pl-2">
-          <label className="text-center mb-2 block text-sm font-bold pb-1 shadow-xs">
+          <label className="shadow-green-300 text-center mb-2 block text-sm font-bold pb-1 shadow-xs">
             Category Banner
           </label>
           <label className="relative w-28 h-16 md:w-40 md:h-24 p-1 rounded-lg overflow-hidden border-dashed border border-gray-300 flex items-center justify-center cursor-pointer hover:border-orange-500">

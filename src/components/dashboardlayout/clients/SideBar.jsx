@@ -3,110 +3,138 @@ import React, { useEffect, useState } from "react";
 import { Menu } from "../../../static/Menu";
 import Link from "next/link";
 import { ArrowLeftToLine, ChevronDown, ChevronUp } from "lucide-react";
+import { usePathname } from "next/navigation";
 
 export default function SideBar() {
   const [isOpen, setIsOpen] = useState(true);
   const [openMenu, setOpenMenu] = useState(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const handleResize = () => {
-        if (window.innerWidth < 800) {
-          setIsOpen(false); 
-        } else {
-          setIsOpen(true); 
-        }
-      };
-
+      const handleResize = () => setIsOpen(window.innerWidth >= 800);
       handleResize();
-
       window.addEventListener("resize", handleResize);
-
       return () => window.removeEventListener("resize", handleResize);
     }
   }, []);
 
-  const toggleSubmenu = (index) => {
-    setOpenMenu(openMenu === index ? null : index);
+  const toggleSubmenu = (key) => {
+    setOpenMenu(openMenu === key ? null : key);
   };
 
   return (
     <aside
       className={`${
-        isOpen ? "w-48 sm:w-52 xl:w-56" : "w-14 sm:w-16 xl:w-20"
-      } h-screen overflow-y-auto scrollbar-thin scrollbar-thumb-cyan-500 scrollbar-track  scrollbar-thumb-rounded  bg-white border-r border-gray-200 shadow-md transition-all duration-300 ease-in-out relative`}
+        isOpen ? "w-48 xl:w-52" : "w-14 xl:w-20"
+      } h-screen overflow-y-auto 
+      bg-white border-r border-gray-100 shadow-sm 
+      transition-all duration-300 ease-in-out relative`}
     >
       {/* Toggle Button */}
-      <div className="flex justify-end pr-2 pt-2">
+      <div className="flex justify-end pr-2 pt-3">
         <ArrowLeftToLine
           onClick={() => setIsOpen(!isOpen)}
-          className={`cursor-pointer text-gray-500 hover:text-orange-500 transition-transform duration-300 ${
-            !isOpen ? "rotate-180" : ""
-          }`}
+          className={`cursor-pointer text-gray-500 hover:text-orange-500 
+          transition-transform duration-300 ${!isOpen ? "rotate-180" : ""}`}
         />
       </div>
 
       {/* Navigation */}
-      <nav className={`mt-4 space-y-1 px-1`}>
-        {Menu.map((item, i) => (
-          <div key={i} className="relative group w-full">
-            <button
-              onClick={() => toggleSubmenu(i)}
-              className={`cursor-pointer flex items-center justify-between w-full px-2 py-2 rounded hover:bg-gray-100 transition ${
-                !isOpen ? "justify-center" : ""
-              }`}
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-orange-500 ">{item.icon}</span>
-                {isOpen && (
-                  <span className="text-sm font-semibold">{item.name}</span>
-                )}
-              </div>
-
-              {item.subname &&
-                isOpen &&
-                (openMenu === i ? (
-                  <ChevronUp className="w-4 h-4 text-gray-600" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-gray-600" />
-                ))}
-            </button>
-
-            {/* Submenu (click open for expanded sidebar) */}
-            {item.subname && openMenu === i && isOpen && (
-              <div className="ml-6 mt-1 space-y-1">
-                {item.subname.map((sub, idx) => (
-                  <Link
-                    key={idx}
-                    href={sub.url}
-                    className="block px-3 py-1.5 text-sm text-gray-700 rounded transition"
-                  >
-                    <div className="flex items-center gap-2 font-medium   hover:text-orange-500">
-                      {sub.icon}
-                      {sub.name}
-                    </div>
-                  </Link>
-                ))}
-              </div>
+      <nav className="mt-5 space-y-4 px-1">
+        {Menu.map((section, sIdx) => (
+          <div key={sIdx}>
+            {isOpen && (
+              <h3 className="px-3 py-1 text-xs font-bold text-gray-400 uppercase tracking-wide">
+                {section.section}
+              </h3>
             )}
 
-            {/* Submenu (hover for collapsed sidebar) */}
-            {!isOpen && item.subname && (
-              <div className="absolute left-12 right-2 top-0 z-20 hidden group-hover:block bg-white shadow-sm rounded-sm min-w-[180px] py-2">
-                {item.subname.map((sub, idx) => (
-                  <Link
-                    key={idx}
-                    href={sub.url}
-                    className="block px-4 py-2 text-sm text-gray-700 transition"
+            {section.items.map((item, i) => {
+              const key = `${sIdx}-${i}`;
+              const isActive = pathname === item.url;
+
+              return (
+                <div key={key} className="relative group w-full">
+                  <button
+                    onClick={() => toggleSubmenu(key)}
+                    className={`flex items-center justify-between w-full px-3 py-2 rounded-md 
+                      transition-all duration-200 ${
+                        isActive
+                          ? "bg-orange-50 text-orange-600 border-l-4 border-orange-500"
+                          : "hover:bg-gray-100 text-gray-700"
+                      } ${!isOpen ? "justify-center" : ""}`}
                   >
-                    <div className="flex items-center gap-2 hover:text-orange-600">
-                      {sub.icon}
-                      {sub.name}
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`${
+                          isActive ? "text-orange-600" : "text-gray-500"
+                        }`}
+                      >
+                        {item.icon}
+                      </span>
+                      {isOpen && (
+                        <span className="text-sm font-medium">{item.name}</span>
+                      )}
                     </div>
-                  </Link>
-                ))}
-              </div>
-            )}
+
+                    {item.subname &&
+                      isOpen &&
+                      (openMenu === key ? (
+                        <ChevronUp className="w-4 h-4 text-gray-500" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4 text-gray-500" />
+                      ))}
+                  </button>
+
+                  {/* Submenu Expanded */}
+                  {item.subname && openMenu === key && isOpen && (
+                    <div className="ml-4 mt-1 space-y-1 animate-slideDown">
+                      {item.subname.map((sub, idx) => {
+                        const isSubActive = pathname === sub.url;
+                        return (
+                          <Link
+                            key={idx}
+                            href={sub.url}
+                            className={`block px-2 py-1.5 text-sm rounded-l-md transition ${
+                              isSubActive
+                                ? "bg-orange-50 text-orange-600 border-l-4 border-orange-500"
+                                : "text-gray-600 hover:text-orange-500"
+                            }`}
+                          >
+                            <div className="flex items-center gap-2">
+                              {sub.icon}
+                              {sub.name}
+                            </div>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {/* Submenu Hover (collapsed) */}
+                  {!isOpen && item.subname && (
+                    <div
+                      className="absolute left-14 top-0 z-20 hidden group-hover:block 
+                      bg-white shadow-lg rounded-md min-w-[180px] py-2 border border-gray-100"
+                    >
+                      {item.subname.map((sub, idx) => (
+                        <Link
+                          key={idx}
+                          href={sub.url}
+                          className="block px-4 py-2 text-sm text-gray-600 hover:text-orange-600 transition"
+                        >
+                          <div className="flex items-center gap-2">
+                            {sub.icon}
+                            {sub.name}
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         ))}
       </nav>

@@ -70,7 +70,7 @@ export function SUbCategoryMultiSelect({
         {value.map((item) => (
           <div
             key={item.id}
-            className="flex items-center gap-1 bg-green-200 px-1.5 py-1 rounded-sm text-xs"
+            className="flex items-center gap-1 bg-green-200 px-1.5 py-1 rounded-xs text-xs"
           >
             {item.name}
             <button

@@ -6,7 +6,6 @@ import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 import { RefreshCcw } from "lucide-react";
 
-import RoutePath from "../dashboardlayout/clients/RoutePath";
 import { X } from "lucide-react";
 
 import { toast } from "sonner";
@@ -19,6 +18,7 @@ import { MultiSelect } from "@/custom/select/MultiSelect";
 import { ChevronDown } from "lucide-react";
 import { ImagePlus } from "lucide-react";
 import ColorVariants from "./ColorVarient";
+import RoutePath from "@/custom/routepath/RoutePath";
 
 export default function ProductForm({
   id,
@@ -289,7 +289,7 @@ export default function ProductForm({
       onSubmit={handleSubmit}
       className="space-y-4 w-full px-2 lg:px-6 bg-white rounded shadow overflow-hidden"
     >
-      <RoutePath />
+      <RoutePath/>
       <h2 className=" text-sm md:text-lg font-medium text-center border py-1 lg:py-1.5 rounded-xs select-none bg-green-100 border-green-300">
         {id ? "Edit" : "Create New"} Product
       </h2>
