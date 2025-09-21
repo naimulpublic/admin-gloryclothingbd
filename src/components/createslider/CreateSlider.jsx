@@ -14,7 +14,6 @@ import { CInput } from "@/custom/input/Input";
 const SliderForm = ({ id }) => {
   const [name, setName] = useState("");
   const [image, setImage] = useState(null);
-  const [isActive, setIsActive] = useState(true); // true for active, false for inactive
   const [previewImage, setPreviewImage] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -29,7 +28,7 @@ const SliderForm = ({ id }) => {
         if (res.ok) {
           setName(data.name || "");
           setPreviewImage(data.imageUrl || null);
-          setIsActive(data.isActive); // Ensure `data.isActive` is a boolean
+          
         }
       } catch {
         alert("Something went wrong.");
@@ -57,7 +56,7 @@ const SliderForm = ({ id }) => {
 
     const formData = new FormData();
     formData.append("name", name);
-    formData.append("isActive", isActive);
+   
     if (image) {
       formData.append("image", image);
     }
@@ -102,17 +101,7 @@ const SliderForm = ({ id }) => {
               <span className="text-sm font-medium">Slider Name</span> 
               <span className="text-xs text-red-600">*</span>
            </div>} value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div className="flex flex-1 items-center cursor-pointer">
-            <Checkbox
-              className="h-5 w-5 cursor-pointer"
-              checked={isActive} // Ensure this reflects the state
-              onCheckedChange={(checked) => setIsActive(checked)} // Correctly set the state when toggled
-            />
-            <span className="ml-2 font-medium">
-              {isActive ? "Slider Active" : " Slider Inactive"}
-            </span>
-          </div>
+          </div>          
         </div>
 
         <section className="flex items-center">

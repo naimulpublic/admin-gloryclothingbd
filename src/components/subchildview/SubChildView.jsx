@@ -79,7 +79,7 @@ export default function SubCategoriChild({ subcategorychild }) {
 
     setLoading(true);
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DOMAIN_URL}/api/delete/subcategorychilds`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/subcategorychilds`,
       {
         method: "DELETE",
         credentials: "include",
@@ -151,7 +151,6 @@ export default function SubCategoriChild({ subcategorychild }) {
         </Button>
       </div>
 
-    
       <div className="rounded-md border p-4">
         <Table>
           <TableHeader>
