@@ -28,128 +28,132 @@ import {
   Legend,
 } from "recharts";
 import Link from "next/link";
+import { mediumUrl, smallUrl } from "@/static/smallutils/Utils";
 
-export default function DashboardHome({ products, order }) {
+export default function DashboardHome({ products,order }) {
   const totalOrders = order?.length || 0;
-  const totalRevenue = order?.reduce((sum, o) => sum + o.totalAmount, 0) || 0;
+  const totalRevenue =
+    order?.reduce((sum, o) => sum + (o.totalAmount || 0), 0) || 0;
+  const totalProducts = products?.length || 0;
+  const uniqueCustomers = new Set(order?.map((o) => o.user?.email) || []).size;
 
-  const totalProducts = products.length;
-  const uniqueCustomers = new Set(order.map((o) => o.user.email)).size;
+  const pendingOrders = order.filter((o) => o.status === "pending").length || 0;
+  const processingOrders =
+    order.filter((o) => o.status === "processing" || o.status === "confirmed")
+      .length || 0;
+  const shippedOrders = order.filter((o) => o.status === "shipped").length || 0;
+  const returnedOrders =
+    order.filter((o) => o.status === "returned").length || 0;
 
-  const pendingOrders = order.filter((o) => o.status === "pending").length;
-  const processingOrders = order.filter(
-    (o) => o.status === "processing" || o.status === "confirmed"
-  ).length;
-  const shippedOrders = order.filter((o) => o.status === "shipped").length;
-  const returnedOrders = order.filter((o) => o.status === "returned").length;
+  const deleveredOrders =
+    order.filter((o) => o.status === "delivered").length || 0;
 
-  const deleveredOrders = order.filter((o) => o.status === "delivered").length;
+  const cancelledOrders =
+    order.filter((o) => o.status === "cancelled").length || 0;
 
-  const cancelledOrders = order.filter((o) => o.status === "cancelled").length;
-
-
-const stats = [
-  {
-    label: "Total Orders",
-    value: totalOrders,
-    icon: PackageSearch,
-    bg: "bg-blue-50",
-    ringColor: "ring-blue-200",
-    iconColor: "text-blue-600",
-    url: "/dashboard/orders",
-    period: "All time",
-    date: `${order.length} orders placed`,
-  },
-  {
-    label: "Pending Orders",
-    value: pendingOrders,
-    icon: Clock, 
-    bg: "bg-orange-50",
-    ringColor: "ring-orange-200",
-    iconColor: "text-orange-600",
-    url: "/dashboard/orders/pending",
-    period: "Awaiting confirmation",
-    date: "Action needed",
-  },
-  {
-    label: "Processing Orders",
-    value: processingOrders,
-    icon: Loader, 
-    bg: "bg-yellow-50",
-    ringColor: "ring-yellow-200",
-    iconColor: "text-yellow-600",
-    url: "/dashboard/orders/confirmed,processing",
-    period: "Being handled",
-    date: "In process",
-  },
-  {
-    label: "Shipped Orders",
-    value: shippedOrders,
-    icon: Truck, // 🚚 Perfect for shipping
-    bg: "bg-sky-50",
-    ringColor: "ring-sky-200",
-    iconColor: "text-sky-600",
-    url: "/dashboard/orders/shipped",
-    period: "On the way",
-    date: "Track shipments",
-  },
-  {
-    label: "Delivered Orders",
-    value: deleveredOrders,
-    icon: PackageCheck, // 📦✅ Delivered
-    bg: "bg-green-50",
-    ringColor: "ring-green-200",
-    iconColor: "text-green-600",
-    url: "/dashboard/orders/delivered",
-    period: "Successfully delivered",
-    date: `${Math.round((deleveredOrders / totalOrders) * 100)}% success rate`,
-  },
-  {
-    label: "Cancelled Orders",
-    value: cancelledOrders,
-    icon: XCircle, 
-    bg: "bg-red-50",
-    ringColor: "ring-red-200",
-    iconColor: "text-red-600",
-    url: "/dashboard/orders/cancelled",
-    period: "Order cancelled",
-    date: `${Math.round((cancelledOrders / totalOrders) * 100)}% of total`,
-  },
-  {
-    label: "Total Revenue",
-    value: `৳${totalRevenue.toLocaleString()}`,
-    icon: DollarSign,
-    bg: "bg-purple-50",
-    ringColor: "ring-purple-200",
-    iconColor: "text-purple-600",
-    url: "/admin/reports",
-    period: "Gross revenue",
-    date: "From all orders",
-  },
-  {
-    label: "Total Products",
-    value: totalProducts,
-    icon: Tag,
-    bg: "bg-indigo-50",
-    ringColor: "ring-indigo-200",
-    iconColor: "text-indigo-600",
-    url: "/dashboard/products",
-    period: "In inventory",
-    date: `${products.filter((p) => p.isFeatured).length} featured`,
-  },
-  {
-    label: "Total Customers",
-    value: uniqueCustomers,
-    icon: Users,
-    bg: "bg-cyan-50",
-    ringColor: "ring-cyan-200",
-    iconColor: "text-cyan-600",
-    url: "/#",
-    period: "Unique customers",
-    date: "From all orders",
-  },
-];
-
+  const stats = [
+    {
+      label: "Total Orders",
+      value: totalOrders,
+      icon: PackageSearch,
+      bg: "bg-blue-50",
+      ringColor: "ring-blue-200",
+      iconColor: "text-blue-600",
+      url: "/dashboard/orders",
+      period: "All time",
+      date: `${order.length} orders placed`,
+    },
+    {
+      label: "Pending Orders",
+      value: pendingOrders,
+      icon: Clock,
+      bg: "bg-orange-50",
+      ringColor: "ring-orange-200",
+      iconColor: "text-orange-600",
+      url: "/dashboard/orders/pending",
+      period: "Awaiting confirmation",
+      date: "Action needed",
+    },
+    {
+      label: "Processing Orders",
+      value: processingOrders,
+      icon: Loader,
+      bg: "bg-yellow-50",
+      ringColor: "ring-yellow-200",
+      iconColor: "text-yellow-600",
+      url: "/dashboard/orders/confirmed,processing",
+      period: "Being handled",
+      date: "In process",
+    },
+    {
+      label: "Shipped Orders",
+      value: shippedOrders,
+      icon: Truck,
+      bg: "bg-sky-50",
+      ringColor: "ring-sky-200",
+      iconColor: "text-sky-600",
+      url: "/dashboard/orders/shipped",
+      period: "On the way",
+      date: "Track shipments",
+    },
+    {
+      label: "Delivered Orders",
+      value: deleveredOrders,
+      icon: PackageCheck, // 📦✅ Delivered
+      bg: "bg-green-50",
+      ringColor: "ring-green-200",
+      iconColor: "text-green-600",
+      url: "/dashboard/orders/delivered",
+      period: "Successfully delivered",
+      date: `${Math.round(
+        (deleveredOrders / totalOrders) * 100
+      )}% success rate`,
+    },
+    {
+      label: "Cancelled Orders",
+      value: cancelledOrders,
+      icon: XCircle,
+      bg: "bg-red-50",
+      ringColor: "ring-red-200",
+      iconColor: "text-red-600",
+      url: "/dashboard/orders/cancelled",
+      period: "Order cancelled",
+      date: `${Math.round((cancelledOrders / totalOrders) * 100)}% of total`,
+    },
+    {
+      label: "Total Revenue",
+      value: `৳${totalRevenue.toLocaleString()}`,
+      icon: DollarSign,
+      bg: "bg-purple-50",
+      ringColor: "ring-purple-200",
+      iconColor: "text-purple-600",
+      url: "/admin/reports",
+      period: "Gross revenue",
+      date: "From all orders",
+    },
+    {
+      label: "Total Products",
+      value: totalProducts,
+      icon: Tag,
+      bg: "bg-indigo-50",
+      ringColor: "ring-indigo-200",
+      iconColor: "text-indigo-600",
+      url: "/dashboard/products",
+      period: "In inventory",
+      date: `${products.filter((p) => p.isFeatured).length} featured`,
+    },
+    {
+      label: "Total Customers",
+      value: uniqueCustomers,
+      icon: Users,
+      bg: "bg-cyan-50",
+      ringColor: "ring-cyan-200",
+      iconColor: "text-cyan-600",
+      url: "/#",
+      period: "Unique customers",
+      date: "From all orders",
+    },
+  ];
 
   const salesData = [
     { name: "Jan", revenue: 0 },
@@ -360,8 +364,10 @@ const stats = [
               >
                 <div className="flex items-start space-x-4">
                   <img
-                    src={product.colorVariants[0].images[0].url}
-                    alt={product.name}
+                    src={`${mediumUrl}${
+                      product.colorVariants?.[0]?.publicId || ""
+                    }`}
+                    alt={product.name || ""}
                     className="w-16 h-16 object-cover rounded"
                   />
                   <div className="flex-1">
