@@ -83,13 +83,13 @@ export default function SideBar() {
                   ))}
               </button>
 
-              {/* Submenu (click open for expanded sidebar) */}
+            
               {item.subname && openMenu === i && isOpen && (
                 <div className="ml-3 mt-1">
                   {item.subname.map((sub, idx) => {
                     const isSubActive = sub.url === pathname;
                     return (
-                      <Link
+                      <Link prefetch={false}
                         key={idx}
                         href={sub.url}
                         className={`block text-sm transition ${isSubActive && "bg-green-100 border-l-4 border-green-400 rounded-l-md"}`}
@@ -108,7 +108,7 @@ export default function SideBar() {
               {!isOpen && item.subname && (
                 <div className="absolute left-12 right-2 top-0 z-20 hidden group-hover:block bg-white shadow-sm rounded-sm min-w-[180px] py-2">
                   {item.subname.map((sub, idx) => (
-                    <Link
+                    <Link prefetch={false}
                       key={idx}
                       href={sub.url}
                       className="block px-4 py-2 text-sm text-gray-700 transition"
