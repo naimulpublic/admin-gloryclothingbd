@@ -30,6 +30,8 @@ import { Trash2, Pencil, MoreVertical, Loader } from "lucide-react";
 
 import { toast } from "sonner";
 import { Edit } from "lucide-react";
+import Image from "next/image";
+import { mediumUrl } from "@/static/smallutils/Utils";
 
 export default function CategoriesPage({ categories }) {
   let router = useRouter();
@@ -180,13 +182,14 @@ export default function CategoriesPage({ categories }) {
           <TableRow>
             <TableHead>
               <Checkbox
-                className="cursor-pointer"
+                className="cursor-pointer size-5 mr-2"
                 checked={
                   selectedCategories.length === filteredCategories.length
                 }
                 onCheckedChange={handleSelectAll}
               />
             </TableHead>
+            <TableHead>Image</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Slug</TableHead>
 
@@ -201,9 +204,19 @@ export default function CategoriesPage({ categories }) {
             <TableRow key={category._id}>
               <TableCell>
                 <Checkbox
-                  className="cursor-pointer"
+                  className="cursor-pointer size-5"
                   checked={selectedCategories.includes(category._id)}
                   onCheckedChange={() => handleSelectCategory(category._id)}
+                />
+              </TableCell>
+
+              <TableCell>
+                <Image
+                  className="h-16 w-14"
+                  src={`${mediumUrl}${category.imagePublicId}`}
+                  alt="category image"
+                  height={100}
+                  width={100}
                 />
               </TableCell>
 

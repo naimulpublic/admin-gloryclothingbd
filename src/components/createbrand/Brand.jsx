@@ -14,6 +14,8 @@ import {
 import { SquarePlus } from "lucide-react";
 import { Loader } from "lucide-react";
 import RoutePath from "@/custom/routepath/RoutePath";
+import SubmitButton from "@/custom/submit/Submit";
+import ImageUpload from "@/custom/image/Single";
 
 export default function Brand({ id }) {
   const [name, setName] = useState("");
@@ -116,11 +118,11 @@ export default function Brand({ id }) {
   return (
     <form onSubmit={handleSubmit} className="px-6 space-y-2">
       <RoutePath />
-      <h1 className="text-xl font-medium mb-4 mt-6 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+      <h2 className="mt-6 text-sm md:text-lg font-medium text-center border py-1 lg:py-1.5 rounded-xs select-none bg-green-100 border-green-300">
         {id ? "Edit" : "Create New"} Brand
-      </h1>
+      </h2>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 mt-4">
         <div className="w-1/2">
           <div className="relative">
             <input
@@ -200,47 +202,10 @@ export default function Brand({ id }) {
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="w-1/2">
-          <Label className="p-2">
-            Brand Icon <span className="text-red-500">*</span>
-          </Label>
-          <Input
-            {...(!id && { required: true })}
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-        </div>
-        {previewUrl && (
-          <div className="flex items-center mt-6">
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className="h-14 w-14 rounded-md object-cover border"
-            />
-          </div>
-        )}
+       <ImageUpload image={brandIcon} setImage={setBrandIcon} />
       </div>
 
-      <button
-        type="submit"
-        className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-lg font-medium cursor-pointer flex items-center gap-2"
-        disabled={loading}
-      >
-        {loading ? (
-          <>
-            <Loader strokeWidth={3} className="h-6 w-6  animate-spin" />
-            PROCESSING...
-          </>
-        ) : id ? (
-          "UPDATE PRODUCT"
-        ) : (
-          <>
-            <SquarePlus className="h-5 w-5" />
-            PUBLISH CATEGORY
-          </>
-        )}{" "}
-      </button>
+      <SubmitButton id={id} isLoading={loading} name="Brand" />
     </form>
   );
 }

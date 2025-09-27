@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import {
   PackageSearch,
   Clock,
@@ -10,27 +10,38 @@ import {
   DollarSign,
   Tag,
   Users,
-  Plus,
-  CheckCircle,
   ArrowRight,
 } from "lucide-react";
 
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  Legend,
-} from "recharts";
 import Link from "next/link";
-import { mediumUrl, smallUrl } from "@/static/smallutils/Utils";
+import { mediumUrl } from "@/static/smallutils/Utils";
 
-export default function DashboardHome({ products,order }) {
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Line, Bar } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+export default function DashboardHome({ products, order }) {
+  // Stats calculation
   const totalOrders = order?.length || 0;
   const totalRevenue =
     order?.reduce((sum, o) => sum + (o.totalAmount || 0), 0) || 0;
@@ -42,12 +53,8 @@ export default function DashboardHome({ products,order }) {
     order.filter((o) => o.status === "processing" || o.status === "confirmed")
       .length || 0;
   const shippedOrders = order.filter((o) => o.status === "shipped").length || 0;
-  const returnedOrders =
-    order.filter((o) => o.status === "returned").length || 0;
-
-  const deleveredOrders =
+  const deliveredOrders =
     order.filter((o) => o.status === "delivered").length || 0;
-
   const cancelledOrders =
     order.filter((o) => o.status === "cancelled").length || 0;
 
@@ -56,18 +63,18 @@ export default function DashboardHome({ products,order }) {
       label: "Total Orders",
       value: totalOrders,
       icon: PackageSearch,
-      bg: "bg-blue-50",
+      bg: "bg-gradient-to-br from-blue-50 to-blue-100",
       ringColor: "ring-blue-200",
       iconColor: "text-blue-600",
       url: "/dashboard/orders",
       period: "All time",
-      date: `${order.length} orders placed`,
+      date: `${totalOrders} orders placed`,
     },
     {
       label: "Pending Orders",
       value: pendingOrders,
       icon: Clock,
-      bg: "bg-orange-50",
+      bg: "bg-gradient-to-br from-orange-50 to-orange-100",
       ringColor: "ring-orange-200",
       iconColor: "text-orange-600",
       url: "/dashboard/orders/pending",
@@ -78,7 +85,7 @@ export default function DashboardHome({ products,order }) {
       label: "Processing Orders",
       value: processingOrders,
       icon: Loader,
-      bg: "bg-yellow-50",
+      bg: "bg-gradient-to-br from-yellow-50 to-yellow-100",
       ringColor: "ring-yellow-200",
       iconColor: "text-yellow-600",
       url: "/dashboard/orders/confirmed,processing",
@@ -89,7 +96,7 @@ export default function DashboardHome({ products,order }) {
       label: "Shipped Orders",
       value: shippedOrders,
       icon: Truck,
-      bg: "bg-sky-50",
+      bg: "bg-gradient-to-br from-sky-50 to-sky-100",
       ringColor: "ring-sky-200",
       iconColor: "text-sky-600",
       url: "/dashboard/orders/shipped",
@@ -98,33 +105,35 @@ export default function DashboardHome({ products,order }) {
     },
     {
       label: "Delivered Orders",
-      value: deleveredOrders,
-      icon: PackageCheck, // 📦✅ Delivered
-      bg: "bg-green-50",
+      value: deliveredOrders,
+      icon: PackageCheck,
+      bg: "bg-gradient-to-br from-green-50 to-green-100",
       ringColor: "ring-green-200",
       iconColor: "text-green-600",
       url: "/dashboard/orders/delivered",
       period: "Successfully delivered",
-      date: `${Math.round(
-        (deleveredOrders / totalOrders) * 100
-      )}% success rate`,
+      date: totalOrders
+        ? `${Math.round((deliveredOrders / totalOrders) * 100)}% success rate`
+        : "0%",
     },
     {
       label: "Cancelled Orders",
       value: cancelledOrders,
       icon: XCircle,
-      bg: "bg-red-50",
+      bg: "bg-gradient-to-br from-red-50 to-red-100",
       ringColor: "ring-red-200",
       iconColor: "text-red-600",
       url: "/dashboard/orders/cancelled",
       period: "Order cancelled",
-      date: `${Math.round((cancelledOrders / totalOrders) * 100)}% of total`,
+      date: totalOrders
+        ? `${Math.round((cancelledOrders / totalOrders) * 100)}% of total`
+        : "0%",
     },
     {
       label: "Total Revenue",
       value: `৳${totalRevenue.toLocaleString()}`,
       icon: DollarSign,
-      bg: "bg-purple-50",
+      bg: "bg-gradient-to-br from-purple-50 to-purple-100",
       ringColor: "ring-purple-200",
       iconColor: "text-purple-600",
       url: "/admin/reports",
@@ -135,7 +144,7 @@ export default function DashboardHome({ products,order }) {
       label: "Total Products",
       value: totalProducts,
       icon: Tag,
-      bg: "bg-indigo-50",
+      bg: "bg-gradient-to-br from-indigo-50 to-indigo-100",
       ringColor: "ring-indigo-200",
       iconColor: "text-indigo-600",
       url: "/dashboard/products",
@@ -146,7 +155,7 @@ export default function DashboardHome({ products,order }) {
       label: "Total Customers",
       value: uniqueCustomers,
       icon: Users,
-      bg: "bg-cyan-50",
+      bg: "bg-gradient-to-br from-cyan-50 to-cyan-100",
       ringColor: "ring-cyan-200",
       iconColor: "text-cyan-600",
       url: "/#",
@@ -155,122 +164,123 @@ export default function DashboardHome({ products,order }) {
     },
   ];
 
-  const salesData = [
-    { name: "Jan", revenue: 0 },
-    { name: "Feb", revenue: 0 },
-    { name: "Mar", revenue: 0 },
-    { name: "Apr", revenue: 0 },
-    { name: "May", revenue: 0 },
-    { name: "Jun", revenue: 0 },
-    { name: "Jul", revenue: 0 },
-    { name: "Aug", revenue: totalRevenue },
-  ];
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { position: "top", labels: { boxWidth: 20, padding: 15 } },
+      tooltip: { mode: "index", intersect: false, padding: 10 },
+    },
+    interaction: { mode: "nearest", intersect: false },
+    scales: {
+      x: {
+        grid: { display: false },
+        ticks: { maxRotation: 45, minRotation: 0 },
+      },
+      y: { grid: { drawBorder: false } },
+    },
+  };
 
-  const productPerformanceData = products.map((product) => ({
-    name:
-      product.name.length > 15
-        ? `${product.name.substring(0, 15)}...`
-        : product.name,
-    sales: order.reduce((sum, o) => {
-      const productInOrder = o.products.find(
-        (p) => p.productId === product._id
-      );
-      return sum + (productInOrder ? productInOrder.quantity : 0);
-    }, 0),
-    revenue: order.reduce((sum, o) => {
-      const productInOrder = o.products.find(
-        (p) => p.productId === product._id
-      );
-      return (
-        sum +
-        (productInOrder ? productInOrder.quantity * productInOrder.price : 0)
-      );
-    }, 0),
-  }));
+  const revenueData = {
+    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug"],
+    datasets: [
+      {
+        label: "Revenue",
+        data: [0, 0, 0, 0, 0, 0, 0, totalRevenue],
+        borderColor: "#4f46e5",
+        backgroundColor: "rgba(79,70,229,0.2)",
+        tension: 0.4,
+        fill: true,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+      },
+    ],
+  };
+
+  const productChartData = {
+    labels: products.map((p) =>
+      p.name.length > 15 ? `${p.name.substring(0, 15)}...` : p.name
+    ),
+    datasets: [
+      {
+        label: "Units Sold",
+        data: products.map((product) =>
+          order.reduce((sum, o) => {
+            const prod = o.products.find((p) => p.productId === product._id);
+            return sum + (prod ? prod.quantity : 0);
+          }, 0)
+        ),
+        backgroundColor: "#4f46e5",
+        borderRadius: 4,
+      },
+      {
+        label: "Revenue (৳)",
+        data: products.map((product) =>
+          order.reduce((sum, o) => {
+            const prod = o.products.find((p) => p.productId === product._id);
+            return sum + (prod ? prod.quantity * prod.price : 0);
+          }, 0)
+        ),
+        backgroundColor: "#22c55e",
+        borderRadius: 4,
+      },
+    ],
+  };
 
   return (
-    <div className="px-2 lg:px-4 bg-white min-h-screen">
+    <div className="px-2 lg:px-4 bg-gray-50 min-h-screen">
       <h2 className="text-center font-semibold text-md md:text-xl p-2 mb-4 border-b border-gray-300 select-none">
         Dashboard Overview
       </h2>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 xl:gap-4 mb-4 xl:mb-8">
+      {/* Stats cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
         {stats.map((item, idx) => {
           const Icon = item.icon;
           return (
-            <div
+            <Link
               key={idx}
-              className={`flex flex-col justify-between p-4 xl:p-6 h-44 rounded-xl shadow-sm border ${item.bg} hover:shadow-md transition-all duration-300`}
+              href={item.url}
+              className={`flex flex-col justify-between p-4 h-44 rounded-xl shadow hover:shadow-lg transition-all duration-300 ${item.bg}`}
             >
-              <Link href={item.url}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-gray-500 hover:underline hover:text-blue-500">
-                      {item.label}
-                    </p>
-                    <h3 className="text-3xl font-bold text-gray-800">
-                      {item.value}
-                    </h3>
-                  </div>
-                  <div
-                    className={`rounded-full p-2 ring-2 ${item.ringColor} ${item.iconColor} bg-white`}
-                  >
-                    <Icon className="w-8 h-8" />
-                  </div>
-                </div>
-                <div className="pt-3">
-                  <p className="text-xs text-gray-500">{item.period}</p>
-                  <p className="text-sm text-gray-600 font-medium">
-                    {item.date}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-gray-500 hover:underline hover:text-blue-500">
+                    {item.label}
                   </p>
+                  <h3 className="text-3xl font-bold text-gray-800">
+                    {item.value}
+                  </h3>
                 </div>
-              </Link>
-            </div>
+                <div
+                  className={`rounded-full p-2 ring-2 ${item.ringColor} ${item.iconColor} bg-white`}
+                >
+                  <Icon className="w-8 h-8" />
+                </div>
+              </div>
+              <div className="pt-2">
+                <p className="text-xs text-gray-500">{item.period}</p>
+                <p className="text-sm text-gray-600 font-medium">{item.date}</p>
+              </div>
+            </Link>
           );
         })}
       </div>
 
+      {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
-        <div className="bg-white p-4 rounded-lg shadow border">
-          <h3 className="font-semibold mb-4">Monthly Revenue</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={salesData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="#8884d8"
-                  activeDot={{ r: 8 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="bg-white p-4 rounded-lg shadow border h-72 sm:h-80 md:h-96">
+          <h3 className="font-semibold mb-3">Monthly Revenue</h3>
+          <Line data={revenueData} options={chartOptions} />
         </div>
-
-        <div className="bg-white p-4 rounded-lg shadow border">
-          <h3 className="font-semibold mb-4">Product Performance</h3>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={productPerformanceData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="sales" fill="#8884d8" name="Units Sold" />
-                <Bar dataKey="revenue" fill="#82ca9d" name="Revenue (৳)" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+        <div className="bg-white p-4 rounded-lg shadow border h-72 sm:h-80 md:h-96">
+          <h3 className="font-semibold mb-3">Product Performance</h3>
+          <Bar data={productChartData} options={chartOptions} />
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-lg shadow border mb-8">
+      {/* Recent Orders */}
+      <div className="bg-white p-4 rounded-lg shadow border mb-8 overflow-x-auto">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-semibold">Recent Orders</h3>
           <Link
@@ -280,64 +290,56 @@ export default function DashboardHome({ products,order }) {
             View all <ArrowRight className="ml-1 w-4 h-4" />
           </Link>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Order ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Customer
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Amount
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Date
-                </th>
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              {["Order ID", "Customer", "Amount", "Status", "Date"].map(
+                (h, i) => (
+                  <th
+                    key={i}
+                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    {h}
+                  </th>
+                )
+              )}
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {order.slice(0, 5).map((o) => (
+              <tr key={o._id} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 hover:underline">
+                  <Link href={`/admin/orders/${o._id}`}>{o.orderId}</Link>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {o.user.name}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  ৳{o.totalAmount.toLocaleString()}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span
+                    className={`px-2 inline-flex text-xs font-semibold rounded-full ${
+                      o.status === "delivered"
+                        ? "bg-green-100 text-green-800"
+                        : o.status === "cancelled"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-yellow-100 text-yellow-800"
+                    } shadow-sm`}
+                  >
+                    {o.status}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  {new Date(o.createdAt).toLocaleDateString()}
+                </td>
               </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {order.slice(0, 5).map((order) => (
-                <tr key={order._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600 hover:underline">
-                    <Link href={`/admin/orders/${order._id}`}>
-                      {order.orderId}
-                    </Link>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {order.user.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    ৳{order.totalAmount.toLocaleString()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        order.status === "delivered"
-                          ? "bg-green-100 text-green-800"
-                          : order.status === "cancelled"
-                          ? "bg-red-100 text-red-800"
-                          : "bg-yellow-100 text-yellow-800"
-                      }`}
-                    >
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+            ))}
+          </tbody>
+        </table>
       </div>
 
+      {/* Top Products */}
       <div className="bg-white p-4 rounded-lg shadow border">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-semibold">Top Products</h3>
@@ -351,12 +353,9 @@ export default function DashboardHome({ products,order }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {products.slice(0, 3).map((product) => {
             const totalSold = order.reduce((sum, o) => {
-              const productInOrder = o.products.find(
-                (p) => p.productId === product._id
-              );
-              return sum + (productInOrder ? productInOrder.quantity : 0);
+              const prod = o.products.find((p) => p.productId === product._id);
+              return sum + (prod ? prod.quantity : 0);
             }, 0);
-
             return (
               <div
                 key={product._id}
@@ -367,7 +366,7 @@ export default function DashboardHome({ products,order }) {
                     src={`${mediumUrl}${
                       product.colorVariants?.[0]?.publicId || ""
                     }`}
-                    alt={product.name || ""}
+                    alt={product.name}
                     className="w-16 h-16 object-cover rounded"
                   />
                   <div className="flex-1">

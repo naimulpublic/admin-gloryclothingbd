@@ -1,6 +1,7 @@
 "use client";
 import { useRef } from "react";
-import { X, ImagePlus } from "lucide-react";
+import {  ImagePlus } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 export default function ImageUpload({ image, setImage }) {
   const inputRef = useRef();
@@ -32,9 +33,9 @@ export default function ImageUpload({ image, setImage }) {
               e.stopPropagation();
               handleRemove();
             }}
-            className="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-red-600"
+            className="cursor-pointer absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-red-600"
           >
-            <X className="w-4 h-4" />
+            <Trash2 className="w-4 h-4" />
           </button>
         </>
       ) : (

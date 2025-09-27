@@ -23,6 +23,8 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import { mediumUrl } from "@/static/smallutils/Utils";
 
 export default function SliderView({ Slider }) {
   const router = useRouter();
@@ -174,7 +176,7 @@ export default function SliderView({ Slider }) {
               />
             </TableHead>
             <TableHead>Name</TableHead>
-            <TableHead>Image</TableHead>
+            <TableHead>Sliders</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right pr-20">Actions</TableHead>
           </TableRow>
@@ -192,10 +194,12 @@ export default function SliderView({ Slider }) {
                 </TableCell>
                 <TableCell>{slider.name}</TableCell>
                 <TableCell>
-                  <img
-                    src={slider.imageUrl}
+                  <Image
+                    src={`${mediumUrl}${slider.publicId}`}
                     alt={slider.name}
-                    className="w-16 h-16 object-cover rounded-md"
+                    width={200}
+                    height={200}
+                    className="w-36 h-14 object-cover rounded-md"
                   />
                 </TableCell>
                 <TableCell>{slider.isActive ? "Active" : "Inactive"}</TableCell>

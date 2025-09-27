@@ -1,5 +1,4 @@
 import DashboardHome from "@/components/dashboardhome/main/DashboardHome";
-import { GetOrders } from "@/next/api/NextjsApi";
 
 
 async function Getproducts() {
@@ -9,6 +8,16 @@ async function Getproducts() {
   const data = await res.json();
   return data;
 }
+
+async function GetOrders() {
+  const request = await fetch(
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/orders`
+  );
+  const response = await request.json();
+  return response;
+}
+
+
 
 export default async function page() {
   const products = await Getproducts();

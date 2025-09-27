@@ -13,6 +13,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import RoutePath from "@/custom/routepath/RoutePath";
+import SubmitButton from "@/custom/submit/Submit";
+import ImageUpload from "@/custom/image/Single";
 
 
 const AdminUserForm = ({ id }) => {
@@ -124,12 +126,12 @@ const AdminUserForm = ({ id }) => {
       <div className="px-4">
         <RoutePath />
       </div>
-      <div className="w-full mt-4 p-4 bg-white shadow-lg rounded-lg">
-        <h2 className=" text-xl font-semibold mb-6 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
-          {id ? "Update Admin User" : "Create Admin User"}
+      <div className="w-full mt-4 p-4 bg-white">
+        <h2 className=" text-sm md:text-lg font-medium text-center border py-1 lg:py-1.5 rounded-xs select-none bg-green-100 border-green-300">
+          {id ? "Edit" : "Create New"} Admin
         </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="flex gap-2">
             <div className="w-[50%]">
               <div className="relative">
@@ -180,12 +182,12 @@ const AdminUserForm = ({ id }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   {...(!id && { required: true })}
-                  id="floating_email"
+                  id="floating_pass"
                   className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
                   placeholder=" "
                 />
                 <label
-                  htmlFor="floating_email"
+                  htmlFor="floating_pass"
                   className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                 >
                   Enter Admin Password <span className="text-red-500">*</span>
@@ -215,27 +217,10 @@ const AdminUserForm = ({ id }) => {
           </div>
 
           <section className="flex items-center">
-            <div className="w-[60%]">
-              <Input
-                type="file"
-                onChange={handleImageChange}
-                {...(!id && { required: true })} // Required only in Create mode
-              />
-            </div>
-            <div className="w-[40%] flex items-center justify-center">
-              {previewImage && (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  className=" h-20 w-16 rounded-sm border border-red-500"
-                />
-              )}
-            </div>
+            <ImageUpload image={image} setImage={setImage} />
           </section>
 
-          <Button type="submit" disabled={loading}>
-            {loading ? "Loading..." : id ? "Update Admin" : "Create Admin"}
-          </Button>
+          <SubmitButton id={id} isLoading={loading} name = "Admin" />
         </form>
       </div>
     </>

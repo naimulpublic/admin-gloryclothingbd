@@ -25,6 +25,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Edit, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { mediumUrl } from "@/static/smallutils/Utils";
 
 export default function BrandView({ brandData }) {
   const router = useRouter();
@@ -187,11 +188,11 @@ export default function BrandView({ brandData }) {
               </TableCell>
               <TableCell>
                 <Image
-                  src={brand.brandIcon}
+                  src={`${mediumUrl}${brand.imagePublicId}`}
                   alt={brand.name}
-                  width={32}
-                  height={32}
-                  className="rounded"
+                  width={200}
+                  height={200}
+                  className="h-14 w-14 rounded-xs"
                 />
               </TableCell>
               <TableCell>{brand.name}</TableCell>

@@ -10,13 +10,10 @@ import { UserSquare } from "lucide-react";
 import { UserRoundCog } from "lucide-react";
 import { ListOrdered } from "lucide-react";
 import { SquarePlus } from "lucide-react";
-import { Projector } from "lucide-react";
 import { Tags } from "lucide-react";
 import { Layers2 } from "lucide-react";
 import { ShieldUser } from "lucide-react";
-import { Plug } from "lucide-react";
-import { ListTodo } from "lucide-react";
-import { ListTree } from "lucide-react";
+
 import {
   Home,
   ImagePlus,
@@ -180,7 +177,7 @@ export const Menu = [
     icon: (
       <UserSquare className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />
     ),
-    url: "/dashboard/reports",
+    url: "/dashboard/userstates",
   },
   {
     name: "Profile",
@@ -194,7 +191,7 @@ export const Menu = [
     icon: (
       <Settings className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />
     ),
-    url: "/dashboard/reports",
+    url: "/dashboard/systemsettings",
   },
 ];
 

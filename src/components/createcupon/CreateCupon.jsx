@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { SquarePlus } from "lucide-react";
 import { Loader } from "lucide-react";
 import RoutePath from "@/custom/routepath/RoutePath";
+import SubmitButton from "@/custom/submit/Submit";
 
 const CreateCoupon = ({ id }) => {
   // <-- এখানে id props নিচ্ছি
@@ -102,11 +103,11 @@ const CreateCoupon = ({ id }) => {
   return (
     <div className="w-full px-4 pb-48 bg-white shadow-sm rounded-sm">
       <RoutePath />
-      <h1 className="text-xl font-semibold mb-4 mt-6 text-center border py-1.5 rounded-sm select-none bg-black text-white border-orange-600">
+      <h2 className=" text-sm md:text-lg font-medium text-center border py-1 lg:py-1.5 rounded-xs select-none bg-green-100 border-green-300">
         {id ? "Edit" : "Create New"} Cupon
-      </h1>
+      </h2>
 
-      <form onSubmit={handleSubmit}>
+      <form className="mt-4" onSubmit={handleSubmit}>
         {/* Row: Coupon Name, Code, Discount */}
         <div className="mb-2 flex w-full gap-2">
           <div className="relative w-[33.33%]">
@@ -194,26 +195,7 @@ const CreateCoupon = ({ id }) => {
           </div>
         </div>
 
-        {/* Submit Button */}
-        <button
-          className=" bg-black text-white border border-red-600 px-4 rounded-sm  py-2 text-md font-medium cursor-pointer flex items-center gap-2"
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? (
-            <>
-              <Loader strokeWidth={2} className="h-6 w-6  animate-spin" />
-              PROCESSING...
-            </>
-          ) : id ? (
-            "Edit Cupon"
-          ) : (
-            <>
-              <SquarePlus className="h-5 w-5" />
-              PUBLISH Cupon
-            </>
-          )}
-        </button>
+        <SubmitButton id={id} isLoading={loading} name="Coupon" />
       </form>
     </div>
   );

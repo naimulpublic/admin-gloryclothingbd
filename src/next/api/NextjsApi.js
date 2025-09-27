@@ -64,10 +64,7 @@ export async function GetSubChildApi() {
 
 export async function GetOrders() {
   const request = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/orders`,
-    {
-      cache: "no-cache",
-    }
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/orders`
   );
   const response = await request.json();
   return response;

@@ -35,8 +35,10 @@ import { Edit } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Trash } from "lucide-react";
+import Image from "next/image";
+import { mediumUrl } from "@/static/smallutils/Utils";
 
-export default function LiveProducts({ data }) {
+export default function LiveProducts({data}) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -167,12 +169,14 @@ export default function LiveProducts({ data }) {
         <TableCaption>All available products</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>
+            <TableHead className="">
               <Checkbox
+                className={"mr-2"}
                 checked={selectedProducts.length === filteredData.length}
                 onCheckedChange={handleSelectAll}
               />
             </TableHead>
+            <TableHead>Image</TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Slug</TableHead>
             <TableHead>Brand</TableHead>
@@ -184,7 +188,7 @@ export default function LiveProducts({ data }) {
             <TableHead>D Color</TableHead>
             <TableHead>Featured</TableHead>
             <TableHead>Created At</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead >Actions</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -193,14 +197,31 @@ export default function LiveProducts({ data }) {
             <TableRow key={product._id}>
               <TableCell>
                 <Checkbox
+                  className={"mr-2"}
                   checked={selectedProducts.includes(product._id)}
                   onCheckedChange={() => handleSelectProduct(product._id)}
                 />
               </TableCell>
-              <TableCell>{product.name}</TableCell>
-              <TableCell>{product.slug}</TableCell>
-              <TableCell>{product.brand}</TableCell>
-              <TableCell>{product.category}</TableCell>
+              <TableCell>
+                <Image
+                  src={`${mediumUrl}${product.colorVariants[0].publicId}`}
+                  height={100}
+                  width={100}
+                  alt="productimage"
+                />
+              </TableCell>
+              <TableCell>
+                {product.name.length > 50
+                  ? product.name.slice(0, 50) + "..."
+                  : product.name}
+              </TableCell>
+              <TableCell>
+                {product.slug.length > 30
+                  ? product.slug.slice(0, 30) + "..."
+                  : product.slug}
+              </TableCell>
+              <TableCell>{product.brand.name}</TableCell>
+              <TableCell>{product.category.name}</TableCell>
               <TableCell>
                 {product.subcategory.map((sub, i) => (
                   <div key={i}>{sub.label}</div>
@@ -227,7 +248,7 @@ export default function LiveProducts({ data }) {
                   .join("-")}
               </TableCell>
 
-              <TableCell>
+              <TableCell className="text-right">
                 <DropdownMenu>
                   <DropdownMenuTrigger className="cursor-pointer outline-none">
                     <MoreVertical className="cursor-pointer" />
