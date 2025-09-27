@@ -183,7 +183,7 @@ const filteredSubcategories = useMemo(() => {
                       <img
                         src={item.banner}
                         alt="Banner"
-                        className="h-10 w-16 object-cover rounded"
+                        className="h-16 w-28 object-cover rounded"
                       />
                     )}
                   </TableCell>

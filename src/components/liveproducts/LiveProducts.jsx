@@ -204,6 +204,7 @@ export default function LiveProducts({data}) {
               </TableCell>
               <TableCell>
                 <Image
+                  className="w-16 h-16"
                   src={`${mediumUrl}${product.colorVariants[0].publicId}`}
                   height={100}
                   width={100}
