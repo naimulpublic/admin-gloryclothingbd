@@ -10,7 +10,7 @@ export default async function ProductPage() {
 
 
    const reqcategory = await fetch(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/categories`
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/categories?variant=regular`
   );
 
 
