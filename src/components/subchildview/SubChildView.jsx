@@ -74,7 +74,7 @@ export default function SubCategoriChild({ subcategorychild }) {
   // ✅ Handle Bulk Delete (with instant state update)
   const handleBulkDelete = async () => {
     if (selectedIds.length === 0) return;
-    if (!confirm("Are you sure you want to delete these subcategorychild?"))
+    if (!confirm("Are you sure?? you want to delete these subcategory?"))
       return;
 
     setLoading(true);

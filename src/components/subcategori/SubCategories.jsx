@@ -76,7 +76,7 @@ const filteredSubcategories = useMemo(() => {
 
     setLoading(true);
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/subcategory`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/subcategorys`,
       {
         method: "DELETE",
         credentials: "include",
