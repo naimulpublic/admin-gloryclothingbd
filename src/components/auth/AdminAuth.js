@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Checkbox } from "../ui/checkbox";
-import { Toaster, toast } from "react-toastify";
+import {toast } from "react-toastify";
 
 export default function AdminAuth() {
   const [email, setEmail] = useState("");
@@ -52,7 +52,7 @@ export default function AdminAuth() {
 
   return (
     <>
-      <Toaster position="top-right" theme="dark" richColors expand />
+     
       <div className="py-4">
         <div className="flex bg-white rounded-lg shadow-lg overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
           <div

@@ -38,7 +38,7 @@ import { Trash } from "lucide-react";
 import Image from "next/image";
 import { mediumUrl } from "@/static/smallutils/Utils";
 
-export default function LiveProducts({data}) {
+export default function LiveProducts({ data = [] }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
@@ -188,7 +188,7 @@ export default function LiveProducts({data}) {
             <TableHead>D Color</TableHead>
             <TableHead>Featured</TableHead>
             <TableHead>Created At</TableHead>
-            <TableHead >Actions</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
 
@@ -205,7 +205,7 @@ export default function LiveProducts({data}) {
               <TableCell>
                 <Image
                   className="w-16 h-16"
-                  src={`${mediumUrl}${product.colorVariants[0].publicId}`}
+                  src={`${mediumUrl}${product?.colorVariants?.[0]?.publicId}`}
                   height={100}
                   width={100}
                   alt="productimage"
