@@ -27,9 +27,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { mediumUrl } from "@/static/smallutils/Utils";
 
+
 export default function BrandView({ brandData }) {
   const router = useRouter();
-
+  toast;
   const [search, setSearch] = useState("");
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [isAllSelected, setIsAllSelected] = useState(false);

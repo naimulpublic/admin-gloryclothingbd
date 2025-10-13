@@ -22,7 +22,7 @@ import { ClipboardList } from "lucide-react";
 import Image from "next/image";
 import ReactPdfInvoice from "@/custom/invoice/Invoice";
 import { MoreVertical } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { View } from "lucide-react";
 

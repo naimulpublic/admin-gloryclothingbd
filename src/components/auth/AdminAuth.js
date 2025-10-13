@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Checkbox } from "../ui/checkbox";
-import { Toaster, toast } from "sonner";
+import { Toaster, toast } from "react-toastify";
 
 export default function AdminAuth() {
   const [email, setEmail] = useState("");

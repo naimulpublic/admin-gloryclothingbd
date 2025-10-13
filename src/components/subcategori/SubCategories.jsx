@@ -21,7 +21,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Edit } from "lucide-react";
 
 export default function SubCategoryView({ subcategorydata }) {
@@ -34,15 +34,14 @@ export default function SubCategoryView({ subcategorydata }) {
   const [openMenuId, setOpenMenuId] = useState(null);
   const menuRef = useRef(null);
 
-const filteredSubcategories = useMemo(() => {
-  if (!Array.isArray(data)) return [];
-  return data.filter(
-    (item) =>
-      item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.slug?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-}, [searchQuery, data]);
-
+  const filteredSubcategories = useMemo(() => {
+    if (!Array.isArray(data)) return [];
+    return data.filter(
+      (item) =>
+        item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.slug?.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, data]);
 
   const handleEdit = (id) => {
     router.push(`/dashboard/create/subcategories/${id}`);

@@ -6,15 +6,13 @@ import { RefreshCcw, X } from "lucide-react";
 import { Checkbox } from "../ui/checkbox";
 import { Label } from "../ui/label";
 
-
 import { ImagePlus } from "lucide-react";
-
 
 import { CInput } from "@/custom/input/Input";
 import { CInputArea } from "@/custom/input/InputArea";
 import { SUbCategoryMultiSelect } from "@/custom/multi-select/CategoryMultiSelect";
 import SubmitButton from "@/custom/submit/Submit";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 export default function CreateCategory({ subcategories, id }) {
   const [name, setName] = useState("");
@@ -146,7 +144,9 @@ export default function CreateCategory({ subcategories, id }) {
 
       if (!res.ok) throw new Error(data.message || "Something went wrong");
 
-      toast.success(`${id ? "Category updated" : "Category created"} successfully!`);
+      toast.success(
+        `${id ? "Category updated" : "Category created"} successfully!`
+      );
 
       setIsLoading(false);
     } catch (error) {

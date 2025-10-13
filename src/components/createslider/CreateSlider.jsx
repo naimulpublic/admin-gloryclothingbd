@@ -5,7 +5,7 @@ import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { Loader } from "lucide-react";
 import { SquarePlus } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import RoutePath from "@/custom/routepath/RoutePath";
 import SubmitButton from "@/custom/submit/Submit";
 import ImageUpload from "@/custom/image/Single";
@@ -28,7 +28,6 @@ const SliderForm = ({ id }) => {
         if (res.ok) {
           setName(data.name || "");
           setPreviewImage(data.imageUrl || null);
-          
         }
       } catch {
         alert("Something went wrong.");
@@ -56,7 +55,7 @@ const SliderForm = ({ id }) => {
 
     const formData = new FormData();
     formData.append("name", name);
-   
+
     if (image) {
       formData.append("image", image);
     }
@@ -97,11 +96,17 @@ const SliderForm = ({ id }) => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex gap-2 mt-2">
           <div className="flex-3">
-            <CInput label={<div>
-              <span className="text-sm font-medium">Slider Name</span> 
-              <span className="text-xs text-red-600">*</span>
-           </div>} value={name} onChange={(e) => setName(e.target.value)} />
-          </div>          
+            <CInput
+              label={
+                <div>
+                  <span className="text-sm font-medium">Slider Name</span>
+                  <span className="text-xs text-red-600">*</span>
+                </div>
+              }
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
         </div>
 
         <section className="flex items-center">

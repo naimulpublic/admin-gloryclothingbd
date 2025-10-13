@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { RefreshCcw, X, ImagePlus } from "lucide-react";
 
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import RoutePath from "@/custom/routepath/RoutePath";
 import { CInput } from "@/custom/input/Input";
 import { MultiSelect } from "@/custom/multi-select/MultiSelect";

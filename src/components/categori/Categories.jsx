@@ -28,7 +28,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
 import { Trash2, Pencil, MoreVertical, Loader } from "lucide-react";
 
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Edit } from "lucide-react";
 import Image from "next/image";
 import { mediumUrl } from "@/static/smallutils/Utils";
@@ -69,7 +69,7 @@ export default function CategoriesPage({ categories }) {
     if (selectedCategories.length === 0) return;
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/categories`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/categorys`,
       {
         method: "DELETE",
         credentials: "include",
@@ -82,10 +82,10 @@ export default function CategoriesPage({ categories }) {
 
     setLoading(false);
     if (res.ok) {
-      toast.success("Selected subcategorychild deleted");
+      toast.success("Selected subcategory deleted");
       router.refresh();
     } else {
-      toast.error("Failed to delete selected subcategorychild");
+      toast.error("Failed to delete selected subcategory");
     }
   };
 
