@@ -14,6 +14,7 @@ import { SUbCategoryMultiSelect } from "@/custom/multi-select/CategoryMultiSelec
 import SubmitButton from "@/custom/submit/Submit";
 import { toast } from "react-toastify";
 
+const mediumUrl = `https://res.cloudinary.com/dfpnahdox/image/upload/f_webp,q_60/`;
 export default function CreateCategory({ subcategories, id }) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
@@ -48,13 +49,14 @@ export default function CreateCategory({ subcategories, id }) {
             setSubcategory(data.subcategories);
           }
 
-          if (data.image) {
-            setImagePreview(data.image);
-          }
+         if (data.imagePublicId) {
+           setImagePreview(`${mediumUrl}${data.imagePublicId}`);
+         }
 
-          if (data.banner) {
-            setBannerPreview(data.banner);
-          }
+         if (data.bannerPublicId) {
+           setBannerPreview(`${mediumUrl}${data.bannerPublicId}`);
+         }
+
         } catch (err) {
           console.error("Error fetching category:", err);
         }
