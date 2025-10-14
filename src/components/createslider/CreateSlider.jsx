@@ -1,15 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Input } from "../ui/input";
-import { Checkbox } from "../ui/checkbox";
-import { Loader } from "lucide-react";
-import { SquarePlus } from "lucide-react";
 import { toast } from "react-toastify";
 import RoutePath from "@/custom/routepath/RoutePath";
 import SubmitButton from "@/custom/submit/Submit";
 import ImageUpload from "@/custom/image/Single";
 import { CInput } from "@/custom/input/Input";
+import { smallUrl } from "@/static/smallutils/Utils";
 
 const SliderForm = ({ id }) => {
   const [name, setName] = useState("");
@@ -27,7 +24,7 @@ const SliderForm = ({ id }) => {
         const data = await res.json();
         if (res.ok) {
           setName(data.name || "");
-          setPreviewImage(data.imageUrl || null);
+          setPreviewImage(`${smallUrl}${data.publicId}`);
         }
       } catch {
         alert("Something went wrong.");
@@ -110,7 +107,11 @@ const SliderForm = ({ id }) => {
         </div>
 
         <section className="flex items-center">
-          <ImageUpload image={image} setImage={setImage} />
+          <ImageUpload
+            previewImage={previewImage}
+            image={image}
+            setImage={setImage}
+          />
         </section>
         <SubmitButton isLoading={loading} id={id} name="Slider" />
       </form>

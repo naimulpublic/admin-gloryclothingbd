@@ -1,29 +1,37 @@
 "use client";
-import { useRef } from "react";
-import {  ImagePlus } from "lucide-react";
-import { Trash2 } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
+import { ImagePlus, Trash2 } from "lucide-react";
 
-export default function ImageUpload({ image, setImage }) {
+export default function ImageUpload({ image, setImage, previewImage }) {
   const inputRef = useRef();
+  const [localPreview, setLocalPreview] = useState(null);
+
+  useEffect(() => {
+    if (previewImage && !image) {
+      setLocalPreview(previewImage);
+    }
+  }, [previewImage, image]);
 
   const handleChange = (e) => {
     const file = e.target.files?.[0];
     if (file) {
       setImage(file); // parent state update
+      setLocalPreview(URL.createObjectURL(file)); // নতুন preview দেখাও
     }
   };
 
   const handleRemove = () => {
-    setImage(null); // parent এ reset হবে
+    setImage(null);
+    setLocalPreview(null);
     if (inputRef.current) inputRef.current.value = "";
   };
 
   return (
-    <label className="relative w-20 h-20 lg:w-24 lg:h-24 p-1 rounded-lg overflow-hidden border-dashed border-2 border-gray-300 flex items-center justify-center cursor-pointer hover:border-orange-500">
-      {image ? (
+    <label className="relative w-20 h-20 lg:w-24 lg:h-24 p-1 rounded-lg overflow-hidden border-dashed border-2 border-gray-300 flex items-center justify-center cursor-pointer hover:border-green-600">
+      {localPreview ? (
         <>
           <img
-            src={typeof image === "string" ? image : URL.createObjectURL(image)}
+            src={localPreview}
             alt="preview"
             className="w-full h-full object-cover rounded-sm"
           />
@@ -41,6 +49,7 @@ export default function ImageUpload({ image, setImage }) {
       ) : (
         <ImagePlus size={40} className="text-gray-400" />
       )}
+
       <input
         ref={inputRef}
         type="file"

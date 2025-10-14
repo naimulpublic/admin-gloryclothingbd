@@ -16,7 +16,6 @@ import RoutePath from "@/custom/routepath/RoutePath";
 import SubmitButton from "@/custom/submit/Submit";
 import ImageUpload from "@/custom/image/Single";
 
-
 const AdminUserForm = ({ id }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -217,10 +216,14 @@ const AdminUserForm = ({ id }) => {
           </div>
 
           <section className="flex items-center">
-            <ImageUpload image={image} setImage={setImage} />
+            <ImageUpload
+              previewImage={previewImage}
+              image={image}
+              setImage={setImage}
+            />
           </section>
 
-          <SubmitButton id={id} isLoading={loading} name = "Admin" />
+          <SubmitButton id={id} isLoading={loading} name="Admin" />
         </form>
       </div>
     </>

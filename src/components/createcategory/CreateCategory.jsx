@@ -13,8 +13,10 @@ import { CInputArea } from "@/custom/input/InputArea";
 import { SUbCategoryMultiSelect } from "@/custom/multi-select/CategoryMultiSelect";
 import SubmitButton from "@/custom/submit/Submit";
 import { toast } from "react-toastify";
+import { Trash2 } from "lucide-react";
+import { mediumUrl } from "@/static/smallutils/Utils";
 
-const mediumUrl = `https://res.cloudinary.com/dfpnahdox/image/upload/f_webp,q_60/`;
+
 export default function CreateCategory({ subcategories, id }) {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
@@ -49,14 +51,13 @@ export default function CreateCategory({ subcategories, id }) {
             setSubcategory(data.subcategories);
           }
 
-         if (data.imagePublicId) {
-           setImagePreview(`${mediumUrl}${data.imagePublicId}`);
-         }
+          if (data.imagePublicId) {
+            setImagePreview(`${mediumUrl}${data.imagePublicId}`);
+          }
 
-         if (data.bannerPublicId) {
-           setBannerPreview(`${mediumUrl}${data.bannerPublicId}`);
-         }
-
+          if (data.bannerPublicId) {
+            setBannerPreview(`${mediumUrl}${data.bannerPublicId}`);
+          }
         } catch (err) {
           console.error("Error fetching category:", err);
         }
@@ -278,7 +279,7 @@ export default function CreateCategory({ subcategories, id }) {
           <label className="shadow-green-300 text-center mb-2 block text-sm font-bold pb-1 shadow-xs">
             Category Image
           </label>
-          <label className="relative w-16 h-16 md:w-24 md:h-24 p-1 rounded-lg overflow-hidden border-dashed border border-gray-300 flex items-center justify-center cursor-pointer hover:border-orange-500">
+          <label className="relative w-16 h-16 md:w-24 md:h-24 p-1 rounded-lg overflow-hidden border-dashed border md:border-2 border-gray-300 flex items-center justify-center cursor-pointer hover:border-green-500">
             {imagePreview ? (
               <>
                 <img
@@ -292,17 +293,13 @@ export default function CreateCategory({ subcategories, id }) {
                     e.stopPropagation();
                     removeImage();
                   }}
-                  className="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-red-600"
+                  className="cursor-pointer absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-red-600"
                 >
-                  <X className="w-4 h-4 cursor-pointer" />
+                  <Trash2 className="w-4 h-4 hover:text-white" />
                 </button>
               </>
             ) : (
-              <ImagePlus
-                strokeWidth={1.5}
-                size={40}
-                className="text-gray-500"
-              />
+              <ImagePlus size={40} className="text-gray-400" />
             )}
             <input
               type="file"
@@ -318,7 +315,7 @@ export default function CreateCategory({ subcategories, id }) {
           <label className="shadow-green-300 text-center mb-2 block text-sm font-bold pb-1 shadow-xs">
             Category Banner
           </label>
-          <label className="relative w-28 h-16 md:w-40 md:h-24 p-1 rounded-lg overflow-hidden border-dashed border border-gray-300 flex items-center justify-center cursor-pointer hover:border-orange-500">
+          <label className="relative w-24 h-12 md:w-32 md:h-20 p-1 rounded-lg overflow-hidden border-dashed border md:border-2 border-gray-300 flex items-center justify-center cursor-pointer hover:border-green-500">
             {bannerPreview ? (
               <>
                 <img
@@ -334,15 +331,11 @@ export default function CreateCategory({ subcategories, id }) {
                   }}
                   className="absolute top-1 right-1 bg-black/60 text-white p-1 rounded-full hover:bg-red-600"
                 >
-                  <X className="w-4 h-4 cursor-pointer" />
+                  <Trash2 className="w-4 h-4 hover:text-white" />
                 </button>
               </>
             ) : (
-              <ImagePlus
-                strokeWidth={1.5}
-                size={40}
-                className="text-gray-500"
-              />
+              <ImagePlus size={40} className="text-gray-400" />
             )}
             <input
               type="file"

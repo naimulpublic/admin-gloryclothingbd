@@ -11,11 +11,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SquarePlus } from "lucide-react";
-import { Loader } from "lucide-react";
+
 import RoutePath from "@/custom/routepath/RoutePath";
 import SubmitButton from "@/custom/submit/Submit";
 import ImageUpload from "@/custom/image/Single";
+import { toast } from "react-toastify";
+import { mediumUrl } from "@/static/smallutils/Utils";
 
 export default function Brand({ id }) {
   const [name, setName] = useState("");
@@ -37,9 +38,8 @@ export default function Brand({ id }) {
           setName(data.name);
           setSlug(data.slug);
           setIsFeatured(data.isFeatured);
-          setStatus(data.status);
-          setBrandIcon(data.brandIcon);
-          setPreviewUrl(data.brandIcon);
+          setStatus(data.status);         
+          setPreviewUrl(`${mediumUrl}${data.imagePublicId}`);
         } catch (error) {
           console.error("Error fetching brand:", error);
         }
@@ -81,7 +81,7 @@ export default function Brand({ id }) {
       }
 
       const result = await res.json();
-      alert("Brand created successfully!");
+      toast.success("Brand created successfully!");
 
       setName("");
       setSlug("");
@@ -202,7 +202,11 @@ export default function Brand({ id }) {
       </div>
 
       <div className="flex items-center gap-4">
-       <ImageUpload image={brandIcon} setImage={setBrandIcon} />
+        <ImageUpload
+          previewImage={previewUrl}
+          image={brandIcon}
+          setImage={setBrandIcon}
+        />
       </div>
 
       <SubmitButton id={id} isLoading={loading} name="Brand" />
