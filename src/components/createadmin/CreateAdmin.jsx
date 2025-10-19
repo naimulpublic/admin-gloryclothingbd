@@ -125,14 +125,14 @@ const AdminUserForm = ({ id }) => {
       <div className="px-4">
         <RoutePath />
       </div>
-      <div className="w-full mt-4 p-4 bg-white">
+      <div className="w-full p-4 bg-white">
         <h2 className=" text-sm md:text-lg font-medium text-center border py-1 lg:py-1.5 rounded-xs select-none bg-green-100 border-green-300">
           {id ? "Edit" : "Create New"} Admin
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
-          <div className="flex gap-2">
-            <div className="w-[50%]">
+          <div className="md:flex gap-2">
+            <div className="md:w-[50%] mb-2 md:mb-0">
               <div className="relative">
                 <input
                   value={name}
@@ -147,12 +147,12 @@ const AdminUserForm = ({ id }) => {
                   htmlFor="floating_name"
                   className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                 >
-                  Enter Admin Name <span className="text-red-500">*</span>
+                  Enter Name <span className="text-red-500">*</span>
                 </label>
               </div>
             </div>
 
-            <div className="w-[50%]">
+            <div className="md:w-[50%]">
               <div className="relative">
                 <input
                   type="email"
@@ -167,7 +167,7 @@ const AdminUserForm = ({ id }) => {
                   htmlFor="floating_email"
                   className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                 >
-                  Enter Admin Email <span className="text-red-500">*</span>
+                  Enter Email <span className="text-red-500">*</span>
                 </label>
               </div>
             </div>
@@ -189,7 +189,7 @@ const AdminUserForm = ({ id }) => {
                   htmlFor="floating_pass"
                   className="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white dark:bg-gray-900 px-2 peer-focus:px-2 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto start-1"
                 >
-                  Enter Admin Password <span className="text-red-500">*</span>
+                  Enter Password <span className="text-red-500">*</span>
                 </label>
               </div>
 
@@ -209,8 +209,8 @@ const AdminUserForm = ({ id }) => {
                   setRole(checked ? "root" : "general");
                 }}
               />
-              <span className="ml-2">
-                {role === "root" ? "Root Admin" : "General Admin"}
+              <span className="ml-2 text-sm">
+                {role === "root" ? "Root" : "General"}
               </span>
             </div>
           </div>
