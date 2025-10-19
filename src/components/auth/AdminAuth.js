@@ -64,7 +64,7 @@ export default function AdminAuth() {
           ></div>
           <div className="w-full p-8 lg:w-1/2">
             <h2 className="text-2xl font-bold text-gray-700 text-center">
-              GloryClothing<span className="text-orange-600">Bd</span> ッ
+              Abid Fashion<span className="text-orange-600">{" "}Bd</span> ッ
             </h2>
             <p className="text-xl text-gray-600 text-center">Welcome back!</p>
             <a

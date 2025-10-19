@@ -69,7 +69,7 @@ const MyDocument = ({ qrCodeValue, order }) => {
                 <View style={styles.speechY}>
                   <Text style={styles.aexmart}>Glory Clothing</Text>
                   <Text style={styles.verified}>
-                    ONLY VERIFIED BRANDS SELL ON - GloryClothing
+                    ONLY VERIFIED BRANDS SELL ON - Abid Fashion
                   </Text>
                   <Text style={styles.verified}>100% AUTHENTIC</Text>
                 </View>
@@ -296,7 +296,7 @@ const MyDocument = ({ qrCodeValue, order }) => {
                   }}
                 >
                   Dear {item.user.name}, Your satisfaction is our priority -
-                  Thanks for shopping with GloryClothing.
+                  Thanks for shopping with Abid Fashion.
                 </Text>
               </View>
 
