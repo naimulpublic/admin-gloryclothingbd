@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -34,18 +34,25 @@ import { MoreVertical } from "lucide-react";
 import { Edit } from "lucide-react";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Trash } from "lucide-react";
 import Image from "next/image";
 import { mediumUrl } from "@/static/smallutils/Utils";
+import { toast } from "react-toastify";
 
 export default function LiveProducts({ data = [] }) {
   const router = useRouter();
+  const [products, setProducts] = useState(data); // ← data props থেকে state
   const [search, setSearch] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [statusFilter, setStatusFilter] = useState("all");
   const [featuredFilter, setFeaturedFilter] = useState("all");
 
-  const filteredData = data
+  // props update hole state sync
+  useEffect(() => {
+    setProducts(data);
+  }, [data]);
+
+  // filteredData এখন state products থেকে আসে
+  const filteredData = products
     .filter((product) =>
       product.name.toLowerCase().includes(search.toLowerCase())
     )
@@ -98,11 +105,12 @@ export default function LiveProducts({ data = [] }) {
       const result = await res.json();
 
       if (result.success) {
-        console.log(result.message);
-        router.refresh();
-        setSelectedProducts([]); // Clear selected products
+        // ← state থেকে সরাসরি remove
+        setProducts(products.filter((p) => !selectedProducts.includes(p._id)));
+        setSelectedProducts([]);
+        toast.success(result.message);
       } else {
-        console.error("Bulk delete failed");
+        toast.error("Bulk delete failed");
       }
     } catch (error) {
       console.error("Error deleting products:", error);
@@ -115,19 +123,24 @@ export default function LiveProducts({ data = [] }) {
 
   const handleSingleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this product?")) return;
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/product/${id}`,
-      {
-        method: "DELETE",
-      }
-    );
 
-    const result = await res.json();
-    if (res.ok) {
-      console.log(result.message);
-      router.refresh();
-    } else {
-      console.error("Failed to delete product:", result.message);
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/product/${id}`,
+        { method: "DELETE" }
+      );
+      const result = await res.json();
+
+      if (res.ok) {
+        // ← state থেকে remove
+        setProducts(products.filter((p) => p._id !== id));
+        setSelectedProducts((prev) => prev.filter((pid) => pid !== id));
+        toast.success(result.message);
+      } else {
+        toast.error("Failed to delete product");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
     }
   };
 
@@ -169,7 +182,7 @@ export default function LiveProducts({ data = [] }) {
         <TableCaption>All available products</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead className="">
+            <TableHead>
               <Checkbox
                 className={"mr-2"}
                 checked={selectedProducts.length === filteredData.length}
@@ -203,13 +216,19 @@ export default function LiveProducts({ data = [] }) {
                 />
               </TableCell>
               <TableCell>
-                <Image
-                  className="w-16 h-16"
-                  src={`${mediumUrl}${product?.colorVariants?.[0]?.publicId}`}
-                  height={100}
-                  width={100}
-                  alt="productimage"
-                />
+                {product?.colorVariants?.[0]?.publicId ? (
+                  <Image
+                    className="w-16 h-16"
+                    src={`${mediumUrl}${product.colorVariants[0].publicId}`}
+                    height={100}
+                    width={100}
+                    alt="productimage"
+                  />
+                ) : (
+                  <div className="w-16 h-16 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
+                    No Image
+                  </div>
+                )}
               </TableCell>
               <TableCell>
                 {product.name.length > 50
