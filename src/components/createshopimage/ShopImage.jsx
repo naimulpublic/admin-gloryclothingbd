@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
-import RoutePath from "@/custom/routepath/RoutePath";
-import SubmitButton from "@/custom/submit/Submit";
 import ImageUpload from "@/custom/image/Single";
 import { CInput } from "@/custom/input/Input";
+import RoutePath from "@/custom/routepath/RoutePath";
+import SubmitButton from "@/custom/submit/Submit";
 import { smallUrl } from "@/static/smallutils/Utils";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
-const SliderForm = ({ id }) => {
+
+export default function CreateShpopImage({ id }){
   const [name, setName] = useState("");
   const [image, setImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
@@ -19,7 +20,7 @@ const SliderForm = ({ id }) => {
     const fetchSlider = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/slider/${id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/get/shopnowimage/${id}`
         );
         const data = await res.json();
         if (res.ok) {
@@ -60,8 +61,8 @@ const SliderForm = ({ id }) => {
     try {
       const res = await fetch(
         id
-          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update/slider/${id}`
-          : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create/slider`,
+          ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/update/shopnowimage/${id}`
+          : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/create/shopnowimage`,
         {
           method: id ? "PUT" : "POST",
           body: formData,
@@ -88,7 +89,7 @@ const SliderForm = ({ id }) => {
     <div className="w-full bg-white px-4 ">
       <RoutePath />
       <h2 className="mt-2 md:mt-4 text-sm md:text-lg font-medium text-center border py-1 lg:py-1.5 rounded-xs select-none bg-green-100 border-green-300">
-        {id ? "Edit" : "Create New"} Slider
+        {id ? "Edit" : "Create New"} Shop Now Image
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="flex gap-2 mt-2">
@@ -108,16 +109,15 @@ const SliderForm = ({ id }) => {
 
         <section className="flex items-center">
           <ImageUpload
-          dcss="w-40 md:w-52"
             previewImage={previewImage}
             image={image}
             setImage={setImage}
           />
         </section>
-        <SubmitButton isLoading={loading} id={id} name="Slider" />
+        <SubmitButton isLoading={loading} id={id} name="Shop Now Image" />
       </form>
     </div>
   );
 };
 
-export default SliderForm;
+

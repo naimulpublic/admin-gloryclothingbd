@@ -40,7 +40,7 @@ ChartJS.register(
   Legend
 );
 
-export default function DashboardHome({ products =[], order }) {
+export default function DashboardHome({ products =[], order=[] }) {
   // Stats calculation
   const totalOrders = order?.length || 0;
   const totalRevenue =

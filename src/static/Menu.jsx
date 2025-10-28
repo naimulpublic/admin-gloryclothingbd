@@ -5,6 +5,10 @@ import { ShieldEllipsis } from "lucide-react";
 import { SlidersVertical } from "lucide-react";
 import { CreativeCommonsIcon } from "lucide-react";
 import { Radio } from "lucide-react";
+import { Receipt } from "lucide-react";
+import { TimerIcon } from "lucide-react";
+import { ShipIcon } from "lucide-react";
+import { Timer } from "lucide-react";
 import { SquareStack } from "lucide-react";
 import { UserSquare } from "lucide-react";
 import { UserRoundCog } from "lucide-react";
@@ -35,6 +39,12 @@ import {
   Settings,
   ArrowLeftToLine,
   LayoutDashboard,
+    List,
+  Clock,
+  RefreshCw,
+  Truck,
+  Package,
+  XCircle,
   
 } from "lucide-react";
 
@@ -106,10 +116,11 @@ export const Menu = [
         url: "/dashboard/brands",
       },
       {
-        name: "Orders",
-        icon: <ListOrdered size={20} />,
-        url: "/dashboard/orders",
+        name: "Shop-Now",
+        icon: <CreativeCommonsIcon size={20} />,
+        url: "/dashboard/shopnow",
       },
+     
     ],
     icon: (
       <ShieldUser className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />
@@ -159,9 +170,55 @@ export const Menu = [
         icon: <SquarePlus size={20} />,
         url: "/dashboard/create/brand",
       },
+      {
+        name: "Shop Image",
+        icon: <SquarePlus size={20} />,
+        url: "/dashboard/create/shopimage",
+      }
     ],
     icon: (
       <SquarePlus className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7" size={30} />
+    ),
+  },
+  {
+    name: "Order Manage",
+    subname: [
+        {
+    name: "Total Orders",
+    icon: <List size={20} />,
+    url: "/dashboard/orders",
+  },
+  {
+    name: "Pending Orders",
+    icon: <Clock size={20} />, // অপেক্ষমান আইটেমের জন্য টাইমার/ক্লক খুব উপযোগী
+    url: "/dashboard/orders/pending",
+  },
+  {
+    name: "Processing",
+    icon: <RefreshCw size={20} />, // প্রক্রিয়াধীন (processing) বোঝাতে রিফ্রেশ/রোটেট আইকন ঠিক থাকে
+    url: "/dashboard/orders/confirmed,processing",
+  },
+  {
+    name: "Shipped",
+    icon: <Truck size={20} />, // শিপিং/ট্রান্সপোর্ট বোঝাতে ট্রাক
+    url: "/dashboard/orders/shipped",
+  },
+  {
+    name: "Delivery",
+    icon: <Package size={20} />, // ডেলিভারি/প্যাকেজ স্ট্যাটাসের জন্য প্যাকেজ আইকন
+    url: "/dashboard/orders/delivered",
+  },
+  {
+    name: "Cancel",
+    icon: <XCircle size={20} />, // বাতিলের জন্য ক্রস-সার্কেল স্পষ্ট
+    url: "/dashboard/orders/cancelled",
+  },
+    ],
+    icon: (
+      <Receipt
+        className="h-5 w-5 md:h-6 md:w-6 xl:h-8 xl:w-7"
+        size={30}
+      />
     ),
   },
   {

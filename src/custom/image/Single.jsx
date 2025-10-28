@@ -2,7 +2,7 @@
 import { useRef, useEffect, useState } from "react";
 import { ImagePlus, Trash2 } from "lucide-react";
 
-export default function ImageUpload({ image, setImage, previewImage }) {
+export default function ImageUpload({ image, setImage, previewImage,dcss="w-20 lg:w-24" }) {
   const inputRef = useRef();
   const [localPreview, setLocalPreview] = useState(null);
 
@@ -27,7 +27,7 @@ export default function ImageUpload({ image, setImage, previewImage }) {
   };
 
   return (
-    <label className="relative w-20 h-20 lg:w-24 lg:h-24 p-1 rounded-lg overflow-hidden border-dashed border-2 border-gray-300 flex items-center justify-center cursor-pointer hover:border-green-600">
+    <label className={`relative ${dcss} h-20  lg:h-24 p-1 rounded-lg overflow-hidden border-dashed border-2 border-gray-300 flex items-center justify-center cursor-pointer hover:border-green-600`}>
       {localPreview ? (
         <>
           <img
