@@ -70,7 +70,7 @@ export default function ViewShopNowImage({ Slider }) {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/sliders`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/shopnowimages`,
         {
           method: "DELETE",
           headers: {
@@ -96,11 +96,11 @@ export default function ViewShopNowImage({ Slider }) {
   };
 
   const handleSingleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this slider?")) return;
+    if (!confirm("Are you sure you want to delete this shop now image?")) return;
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/slider/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/delete/shopnowimage/${id}`,
         {
           method: "DELETE",
         }
